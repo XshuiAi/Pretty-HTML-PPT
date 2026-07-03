@@ -229,6 +229,9 @@ Presenter mode conventions:
 - Add concise notes to each major slide using `<aside class="speaker-notes">...</aside>`.
 - Keep speaker notes out of the visible slide body. Long explanations belong in notes, not on the slide.
 - The runtime automatically shows current title, current summary, next slide title, notes, slide count, and timer.
+- Speaker notes are hidden in the normal audience view. They become visible only when presenter mode is open in that browser window.
+- The presenter notes panel is editable; edits sync back into the current slide's hidden `.speaker-notes` block.
+- Privacy depends on screen sharing: if the presenter-mode window is shared, the audience can see notes. For private notes, share a normal deck window and keep presenter mode on an unshared screen/window.
 
 ### Step 6 · Verify
 

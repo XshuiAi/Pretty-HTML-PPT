@@ -31,8 +31,22 @@
   }
 
   function notesOf(slide) {
-    const notes = slide.querySelector("[data-speaker-notes], .speaker-notes");
+    const notes = notesElement(slide);
     return (notes?.textContent || "No speaker notes for this slide.").trim();
+  }
+
+  function notesElement(slide) {
+    return slide.querySelector("[data-speaker-notes], .speaker-notes");
+  }
+
+  function ensureNotesElement(slide) {
+    let notes = notesElement(slide);
+    if (!notes) {
+      notes = document.createElement("aside");
+      notes.className = "speaker-notes";
+      slide.appendChild(notes);
+    }
+    return notes;
   }
 
   function formatTime(ms) {
@@ -166,6 +180,18 @@
         font-size: 20px;
         line-height: 1.55;
       }
+      [data-shui-presenter-notes] {
+        min-height: 160px;
+        padding: 10px 12px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        white-space: pre-wrap;
+      }
+      [data-shui-presenter-notes]:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, .28);
+        background: rgba(255, 255, 255, .08);
+      }
       .shui-presenter-meta {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -240,7 +266,7 @@
           </div>
           <div class="shui-presenter-section shui-presenter-notes">
             <h3>Speaker Notes</h3>
-            <div data-shui-presenter-notes></div>
+            <div data-shui-presenter-notes contenteditable="true" spellcheck="false"></div>
           </div>
           <div class="shui-presenter-meta">
             <div><span>Slide</span><b data-shui-presenter-count></b></div>
@@ -255,6 +281,9 @@
     overlay.querySelector("[data-shui-presenter-close]").addEventListener("click", close);
     overlay.querySelector("[data-shui-presenter-prev]").addEventListener("click", () => move(-1));
     overlay.querySelector("[data-shui-presenter-next]").addEventListener("click", () => move(1));
+    overlay.querySelector("[data-shui-presenter-notes]").addEventListener("input", (event) => {
+      ensureNotesElement(slides[state.index]).textContent = event.currentTarget.textContent;
+    });
   }
 
   function update() {
@@ -267,7 +296,10 @@
     overlay.querySelector("[data-shui-presenter-summary]").textContent = summaryOf(current);
     overlay.querySelector("[data-shui-presenter-next-title]").textContent =
       next === current ? "End of deck" : titleOf(next);
-    overlay.querySelector("[data-shui-presenter-notes]").textContent = notesOf(current);
+    const notesTarget = overlay.querySelector("[data-shui-presenter-notes]");
+    if (document.activeElement !== notesTarget) {
+      notesTarget.textContent = notesOf(current);
+    }
     overlay.querySelector("[data-shui-presenter-count]").textContent =
       `${state.index + 1}/${slides.length}`;
     overlay.querySelector("[data-shui-presenter-timer]").textContent =
