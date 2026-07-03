@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>模板12 - 蓝绘课程册 Meraki Learning Kit</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+SC:wght@500;700;900&display=swap');
+
+    :root {
+      --paper: #f7f1e4;
+      --paper-2: #fffaf0;
+      --ink: #183f2a;
+      --muted: #66786c;
+      --blue: #3b7edc;
+      --sky: #a9d8f7;
+      --leaf: #1aa36f;
+      --forest: #0b4a2b;
+      --butter: #f7dc71;
+      --apple: #a8d500;
+      --blossom: #f7b9cf;
+      --line: rgba(24, 63, 42, .28);
+      --shadow: 0 18px 42px rgba(24, 63, 42, .12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+    }
+    body {
+      margin: 0;
+      font-family: "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(24,63,42,.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(24,63,42,.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 36px 36px;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto auto -120px -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(59,126,220,.18);
+      filter: blur(18px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      inset: -130px -120px auto auto;
+      background: rgba(247,185,207,.22);
+    }
+
+    .deck {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: clamp(20px, 3vw, 44px);
+      scroll-margin-top: 0;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .board {
+      position: relative;
+      width: min(1720px, 96vw);
+      min-height: min(860px, 90vh);
+      background: rgba(255, 250, 240, .94);
+      border: 3px solid var(--forest);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: clamp(28px, 4vw, 74px);
+      isolation: isolate;
+    }
+
+    .board::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(24,63,42,.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(24,63,42,.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      z-index: -2;
+    }
+
+    .board::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 52px;
+      background: linear-gradient(90deg, #88d667, #58be63 45%, #2f9953);
+      border-top: 3px solid var(--forest);
+      z-index: -1;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: clamp(24px, 4vw, 54px);
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .badge, .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid var(--forest);
+      border-radius: 999px;
+      background: #e6f7d8;
+      padding: 10px 18px;
+      box-shadow: 5px 6px 0 rgba(24,63,42,.12);
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: "✽";
+      color: #ff69ad;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      font-family: "Nunito", "Noto Sans SC", sans-serif;
+      font-size: clamp(64px, 10vw, 152px);
+      line-height: .82;
+      letter-spacing: -0.03em;
+      max-width: 920px;
+      color: var(--forest);
+    }
+    h1 .blue { color: var(--blue); }
+    h1 .pink { color: #f46fae; }
+
+    h2 {
+      font-size: clamp(34px, 5.2vw, 78px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      font-weight: 900;
+    }
+    h3 {
+      font-size: clamp(22px, 2.5vw, 38px);
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    p {
+      color: var(--muted);
+      font-size: clamp(16px, 1.25vw, 22px);
+      line-height: 1.75;
+      font-weight: 700;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.03fr) minmax(360px, .97fr);
+      gap: clamp(28px, 5vw, 78px);
+      align-items: center;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin-top: 22px;
+      color: #456151;
+      font-size: clamp(18px, 1.5vw, 26px);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    button, .btn {
+      appearance: none;
+      border: 3px solid var(--forest);
+      border-radius: 999px;
+      background: var(--blossom);
+      color: var(--ink);
+      padding: 15px 26px;
+      font: 900 17px/1 "Noto Sans SC", sans-serif;
+      box-shadow: 6px 7px 0 var(--forest);
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover, .btn:hover {
+      transform: translate(-2px, -3px);
+      box-shadow: 8px 10px 0 var(--forest);
+    }
+    .btn.alt { background: #e8ffd5; }
+
+    .device-stack {
+      position: relative;
+      min-height: 560px;
+      perspective: 1200px;
+    }
+
+    .sketch-card {
+      position: absolute;
+      border: 4px solid var(--forest);
+      background: var(--paper-2);
+      box-shadow: 12px 14px 0 rgba(24,63,42,.16);
+      overflow: hidden;
+      transition: transform .28s ease;
+    }
+    .sketch-card:hover { transform: translateY(-8px) rotate(var(--hover-rot, 0deg)); }
+
+    .tablet {
+      width: 76%;
+      height: 430px;
+      right: 6%;
+      top: 40px;
+      border-radius: 24px;
+      transform: rotate(-4deg);
+      --hover-rot: -4deg;
+    }
+    .phone {
+      width: 26%;
+      height: 370px;
+      right: 0;
+      top: 180px;
+      border-radius: 24px;
+      background: linear-gradient(#c9efff, #dfffc5 55%, #80d95e);
+      transform: rotate(5deg);
+      --hover-rot: 5deg;
+    }
+    .note {
+      width: 36%;
+      left: 12%;
+      top: 330px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #fff7d5;
+      transform: rotate(-5deg);
+      --hover-rot: -5deg;
+    }
+
+    .note h3 {
+      font-size: clamp(22px, 2.2vw, 31px);
+    }
+
+    .note p {
+      font-size: clamp(14px, 1.05vw, 18px);
+      line-height: 1.55;
+      margin-top: 10px;
+    }
+
+    .screen-head {
+      padding: 16px 20px;
+      background: var(--sky);
+      border-bottom: 3px solid var(--forest);
+      text-align: center;
+      font-weight: 900;
+    }
+    .screen-row {
+      height: 96px;
+      border-bottom: 3px solid rgba(24,63,42,.18);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 24px;
+    }
+    .screen-row:nth-child(2) { background: #eefad9; }
+    .screen-row:nth-child(3) { background: #ffe0ee; }
+    .screen-row:nth-child(4) { background: #8bd767; }
+
+    .flower {
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, var(--butter) 0 18%, transparent 19%),
+        conic-gradient(from 0deg, #ff73b6 0 16%, transparent 16% 20%, #ff73b6 20% 36%, transparent 36% 40%, #ff73b6 40% 56%, transparent 56% 60%, #ff73b6 60% 76%, transparent 76% 80%, #ff73b6 80% 96%, transparent 96%);
+      animation: spin 14s linear infinite;
+      opacity: .95;
+    }
+    .f1 { left: 36%; top: 92px; }
+    .f2 { right: 12%; top: 126px; transform: scale(.68); animation-duration: 18s; }
+    @keyframes spin { to { rotate: 360deg; } }
+
+    .logo-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+    }
+    .panel {
+      border: 2px solid var(--line);
+      background: rgba(255,255,255,.48);
+      padding: clamp(18px, 2vw, 30px);
+      min-height: 170px;
+      transition: transform .22s ease, border-color .22s ease;
+    }
+    .panel:hover {
+      transform: translateY(-6px);
+      border-color: var(--blue);
+    }
+    .panel-title {
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .logo-samples {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      align-items: center;
+      text-align: center;
+      font-family: "Nunito", sans-serif;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: clamp(24px, 2vw, 38px);
+      line-height: .9;
+    }
+    .logo-samples span:nth-child(2) {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--blue);
+      color: white;
+      font-size: 28px;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(70px, 1fr));
+      gap: 18px;
+    }
+    .swatch {
+      display: grid;
+      place-items: center;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1.5px solid rgba(24,63,42,.22);
+      font-weight: 900;
+      color: rgba(24,63,42,.75);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .doodles {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      color: var(--blue);
+      font-size: 30px;
+      text-align: center;
+    }
+
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 46px;
+      align-items: stretch;
+    }
+    .avatar-card {
+      border: 3px solid var(--blue);
+      background: #d9eefc;
+      padding: 28px;
+      display: grid;
+      place-items: center;
+      min-height: 520px;
+      position: relative;
+    }
+    .character {
+      width: min(280px, 90%);
+      aspect-ratio: 1;
+      position: relative;
+    }
+    .face {
+      position: absolute;
+      inset: 10% 18% 26%;
+      background: #ffd7df;
+      border: 4px solid #2a2a2a;
+      border-radius: 48% 48% 44% 44%;
+    }
+    .hair {
+      position: absolute;
+      inset: 2% 10% 38%;
+      background: #463531;
+      border-radius: 48% 48% 20% 20%;
+      z-index: -1;
+    }
+    .bang {
+      position: absolute;
+      left: 32%;
+      top: 4%;
+      width: 58px;
+      height: 54px;
+      background: var(--blossom);
+      border: 3px solid #2a2a2a;
+      border-radius: 50% 50% 8px 50%;
+      transform: rotate(-12deg);
+    }
+    .eye { position: absolute; top: 43%; width: 12px; height: 12px; background: #222; border-radius: 50%; }
+    .eye.l { left: 36%; }
+    .eye.r { right: 36%; }
+    .glasses {
+      position: absolute;
+      left: 27%;
+      top: 38%;
+      width: 46%;
+      height: 26px;
+      border-top: 3px solid #222;
+    }
+    .glasses::before, .glasses::after {
+      content: "";
+      position: absolute;
+      width: 35px;
+      height: 28px;
+      border: 3px solid #222;
+      border-radius: 50%;
+      top: -7px;
+      background: rgba(255,255,255,.12);
+    }
+    .glasses::before { left: 0; }
+    .glasses::after { right: 0; }
+    .body {
+      position: absolute;
+      left: 26%;
+      right: 26%;
+      bottom: 10%;
+      height: 34%;
+      background: white;
+      border: 4px solid #222;
+      border-radius: 36px 36px 10px 10px;
+    }
+    .tie {
+      position: absolute;
+      left: 46%;
+      bottom: 21%;
+      width: 24px;
+      height: 76px;
+      background: var(--blossom);
+      clip-path: polygon(50% 0, 100% 22%, 66% 100%, 34% 100%, 0 22%);
+      border: 2px solid #222;
+    }
+    .laptop {
+      position: absolute;
+      left: 16%;
+      right: 16%;
+      bottom: 2%;
+      height: 62px;
+      background: var(--paper-2);
+      border: 4px solid #222;
+      border-radius: 10px;
+    }
+
+    .intro-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+    .software-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .soft {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      background: #16161b;
+      color: #fff;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.1);
+    }
+    .soft:nth-child(2) { color: #ffb23f; }
+    .soft:nth-child(3) { color: #8dd0ff; }
+    .soft:nth-child(4) { color: #ff77b6; }
+    .soft:nth-child(5) { color: #b6dfff; }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      bottom: 18px;
+      width: 3px;
+      background: var(--sky);
+    }
+    .step {
+      position: relative;
+      padding-left: 52px;
+    }
+    .step::before {
+      content: attr(data-n);
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-weight: 900;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+      margin-top: 46px;
+    }
+    .module {
+      min-height: 260px;
+      border: 3px solid var(--forest);
+      background: rgba(255,250,240,.82);
+      padding: 24px;
+      cursor: pointer;
+      transition: transform .22s ease, background .22s ease;
+    }
+    .module:nth-child(2), .module:nth-child(4) { background: #c7ebff; }
+    .module:nth-child(3) { background: #ffd2e5; }
+    .module:hover, .module.active {
+      transform: translateY(-10px);
+      background: var(--butter);
+    }
+    .num {
+      display: block;
+      font-family: "Nunito", sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--forest);
+      margin-bottom: 12px;
+    }
+
+    .detail-dock {
+      margin-top: 24px;
+      border: 3px solid var(--forest);
+      background: var(--paper-2);
+      padding: 22px 28px;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .detail-dock strong {
+      font-size: 22px;
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .shot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .shot {
+      min-height: 210px;
+      border: 3px solid var(--forest);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(247,185,207,.8), transparent 20%),
+        radial-gradient(circle at 70% 70%, rgba(169,216,247,.85), transparent 22%),
+        #fff;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform .22s ease;
+    }
+    .shot:hover { transform: rotate(-1deg) translateY(-6px); }
+
+    .reveal-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 24px;
+    }
+    .reveal-card {
+      min-height: 150px;
+      border: 3px solid var(--forest);
+      background: #fff;
+      padding: 20px 24px;
+      opacity: .2;
+      transform: translateY(20px);
+      transition: opacity .32s ease, transform .32s ease;
+    }
+    .reveal-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-card .num {
+      font-size: 34px;
+      margin-bottom: 6px;
+    }
+
+    .reveal-card h3 {
+      font-size: clamp(22px, 2vw, 34px);
+      margin-bottom: 4px;
+    }
+
+    .reveal-card p {
+      font-size: clamp(14px, 1vw, 18px);
+      line-height: 1.45;
+    }
+
+    .compact-reveal {
+      padding-top: clamp(22px, 2.8vw, 44px);
+      padding-bottom: 86px;
+    }
+
+    .compact-reveal .topline {
+      margin-bottom: clamp(14px, 2vw, 28px);
+    }
+
+    .compact-reveal .lead {
+      font-size: clamp(15px, 1vw, 18px);
+      line-height: 1.55;
+    }
+
+    .compact-reveal .actions {
+      margin-top: 16px;
+      gap: 12px;
+    }
+
+    .compact-reveal button {
+      padding: 12px 22px;
+    }
+
+    .compact-reveal .reveal-area {
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .compact-reveal .reveal-card {
+      min-height: 124px;
+      padding: 14px 20px;
+    }
+
+    .media-tabs {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 24px 0;
+    }
+    .tab {
+      box-shadow: none;
+      padding: 12px 18px;
+      background: white;
+    }
+    .tab.active { background: var(--sky); }
+    .media-preview {
+      border: 3px solid var(--forest);
+      min-height: 420px;
+      background: var(--paper-2);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+    .media-visual {
+      min-height: 420px;
+      background:
+        radial-gradient(circle at 42% 36%, var(--butter), transparent 18%),
+        radial-gradient(circle at 66% 56%, var(--blossom), transparent 22%),
+        linear-gradient(135deg, var(--sky), #eaffd5);
+      display: grid;
+      place-items: center;
+      color: var(--forest);
+      font-size: clamp(42px, 7vw, 110px);
+      font-family: "Nunito", sans-serif;
+      font-weight: 900;
+    }
+    .media-copy {
+      padding: 42px;
+      display: grid;
+      align-content: center;
+      gap: 16px;
+    }
+
+    .nav {
+      position: fixed;
+      right: 96px;
+      top: 20px;
+      z-index: 20;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      padding: 7px;
+      border: 2px solid var(--forest);
+      border-radius: 999px;
+      background: rgba(255,250,240,.92);
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      backdrop-filter: blur(10px);
+    }
+    .nav a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 13px;
+      transition: background .18s ease, transform .18s ease;
+    }
+    .nav a:hover, .nav a.active {
+      background: var(--blossom);
+      transform: translateY(-2px);
+    }
+    .next {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 20;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 3px solid var(--forest);
+      background: #8bd767;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 4px 6px 0 var(--forest);
+    }
+
+    .progress-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--blue), var(--blossom), var(--leaf));
+      width: 0;
+      z-index: 30;
+    }
+
+    .quote {
+      font-size: clamp(26px, 3.6vw, 56px);
+      line-height: 1.12;
+      font-weight: 900;
+      color: var(--forest);
+      max-width: 980px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: end;
+      min-height: 560px;
+    }
+
+    @media (max-width: 980px) {
+      .slide { padding: 14px; }
+      .board { width: 100%; min-height: 94vh; border-radius: 18px; padding: 26px 20px 76px; }
+      .hero-grid, .avatar-grid, .product-layout, .footer-grid, .media-preview, .detail-dock {
+        grid-template-columns: 1fr;
+      }
+      .device-stack { min-height: 520px; }
+      .tablet { width: 84%; left: 0; right: auto; }
+      .phone { width: 34%; }
+      .note { width: 58%; top: 370px; }
+      .logo-board, .intro-list, .reveal-area, .shot-grid { grid-template-columns: 1fr; }
+      .modules { grid-template-columns: 1fr; }
+      .module { min-height: 180px; }
+      .nav {
+        right: 12px;
+        top: 10px;
+        max-width: calc(100vw - 86px);
+        overflow-x: auto;
+      }
+      h1 { font-size: clamp(54px, 20vw, 92px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-line" id="progressLine"></div>
+  <nav class="nav" aria-label="页面导航">
+    <a href="#s1" class="active">01</a><a href="#s2">02</a><a href="#s3">03</a><a href="#s4">04</a><a href="#s5">05</a><a href="#s6">06</a><a href="#s7">07</a><a href="#s8">08</a>
+  </nav>
+  <a class="next" id="nextBtn" href="#s2" aria-label="下一页">↓</a>
+
+  <main class="deck">
+    <section class="slide" id="s1">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Meraki Learning Kit / 蓝绘课程册</span>
+          <span>Course / Product / Kids Workshop</span>
+        </div>
+        <div class="hero-grid">
+          <div>
+            <h1><span class="blue">Build</span><br>your<br><span class="pink">class.</span></h1>
+            <p class="lead">给课程、儿童分享、产品演示和个人 IP 做一套可替换内容的 HTML 演示页。它像一份品牌手册，也像一张可以被讲出来的课程地图。</p>
+            <div class="actions">
+              <a class="btn" href="#s4">查看课程地图</a>
+              <a class="btn alt" href="#s7">替换图片/IP</a>
+            </div>
+          </div>
+          <div class="device-stack" id="parallaxZone">
+            <div class="flower f1"></div>
+            <div class="flower f2"></div>
+            <div class="sketch-card tablet float-item">
+              <div class="screen-head">Learning Board</div>
+              <div class="screen-row">Think Box</div>
+              <div class="screen-row">Course Pack</div>
+              <div class="screen-row">Growth Cards</div>
+            </div>
+            <div class="sketch-card phone float-item"></div>
+            <div class="sketch-card note float-item">
+              <h3>把复杂知识拆成孩子也能理解的页面。</h3>
+              <p>适合课程发布、产品讲解、亲子活动、AI 工具教程。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s2">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Brand Board</span>
+          <span>logo / palette / doodles</span>
+        </div>
+        <div class="logo-board">
+          <div class="panel">
+            <div class="panel-title">Logo with tagline</div>
+            <div class="logo-samples">
+              <span>Learning<br>Kit</span>
+              <span>LK</span>
+              <span>Course<br>Studio</span>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Color palette</div>
+            <div class="palette">
+              <div class="swatch" style="background:var(--butter)">Butter</div>
+              <div class="swatch" style="background:var(--leaf);color:white">Leaves</div>
+              <div class="swatch" style="background:var(--blue);color:white">Twilight</div>
+              <div class="swatch" style="background:var(--forest);color:white">Forest</div>
+              <div class="swatch" style="background:#f7f2e6">Cloud</div>
+              <div class="swatch" style="background:var(--sky)">Sky</div>
+              <div class="swatch" style="background:var(--apple)">Apple</div>
+              <div class="swatch" style="background:var(--blossom)">Blossom</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Typography</div>
+            <h2 style="font-family:Nunito,sans-serif;color:var(--blue)">BANTAYOG</h2>
+            <p style="margin-top:12px">用于封面、模块标题和儿童课程页的高识别标题。</p>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Illustration marks</div>
+            <div class="doodles"><span>✿</span><span>✦</span><span>⌁</span><span>☼</span><span>⌘</span><span>✎</span></div>
+            <p style="margin-top:18px">这些小图形可以换成你的品牌贴纸、课程图标或 IP 表情。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s3">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Character Intro</span>
+          <span>replaceable avatar / creator card</span>
+        </div>
+        <div class="avatar-grid">
+          <div class="avatar-card">
+            <div class="character" aria-label="可替换的动漫人物插画">
+              <div class="hair"></div><div class="bang"></div><div class="face"></div>
+              <div class="eye l"></div><div class="eye r"></div><div class="glasses"></div>
+              <div class="body"></div><div class="tie"></div><div class="laptop"></div>
+            </div>
+            <p style="text-align:center;margin-top:18px">这里可以替换成你的 IP 形象、头像、产品吉祥物或讲师照片。</p>
+          </div>
+          <div>
+            <h2>Introduction<br><span style="color:var(--blue)">About the guide</span></h2>
+            <p class="lead">这个版式适合把讲师、课程、产品和学习路径放在同一套视觉系统里。它不是严肃汇报，而是更适合“让人愿意继续看下去”的教程型页面。</p>
+            <div class="intro-list" style="margin-top:34px">
+              <div class="panel">
+                <div class="panel-title">Education</div>
+                <h3>课程背景</h3>
+                <p>写清楚学习对象、难度、课时和最终作品。</p>
+              </div>
+              <div class="panel">
+                <div class="panel-title">Skills</div>
+                <h3>可以讲什么</h3>
+                <p>AI 工具、设计入门、植物观察、创意写作、产品体验。</p>
+              </div>
+            </div>
+            <div class="software-grid">
+              <span class="soft">AI</span><span class="soft">Ps</span><span class="soft">Md</span><span class="soft">HTML</span><span class="soft">IP</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s4">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Contents</span>
+          <span>click cards to switch detail</span>
+        </div>
+        <h2>把课程拆成<br>五个可讲的步骤。</h2>
+        <div class="modules" id="moduleList">
+          <div class="module active" data-title="认识问题" data-copy="先用真实场景告诉用户：为什么要学、学完能做什么。"><span class="num">01</span><h3>认识问题</h3><p>从一个孩子、家长或用户真实会遇到的困惑开始。</p></div>
+          <div class="module" data-title="拆解方法" data-copy="把复杂步骤拆成可以跟做的小动作，并配合图标、示意图和短句。"><span class="num">02</span><h3>拆解方法</h3><p>让观众知道每一步怎么操作，而不是只听概念。</p></div>
+          <div class="module" data-title="上手练习" data-copy="把案例、提示词、素材包和练习任务放到同一页。"><span class="num">03</span><h3>上手练习</h3><p>用卡片承载任务，让学习过程更像闯关。</p></div>
+          <div class="module" data-title="作品输出" data-copy="展示页面、封面、脚本、发布包或课堂作品。"><span class="num">04</span><h3>作品输出</h3><p>把结果摆出来，增强课程和产品的说服力。</p></div>
+          <div class="module" data-title="复盘迭代" data-copy="用反馈、数据和下一步行动帮助用户继续优化。"><span class="num">05</span><h3>复盘迭代</h3><p>把一次学习变成持续成长的路径。</p></div>
+        </div>
+        <div class="detail-dock">
+          <strong id="moduleTitle">认识问题</strong>
+          <p id="moduleCopy">先用真实场景告诉用户：为什么要学、学完能做什么。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s5">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Product Demo</span>
+          <span>screenshots / handouts / cards</span>
+        </div>
+        <div class="product-layout">
+          <div>
+            <h2>产品或课程包<br>可以这样展示。</h2>
+            <p class="lead">每一块都可以替换成真实截图、视频封面、作业样张或课程资料。鼠标划过时会轻微抬起，适合在线演示。</p>
+            <div class="timeline">
+              <div class="step" data-n="1"><h3>课程首页</h3><p>用一屏说明目标、对象和收益。</p></div>
+              <div class="step" data-n="2"><h3>素材包</h3><p>放图片、提示词、讲义、视频和练习文件。</p></div>
+              <div class="step" data-n="3"><h3>作品墙</h3><p>展示用户最终能做出的成果。</p></div>
+            </div>
+          </div>
+          <div class="shot-grid">
+            <div class="shot"><h3>Course page</h3><p>课程介绍页</p></div>
+            <div class="shot"><h3>IP card</h3><p>人物介绍卡</p></div>
+            <div class="shot"><h3>Worksheet</h3><p>可下载讲义</p></div>
+            <div class="shot"><h3>Video area</h3><p>可放视频封面</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s6">
+      <div class="board compact-reveal">
+        <div class="topline">
+          <span class="badge">Click Reveal</span>
+          <span>one click, one learning block</span>
+        </div>
+        <h2 style="font-size:clamp(38px,4.8vw,72px)">适合给小朋友讲：<br>一个概念分四步出现。</h2>
+        <p class="lead" style="margin-top:18px;max-width:980px">点击下方按钮，内容会一块一块出现。以后可以换成“植物的一生”“AI 工具怎么用”“一个产品怎么诞生”等主题。</p>
+        <div class="actions">
+          <button id="revealBtn">点我逐步展开</button>
+          <button class="alt" id="resetReveal">重置</button>
+        </div>
+        <div class="reveal-area">
+          <div class="reveal-card show"><span class="num">01</span><h3>先看见</h3><p>用图片或角色让孩子先产生兴趣。</p></div>
+          <div class="reveal-card"><span class="num">02</span><h3>再提问</h3><p>把问题写成一句简单的话。</p></div>
+          <div class="reveal-card"><span class="num">03</span><h3>做实验</h3><p>放入步骤、观察表或互动小任务。</p></div>
+          <div class="reveal-card"><span class="num">04</span><h3>讲出来</h3><p>让孩子用自己的话复述并展示作品。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s7">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Replaceable Media</span>
+          <span>image / video / character / product</span>
+        </div>
+        <h2>给未来使用者<br>预留替换位置。</h2>
+        <div class="media-tabs">
+          <button class="tab active" data-kind="图片">图片区</button>
+          <button class="tab" data-kind="视频">视频区</button>
+          <button class="tab" data-kind="IP形象">IP形象</button>
+          <button class="tab" data-kind="产品图">产品图</button>
+        </div>
+        <div class="media-preview">
+          <div class="media-visual" id="mediaVisual">IMG</div>
+          <div class="media-copy">
+            <h3 id="mediaTitle">图片区</h3>
+            <p id="mediaText">这里可以替换成课堂照片、产品截图、讲义预览或作品图。模板会保持统一边框、留白和色彩关系。</p>
+            <p>建议尺寸：横图 16:9，竖图 4:5，视频封面保持清晰主体。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="s8">
+      <div class="board">
+        <div class="topline">
+          <span class="badge">Thank You</span>
+          <span>template-ready HTML</span>
+        </div>
+        <div class="footer-grid">
+          <div>
+            <p class="quote">一套适合课程、产品演示和儿童分享的轻活泼 HTML 页面。</p>
+            <p class="lead">它保留了品牌手册的秩序，也加入了人物、卡片、互动和可替换素材区。后续只需要把文字、图片、IP 形象和视频换进去，就能快速生成新的演示页。</p>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Designed for</div>
+            <h3>Shui Pretty HTML</h3>
+            <p>Style draft: Meraki Learning Kit / 蓝绘课程册</p>
+            <div class="actions">
+              <a class="btn" href="#s1">回到封面</a>
+              <a class="btn alt" href="#s2">查看风格板</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const navLinks = [...document.querySelectorAll('.nav a')];
+    const nextBtn = document.getElementById('nextBtn');
+    const progressLine = document.getElementById('progressLine');
+
+    const setActive = () => {
+      const scrollY = window.scrollY + window.innerHeight * 0.45;
+      let index = 0;
+      slides.forEach((slide, i) => {
+        if (slide.offsetTop <= scrollY) index = i;
+      });
+      navLinks.forEach((link, i) => link.classList.toggle('active', i === index));
+      nextBtn.href = '#' + slides[Math.min(index + 1, slides.length - 1)].id;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      progressLine.style.width = `${Math.min(100, (window.scrollY / total) * 100)}%`;
+    };
+    window.addEventListener('scroll', setActive, { passive: true });
+    setActive();
+
+    document.getElementById('parallaxZone')?.addEventListener('pointermove', (event) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - .5;
+      const y = (event.clientY - rect.top) / rect.height - .5;
+      event.currentTarget.querySelectorAll('.float-item').forEach((item, i) => {
+        item.style.translate = `${x * (10 + i * 6)}px ${y * (8 + i * 5)}px`;
+      });
+    });
+
+    document.getElementById('moduleList')?.addEventListener('click', (event) => {
+      const card = event.target.closest('.module');
+      if (!card) return;
+      document.querySelectorAll('.module').forEach(item => item.classList.remove('active'));
+      card.classList.add('active');
+      document.getElementById('moduleTitle').textContent = card.dataset.title;
+      document.getElementById('moduleCopy').textContent = card.dataset.copy;
+    });
+
+    let revealIndex = 1;
+    const revealCards = [...document.querySelectorAll('.reveal-card')];
+    document.getElementById('revealBtn')?.addEventListener('click', () => {
+      revealIndex = Math.min(revealCards.length, revealIndex + 1);
+      revealCards.forEach((card, i) => card.classList.toggle('show', i < revealIndex));
+    });
+    document.getElementById('resetReveal')?.addEventListener('click', () => {
+      revealIndex = 1;
+      revealCards.forEach((card, i) => card.classList.toggle('show', i === 0));
+    });
+
+    const mediaData = {
+      '图片': ['IMG', '图片区', '这里可以替换成课堂照片、产品截图、讲义预览或作品图。模板会保持统一边框、留白和色彩关系。'],
+      '视频': ['PLAY', '视频区', '这里可以放视频封面、课程片段或产品演示。点击时可以继续扩展成视频弹窗或跳转链接。'],
+      'IP形象': ['IP', 'IP形象', '这里可以放讲师头像、品牌角色、儿童课程吉祥物或用户自己的动漫形象。'],
+      '产品图': ['BOX', '产品图', '这里可以放课程包、资料包、工具包或实物产品的包装展示。']
+    };
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(item => item.classList.remove('active'));
+        tab.classList.add('active');
+        const data = mediaData[tab.dataset.kind];
+        document.getElementById('mediaVisual').textContent = data[0];
+        document.getElementById('mediaTitle').textContent = data[1];
+        document.getElementById('mediaText').textContent = data[2];
+      });
+    });
+  </script>
+</body>
+</html>

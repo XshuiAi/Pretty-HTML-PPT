@@ -14,6 +14,7 @@ These templates are more colorful, memorable, editorial, and suitable for public
 | 08 | Ribbon Tab Brochure | 彩签页报 | project brochures, product/service explainers, operations reports, external proposals | colored ribbon tabs, pastel backgrounds, fine black frames, data panels |
 | 11 | Blue Growth Deck | 蓝色增长稿 | AI products, growth reports, GEO recaps, friendly product launches | sky blue, deep navy, lime green, blush pink, bubbles, cards, phone-like UI |
 | 12 | Garden Pop Landing | 花园跳色长页 | creator courses, self-media tutorials, education products, campaign decks | orange-yellow stage, grass green, pink flowers, mint panels, playful garden map |
+| 13 | Meraki Learning Kit | 蓝绘课程册 | course products, children-friendly explainers, creator product demos, learning maps, personal IP intros | cream grid paper, forest green, hand-drawn blue cues, blossom pink, butter yellow, friendly boards |
 
 ### Module A Selection Notes
 
@@ -23,6 +24,7 @@ These templates are more colorful, memorable, editorial, and suitable for public
 - Choose **Ribbon Tab Brochure** when the deck is closer to a brochure or service package.
 - Choose **Blue Growth Deck** when the topic is AI, growth, product, or creator business.
 - Choose **Garden Pop Landing** when the deck needs the strongest color memory and launch energy.
+- Choose **Meraki Learning Kit** when the deck is a course, learning map, creator demo, child-friendly explainer, or personal IP introduction.
 
 ## Module B · Practical Reports, Government, Workplace, Product Talks
 

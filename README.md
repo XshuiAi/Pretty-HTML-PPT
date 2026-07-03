@@ -7,7 +7,7 @@
 - 中文文字清晰，不是放大就糊的截图。
 - 生成后仍可按 `E` 进入浏览器编辑模式，直接改文字并导出 HTML。
 - 可按 `P` 打开演讲者模式，查看讲稿备注、下一页预览和计时器。
-- 12 套模板按场景选择，适合自媒体、个人展示、作品集、行政政务、职场汇报和产品演讲。
+- 13 套模板按场景选择，适合自媒体、个人展示、作品集、课程产品、行政政务、职场汇报和产品演讲。
 - 交付物是静态 HTML 文件夹，可以本地打开，也可以部署到 GitHub Pages、Cloudflare Workers 或任意静态托管。
 
 ## Demo
@@ -34,7 +34,7 @@ xiaoshui-Pretty PPT 的做法是：先把文档拆成演示结构，再用真实
 
 ## Template Modules
 
-当前内置 12 套视觉模板，分为两个模块。
+当前内置 13 套视觉模板，分为两个模块。
 
 ## Module A · 自媒体 / 个人展示 / 作品集
 
@@ -46,6 +46,7 @@ xiaoshui-Pretty PPT 的做法是：先把文档拆成演示结构，再用真实
 - **Ribbon Tab Brochure / 彩签页报**：项目资料册、产品说明、运营复盘、对外提案。
 - **Blue Growth Deck / 蓝色增长稿**：AI 产品、运营增长、GEO 复盘、轻商务互动演示。
 - **Garden Pop Landing / 花园跳色长页**：自媒体教程、课程产品、创作者产品发布、轻快产品长页。
+- **Meraki Learning Kit / 蓝绘课程册**：课程产品、儿童友好科普、创作者产品 Demo、学习地图、个人 IP 介绍。
 
 ## Module B · 行政政务 / 职场汇报 / 产品演讲
 
@@ -132,6 +133,12 @@ xiaoshui-Pretty PPT 的做法是：先把文档拆成演示结构，再用真实
 
 ![Garden Pop Landing preview](assets/previews/template-12-garden-pop-landing.png)
 
+### 13. Meraki Learning Kit / 蓝绘课程册
+
+适合课程产品、儿童友好科普、创作者产品 Demo、学习地图和个人 IP 介绍。
+
+![Meraki Learning Kit preview](assets/previews/template-13-meraki-learning-kit.png)
+
 ## What It Can Do
 
 XiaoShui Pretty PPT 可以帮助 Coding Agent：
@@ -150,7 +157,7 @@ XiaoShui Pretty PPT 可以帮助 Coding Agent：
 
 XiaoShui Pretty PPT 的独特之处：
 
-- **模板驱动**：不是从零生成代码，而是从 12 套精心设计的视觉模板出发，保持每组配色、字体层级和交互动画的一致性。
+- **模板驱动**：不是从零生成代码，而是从 13 套精心设计的视觉模板出发，保持每组配色、字体层级和交互动画的一致性。
 - **先判断再动手**：在使用前会先了解场景、受众、内容密度和素材情况，再推荐最合适的模板方向。
 - **渐进式交付**：清晰的工作流 — 判断模式 → 内容摄入 → 选择模板 → 规划页面 → 复制模板 → 填充内容 → 质量验收 → 交付。
 - **可编辑交付物**：生成的 HTML PPT 默认内置编辑工具栏，按 `E` 即可编辑所有文字、替换图片/视频、插入新图片，按 `Cmd+S` 保存，点「导出 HTML」下载独立文件。
@@ -301,6 +308,29 @@ npx -y skills@latest list --global --agent codex --json
 test -f ~/.agents/skills/xiaoshui-pretty-ppt/SKILL.md
 ```
 
+## Local Sync Workflow
+
+从现在开始，`xiaoshui-pretty-ppt` 是唯一主仓库。旧的 `shui-pretty-html` 文件夹只作为历史备份，不再作为模板更新源。
+
+本地开发后，把仓库里的 skill 同步到 Codex 本机安装目录：
+
+```bash
+./scripts/sync-local-skill.sh
+```
+
+以后从 GitHub 获取新版本并同步到本机：
+
+```bash
+cd /Users/wangduoduo/Desktop/shui-pretty-ppt
+./scripts/update-from-github.sh
+```
+
+同步目标：
+
+```text
+~/.agents/skills/xiaoshui-pretty-ppt
+```
+
 ## Repository Structure
 
 ```text
@@ -310,6 +340,9 @@ xiaoshui-pretty-ppt/
 │   └── previews/                    # README preview images
 ├── docs/
 │   └── demo/blush-skill-intro/      # 粉白时尚风动态技能介绍页
+├── scripts/
+│   ├── sync-local-skill.sh          # 同步本仓库 skill 到本机 Codex
+│   └── update-from-github.sh        # 拉取 GitHub 最新版本并同步本机
 └── skills/
     └── xiaoshui-pretty-ppt/         # Codex skill source
         ├── SKILL.md

@@ -62,6 +62,16 @@ This file is kept for compatibility. For XiaoShui Pretty PPT, prefer reading `pp
 - Template: `assets/templates/garden-pop-landing/index.html`
 - Reference: `references/garden-pop-landing.md`
 
+## Meraki Learning Kit
+
+- Chinese name: `蓝绘课程册`
+- Slug: `meraki-learning-kit`
+- Module: Creator, personal brand, portfolio
+- Best for: course products, children-friendly explainers, creator product demos, workshop pages, learning maps, visual tutorials, and personal IP introductions.
+- Visual language: cream grid-paper boards, forest-green linework, hand-drawn blue identity cues, blossom-pink buttons, butter-yellow notes, sky-blue panels, grass-green strips, product cards, and replaceable character/IP areas.
+- Template: `assets/templates/meraki-learning-kit/index.html`
+- Reference: `references/meraki-learning-kit.md`
+
 ## One Dot Cinnabar
 
 - Chinese name: `一点丹红`

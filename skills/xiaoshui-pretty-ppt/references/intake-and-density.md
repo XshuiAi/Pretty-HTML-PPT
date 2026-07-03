@@ -163,4 +163,4 @@ If the user does not specify:
 - module: infer from content
 - output: local static folder
 - assets: use provided assets first, CSS placeholders second
-- style: recommend 2-3 templates instead of listing all 12
+- style: recommend 2-3 templates instead of listing all 13
