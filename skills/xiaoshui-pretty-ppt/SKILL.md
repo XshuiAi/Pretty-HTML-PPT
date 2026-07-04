@@ -157,7 +157,7 @@ Use the density rules in `references/intake-and-density.md`:
 
 Start from the template instead of hand-building a new PPT shell.
 
-Browser edit mode is **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, replace images/videos, export HTML).
+Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, replace images/videos, export HTML) and presenter view (press `P`, speaker notes, next-slide preview, timer).
 
 ```bash
 python3 scripts/copy_template.py <style-slug> /absolute/output/dir
@@ -176,17 +176,13 @@ If the output should be a locked, clean presentation with no toolbar:
 python3 scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
 ```
 
-If the user needs a talk-ready deck with notes and next-slide preview, copy with presenter mode:
+If the output should be a locked, clean presentation with no presenter overlay:
 
 ```bash
-python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --presenter
+python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
 ```
 
-Default edit mode and presenter mode can be combined:
-
-```bash
-python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --presenter
-```
+For backward compatibility, `--presenter` is still accepted, but it is no longer required.
 
 Valid slugs:
 
@@ -218,8 +214,8 @@ Follow these rules:
 - Convert long prose into presentation pages: cover, agenda, chapter, key point, data, process, comparison, example, summary, closing.
 - Images and videos should live next to `index.html` under a local `assets/` or `images/` folder unless the template already defines another path.
 - Do not reuse borrowed web images unless the user owns them, provides them, or explicitly approves the source.
-- Every generated deck includes the browser edit toolbar by default. The user can edit all text, replace images/videos, and insert new images directly in the browser. Use `--no-edit` only when the deck must be a locked presentation.
-- For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks and inject presenter mode.
+- Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, replace images/videos, insert new images directly in the browser, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
+- For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
 Presenter mode conventions:
 
@@ -273,7 +269,7 @@ Return:
 - selected template name
 - what content was transformed
 - confirmed that the edit toolbar is present (press `E` to edit text, click images/videos to replace, click `➕ 插入图片` to add images)
-- whether presenter mode is included and how to use it
+- confirmed that presenter mode is present (press `P` for notes, next-slide preview, and timer)
 - any assets that still need the user's replacement
 - any verification command results
 
@@ -307,5 +303,5 @@ Keep each template distinct. Do not let all styles collapse into the same pastel
 | `scripts/copy_template.py` | copy one template into an output folder | every deck build |
 | `scripts/inject_edit_mode.py` | add edit toolbar to an existing HTML deck | when editable delivery is needed |
 | `scripts/inject_presenter_mode.py` | add presenter mode to an existing HTML deck | when speaker notes or rehearsal view is needed |
-| `runtime/presenter-mode.js` | browser runtime for notes, next-slide preview, and timer | injected by `--presenter` |
+| `runtime/presenter-mode.js` | browser runtime for notes, next-slide preview, and timer | injected by default unless `--no-presenter` is used |
 | `scripts/validate_deck.py` | basic static validation for generated deck folders | before delivery |

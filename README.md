@@ -155,11 +155,11 @@ XiaoShui Pretty PPT 可以帮助 Coding Agent：
 - 在动手前判断 PPT 的使用场景、受众、内容密度和模板方向。
 - 判断内容更适合哪一种 PPT 模板。
 - 把长文档拆成 cover、agenda、chapter、data、process、comparison、image、summary、closing 等演示页。
-- 生成可以直接打开的静态 HTML 网页 PPT，内置浏览器编辑模式。
+- 生成可以直接打开的静态 HTML 网页 PPT，默认内置浏览器编辑模式和演讲者模式。
 - 保留每套模板自己的配色、字体层级、版式节奏和交互动效。
 - 根据内容长度决定应该做成几页，而不是把所有内容硬塞进一屏。
 - 默认内置浏览器编辑模式：按 `E` 直接改任何文字、替换图片/视频、插入新图片，保存到本机或导出修改后的 HTML。
-- 可选开启演讲者模式：按 `P` 查看讲稿备注、下一页预览、计时器。
+- 默认内置演讲者模式：按 `P` 查看讲稿备注、下一页预览、计时器。
 
 ## What Makes It Different
 
@@ -206,7 +206,7 @@ XiaoShui Pretty PPT 的独特之处：
 ```text
 使用 $xiaoshui-pretty-ppt，把这份文档做成一个适合晚上分享的 HTML 网页 PPT。
 请根据内容自动选择最合适的模板。
-请开启可编辑模式和演讲者模式。
+请保留默认开启的可编辑模式和演讲者模式。
 ```
 
 指定模板：
@@ -214,7 +214,7 @@ XiaoShui Pretty PPT 的独特之处：
 ```text
 使用 $xiaoshui-pretty-ppt 的 Cobalt Executive Deck / 钴蓝商策，
 把这份产品介绍做成商务汇报型网页 PPT。
-请开启可编辑模式。
+请保留默认可编辑模式。
 ```
 
 从飞书文档生成适合对外分享的网页 PPT：
@@ -224,29 +224,29 @@ XiaoShui Pretty PPT 的独特之处：
 要求：
 1. 先判断内容更适合哪一套模板；
 2. 把长文档拆成封面、钩子、核心观点、案例、流程、总结；
-3. 开启可编辑模式，方便我录视频时展示生成后还能改；
-4. 开启演讲者模式，把长解释放进讲稿备注；
+3. 保留默认可编辑模式，方便我录视频时展示生成后还能改；
+4. 保留默认演讲者模式，把长解释放进讲稿备注；
 5. 最后告诉我本地 HTML 路径和如何打开。
 ```
 
-复制模板到本地输出目录（默认内置编辑工具栏）：
+复制模板到本地输出目录（默认内置编辑模式和演讲者模式）：
 
 ```bash
 python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
 open /tmp/shui-cobalt-demo/index.html
 ```
 
-生成不带编辑工具栏的纯净版：
+生成不带编辑工具栏的纯净版（仍保留演讲者模式）：
 
 ```bash
 python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
 open /tmp/shui-cobalt-demo/index.html
 ```
 
-复制并开启演讲者模式：
+生成不带演讲者模式的纯净版（仍保留编辑模式）：
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --presenter
+python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
 open /tmp/shui-blush-demo/index.html
 ```
 

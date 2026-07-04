@@ -92,9 +92,9 @@ python3 skills/xiaoshui-pretty-ppt/scripts/validate_deck.py /tmp/shui-cobalt-dem
 open /tmp/shui-cobalt-demo/index.html
 ```
 
-## Create An Editable Deck
+## Create A Default Dual-Mode Deck
 
-Browser edit mode is injected **by default** into every generated deck — no extra flag needed. The output includes a floating toolbar (edit, save, export, reset, insert image).
+Browser edit mode and presenter mode are injected **by default** into every generated deck — no extra flag needed. The output includes a floating edit toolbar (edit, save, export, reset, insert image) plus presenter view (speaker notes, next-slide preview, timer).
 
 ```bash
 python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
@@ -127,11 +127,17 @@ Keyboard and toolbar behavior:
 
 ## Create A Presenter-Ready Deck
 
-Use this when the deck will be used for a talk, workshop, public demo, product walkthrough, or course recording.
+Presenter mode is now enabled by default. Use the normal copy command for talks, workshops, public demos, product walkthroughs, or course recordings.
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --presenter
+python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force
 open /tmp/shui-blush-demo/index.html
+```
+
+To generate a clean deck without presenter mode, use `--no-presenter`:
+
+```bash
+python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
 ```
 
 For an existing deck:
@@ -180,12 +186,12 @@ Editable handoff:
 
 ```text
 使用 $xiaoshui-pretty-ppt，把这份飞书文档做成可直接演示的 HTML 网页 PPT。
-请开启可编辑模式，这样我录视频时可以展示直接修改页面文字和导出 HTML。
+可编辑模式默认开启，这样我录视频时可以展示直接修改页面文字和导出 HTML。
 ```
 
 Presenter-ready handoff:
 
 ```text
 使用 $xiaoshui-pretty-ppt，把这份文章做成适合公开分享的 HTML 网页 PPT。
-请开启演讲者模式，把长解释放进讲稿备注，页面上只保留适合观众看的重点。
+演讲者模式默认开启，请把长解释放进讲稿备注，页面上只保留适合观众看的重点。
 ```

@@ -24,7 +24,12 @@ def main() -> int:
     parser.add_argument(
         "--presenter",
         action="store_true",
-        help="Inject presenter mode with speaker notes and next-slide preview.",
+        help="Deprecated compatibility flag. Presenter mode is injected by default.",
+    )
+    parser.add_argument(
+        "--no-presenter",
+        action="store_true",
+        help="Skip presenter mode with speaker notes, next-slide preview, and timer.",
     )
     args = parser.parse_args()
 
@@ -43,7 +48,7 @@ def main() -> int:
     shutil.copytree(source, target)
     if not args.no_edit:
         inject_edit_mode(target / "index.html")
-    if args.presenter:
+    if not args.no_presenter:
         inject_presenter_mode(target / "index.html")
     print(target)
     return 0

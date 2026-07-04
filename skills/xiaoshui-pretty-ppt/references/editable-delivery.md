@@ -4,7 +4,7 @@ Use this reference when the user asks how a generated HTML web PPT can be revise
 
 ## Default Behavior
 
-**Browser edit mode is injected by default** into every generated deck. The floating toolbar appears at the top-right corner of the page. No extra flag is needed.
+**Browser edit mode and presenter mode are injected by default** into every generated deck. The floating edit toolbar appears at the top-right corner of the page, and presenter view opens with `P`. No extra flag is needed.
 
 To generate a clean locked deck without the toolbar, use `--no-edit`:
 
