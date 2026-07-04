@@ -296,15 +296,15 @@
       transform: translateY(0);
     }
 
-    .demo-pager {
+    .demo-dots {
       position: fixed;
-      right: 18px;
-      bottom: 18px;
+      left: 24px;
+      bottom: 24px;
       z-index: 26;
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px;
+      padding: 8px 9px;
       border: 1px solid rgba(234, 219, 212, .9);
       border-radius: 999px;
       background: rgba(255, 250, 247, .92);
@@ -312,29 +312,49 @@
       backdrop-filter: blur(14px);
     }
 
-    .demo-pager button {
+    .demo-dots a {
       width: 34px;
-      height: 34px;
-      border: 1px solid var(--line);
+      height: 32px;
+      display: grid;
+      place-items: center;
       border-radius: 999px;
-      background: #fff;
-      color: var(--ink);
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .demo-pager button:hover {
-      color: #fff;
-      border-color: var(--pink);
-      background: var(--pink);
-    }
-
-    .demo-pager span {
-      min-width: 48px;
       color: var(--muted);
+      text-decoration: none;
       font-size: 12px;
       font-weight: 900;
-      text-align: center;
+      transition: background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+    }
+
+    .demo-dots a.is-active,
+    .demo-dots a:hover {
+      color: #fff;
+      background: var(--pink);
+      transform: translateY(-2px);
+    }
+
+    .demo-next {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 26;
+      width: 58px;
+      height: 58px;
+      border: 1px solid rgba(255, 79, 154, .46);
+      border-radius: 999px;
+      background: var(--pink);
+      color: #fff;
+      box-shadow: 0 18px 45px rgba(255, 79, 154, .24);
+      cursor: pointer;
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1;
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+    }
+
+    .demo-next:hover {
+      background: var(--pink-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 24px 60px rgba(255, 79, 154, .3);
     }
 
     .card::before,
@@ -509,16 +529,26 @@
     .closing {
       position: relative;
       min-height: calc(100svh - 58px);
-      color: #fff;
+      color: var(--ink);
       background:
-        linear-gradient(rgba(18, 17, 22, .16), rgba(18, 17, 22, .72)),
-        radial-gradient(circle at 18% 18%, rgba(255, 79, 154, .82), transparent 30%),
-        linear-gradient(135deg, #20151b, #5b1738 46%, #ff7aa9);
+        radial-gradient(circle at 16% 18%, rgba(255, 79, 154, .22), transparent 28%),
+        radial-gradient(circle at 84% 16%, rgba(255, 217, 199, .72), transparent 32%),
+        linear-gradient(135deg, #fffaf7 0%, #ffe8f2 52%, #fff5ed 100%);
+      border-top: 1px solid var(--line);
+    }
+
+    .closing::before {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border: 1px solid rgba(255, 79, 154, .18);
+      border-radius: 18px;
+      pointer-events: none;
     }
 
     .closing .shell { position: relative; z-index: 1; }
-    .closing .lead { color: rgba(255, 255, 255, .82); }
-    .closing .eyebrow { color: #fff; background: rgba(255, 255, 255, .18); }
+    .closing .lead { color: var(--muted); }
+    .closing .eyebrow { color: var(--ink); background: var(--pink-soft); }
 
     .closing h2 {
       max-width: 980px;
@@ -538,7 +568,8 @@
       .roadmap-grid { grid-template-columns: 1fr; }
       .slide { min-height: auto; padding: 72px 0; }
       .arrow-line { display: none; }
-      .demo-pager { right: 12px; bottom: 12px; }
+      .demo-dots { left: 12px; right: 82px; bottom: 12px; overflow-x: auto; }
+      .demo-next { right: 12px; bottom: 12px; width: 54px; height: 54px; }
       h1 { font-size: clamp(42px, 13vw, 68px); }
       h2 { font-size: clamp(34px, 10vw, 56px); }
     }
@@ -786,21 +817,25 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     </section>
   </main>
 
-  <div class="demo-pager" data-no-edit aria-label="页面翻页">
-    <button type="button" data-demo-prev aria-label="上一页">‹</button>
-    <span data-demo-count>1 / 8</span>
-    <button type="button" data-demo-next aria-label="下一页">›</button>
-  </div>
+  <nav class="demo-dots" data-no-edit aria-label="页面编号导航"></nav>
+  <button class="demo-next" type="button" data-demo-next data-no-edit aria-label="下一页">↓</button>
 
   <script>
     (() => {
       const slides = [...document.querySelectorAll("[data-slide]")];
       const navLinks = [...document.querySelectorAll(".nav a[href^='#']")];
-      const pager = document.querySelector(".demo-pager");
-      const count = document.querySelector("[data-demo-count]");
+      const dotNav = document.querySelector(".demo-dots");
       let activeIndex = 0;
 
       document.documentElement.classList.add("demo-enhanced");
+
+      if (dotNav && !dotNav.children.length) {
+        dotNav.innerHTML = slides.map((slide, index) => (
+          `<a href="#${slide.id}" data-demo-dot="${index}" aria-label="跳转到第 ${index + 1} 页">${String(index + 1).padStart(2, "0")}</a>`
+        )).join("");
+      }
+
+      const dotLinks = [...document.querySelectorAll("[data-demo-dot]")];
 
       function isEditing() {
         return document.body.classList.contains("xs-editing");
@@ -812,18 +847,29 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
         navLinks.forEach((link) => {
           link.classList.toggle("is-active", link.getAttribute("href") === "#" + current.id);
         });
-        if (count) count.textContent = `${activeIndex + 1} / ${slides.length}`;
+        dotLinks.forEach((link, linkIndex) => {
+          link.classList.toggle("is-active", linkIndex === activeIndex);
+        });
       }
 
-      function go(delta) {
+      function goTo(index) {
         if (!slides.length) return;
-        const next = Math.max(0, Math.min(slides.length - 1, activeIndex + delta));
+        const next = Math.max(0, Math.min(slides.length - 1, index));
         slides[next].scrollIntoView({ behavior: "smooth", block: "start" });
         updateUI(next);
       }
 
-      document.querySelector("[data-demo-prev]")?.addEventListener("click", () => go(-1));
+      function go(delta) {
+        goTo(activeIndex + delta);
+      }
+
       document.querySelector("[data-demo-next]")?.addEventListener("click", () => go(1));
+      dotLinks.forEach((link, index) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          goTo(index);
+        });
+      });
 
       document.addEventListener("keydown", (event) => {
         const tag = document.activeElement?.tagName?.toLowerCase();
