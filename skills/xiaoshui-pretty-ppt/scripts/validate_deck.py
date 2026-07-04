@@ -52,6 +52,11 @@ def main() -> int:
     html = index.read_text(encoding="utf-8", errors="replace")
 
     has_edit_mode = "XIAOSHUI_PPT_EDIT_MODE_START" in html and "xs-edit-toolbar" in html
+    has_font_size_controls = (
+        "data-xs-font-size" in html
+        and "data-xs-font-plus" in html
+        and "data-xs-font-minus" in html
+    )
     has_presenter_mode = (
         "SHUI_PRETTY_PPT_PRESENTER_MODE_START" in html
         and "data-shui-presenter-notes" in html
@@ -59,6 +64,8 @@ def main() -> int:
 
     if not args.allow_no_edit and not has_edit_mode:
         errors.append("Missing browser edit mode. Expected default E-to-edit runtime.")
+    if not args.allow_no_edit and not has_font_size_controls:
+        errors.append("Missing font size controls. Expected selected-text font-size runtime.")
     if not args.allow_no_presenter and not has_presenter_mode:
         errors.append("Missing presenter mode. Expected default P-to-present runtime.")
 
@@ -92,6 +99,7 @@ def main() -> int:
     print(f"local_refs: {len(local_refs)}")
     print(f"slide_like_blocks: {slide_like}")
     print(f"edit_mode: {str(has_edit_mode).lower()}")
+    print(f"font_size_controls: {str(has_font_size_controls).lower()}")
     print(f"presenter_mode: {str(has_presenter_mode).lower()}")
 
     for item in warnings:

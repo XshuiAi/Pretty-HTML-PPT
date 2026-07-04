@@ -97,6 +97,7 @@ The validator should report:
 
 ```text
 edit_mode: true
+font_size_controls: true
 presenter_mode: true
 ```
 
@@ -132,6 +133,7 @@ Keyboard and toolbar behavior:
 
 - Press `E` to enter or exit edit mode. All text elements become editable.
 - Click any text directly to edit it.
+- After selecting text, use `字号`, `A-`, `A+`, or `默认` in the toolbar to adjust or reset font size.
 - In edit mode, click the `替换图片` / `替换视频` badge on any image/video to replace its source (URL or local file upload).
 - Click `➕ 插入图片` in the toolbar to insert a new image into the current page.
 - Press `Cmd+S` / `Ctrl+S`, or click `保存`, to save changes to browser localStorage.

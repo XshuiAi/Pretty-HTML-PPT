@@ -164,7 +164,7 @@ Use the density rules in `references/intake-and-density.md`:
 
 Start from the template instead of hand-building a new PPT shell.
 
-Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, replace images/videos, export HTML) and presenter view (press `P`, speaker notes, next-slide preview, timer).
+Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, adjust font size, replace images/videos, export HTML) and presenter view (press `P`, speaker notes, next-slide preview, timer).
 
 ```bash
 python3 scripts/copy_template.py <style-slug> /absolute/output/dir
@@ -223,7 +223,7 @@ Follow these rules:
 - If the user requests Feishu jump links, use `references/feishu-source-links.md` and add quiet `查看飞书原文` links only when the user has provided links or tool access confirms them.
 - Images and videos should live next to `index.html` under a local `assets/` or `images/` folder unless the template already defines another path.
 - Do not reuse borrowed web images unless the user owns them, provides them, or explicitly approves the source.
-- Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, replace images/videos, insert new images directly in the browser, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
+- Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, insert new images directly in the browser, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
 - For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
 Presenter mode conventions:
@@ -277,7 +277,7 @@ Return:
 - local deck path
 - selected template name
 - what content was transformed
-- confirmed that the edit toolbar is present (press `E` to edit text, click images/videos to replace, click `➕ 插入图片` to add images)
+- confirmed that the edit toolbar is present (press `E` to edit text, use `字号 / A- / A+` to adjust font size, click images/videos to replace, click `➕ 插入图片` to add images)
 - confirmed that presenter mode is present (press `P` for notes, next-slide preview, and timer)
 - any assets that still need the user's replacement
 - any verification command results

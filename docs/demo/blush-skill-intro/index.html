@@ -725,6 +725,33 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     background: rgba(17, 24, 39, 0.12);
     margin: 0 2px;
   }
+  .xs-edit-toolbar .xs-font-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .xs-edit-toolbar .xs-font-control label {
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .xs-edit-toolbar .xs-font-control input {
+    width: 52px;
+    height: 28px;
+    border: 1px solid rgba(17, 24, 39, 0.16);
+    border-radius: 5px;
+    background: #fff;
+    color: #111827;
+    font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    text-align: center;
+  }
+  .xs-edit-toolbar .xs-font-control input:disabled,
+  .xs-edit-toolbar button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
+  }
 
   /* Editing highlights */
   .xs-editing [contenteditable="true"] {
@@ -915,6 +942,7 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
   /* ── State ── */
   let editing = false;
   let toastTimer = null;
+  let currentTextEl = null;
 
   /* ── Helpers ── */
   function isTextNodeEmpty(el) {
@@ -943,6 +971,15 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
       .filter(el => !hasBlockParent(el))
       .filter(el => !isTextNodeEmpty(el))
       .filter(el => isOnlyChildren(el));
+  }
+
+  function isTextCandidate(el) {
+    return !!el
+      && el.matches?.(textSelector)
+      && !el.closest(blockedSelector)
+      && !hasBlockParent(el)
+      && !isTextNodeEmpty(el)
+      && isOnlyChildren(el);
   }
 
   function getMediaCandidates() {
@@ -988,7 +1025,14 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     const data = readStore();
     getTextCandidates().forEach(el => {
       const v = data[el.dataset.xsEditId];
-      if (v !== undefined) el.innerHTML = v;
+      if (v !== undefined) {
+        if (typeof v === "string") {
+          el.innerHTML = v;
+        } else {
+          if (v.html !== undefined) el.innerHTML = v.html;
+          if (v.fontSize) el.style.fontSize = v.fontSize;
+        }
+      }
     });
     getMediaCandidates().forEach(el => {
       const v = data[el.dataset.xsEditId];
@@ -1007,7 +1051,10 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     ensureIds();
     const data = {};
     getTextCandidates().forEach(el => {
-      data[el.dataset.xsEditId] = el.innerHTML;
+      data[el.dataset.xsEditId] = {
+        html: el.innerHTML,
+        fontSize: el.style.fontSize || ""
+      };
     });
     getMediaCandidates().forEach(el => {
       const src = (el.tagName === "VIDEO")
@@ -1029,6 +1076,7 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     });
     attachMediaBadges();
     updateToggleBtn();
+    updateFontControls();
     toast("编辑模式已开启 — 点任意文字即可修改，点图片/视频可替换");
   }
 
@@ -1041,6 +1089,7 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     });
     removeMediaBadges();
     updateToggleBtn();
+    updateFontControls();
     toast("编辑模式已关闭");
   }
 
@@ -1058,6 +1107,91 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
       btn.textContent = editing ? "退出编辑" : "编辑";
       btn.classList.toggle("xs-active", editing);
     }
+  }
+
+  /* ── Font size controls ── */
+  function fontTargetFromEventTarget(target) {
+    const el = target?.closest?.(textSelector);
+    return isTextCandidate(el) ? el : null;
+  }
+
+  function setCurrentTextEl(el) {
+    if (!isTextCandidate(el)) return;
+    currentTextEl = el;
+    updateFontControls();
+  }
+
+  function getCurrentTextEl() {
+    if (isTextCandidate(document.activeElement)) return document.activeElement;
+    if (isTextCandidate(currentTextEl)) return currentTextEl;
+    return null;
+  }
+
+  function getFontPx(el) {
+    const size = window.getComputedStyle(el).fontSize;
+    const value = Number.parseFloat(size);
+    return Number.isFinite(value) ? Math.round(value) : 16;
+  }
+
+  function updateFontControls() {
+    const input = document.querySelector("[data-xs-font-size]");
+    const buttons = document.querySelectorAll("[data-xs-font-minus], [data-xs-font-plus], [data-xs-font-reset]");
+    if (!input) return;
+    const el = getCurrentTextEl();
+    input.disabled = !editing || !el;
+    buttons.forEach(btn => { btn.disabled = !editing || !el; });
+    input.value = el ? String(getFontPx(el)) : "";
+  }
+
+  function applyFontSize(px) {
+    if (!editing) {
+      toast("请先点击「编辑」进入编辑模式");
+      return;
+    }
+    const el = getCurrentTextEl();
+    if (!el) {
+      toast("请先点选一段文字，再调整字号");
+      updateFontControls();
+      return;
+    }
+    const value = Math.max(8, Math.min(160, Math.round(px)));
+    el.style.fontSize = value + "px";
+    setCurrentTextEl(el);
+    const store = readStore();
+    store[el.dataset.xsEditId] = {
+      html: el.innerHTML,
+      fontSize: el.style.fontSize || ""
+    };
+    writeStore(store);
+    toast("字号已调整，Cmd+S 保存或导出 HTML");
+  }
+
+  function changeFontSize(delta) {
+    const el = getCurrentTextEl();
+    if (!el) {
+      toast("请先点选一段文字，再调整字号");
+      updateFontControls();
+      return;
+    }
+    applyFontSize(getFontPx(el) + delta);
+  }
+
+  function resetFontSize() {
+    const el = getCurrentTextEl();
+    if (!el) {
+      toast("请先点选一段文字，再重置字号");
+      updateFontControls();
+      return;
+    }
+    el.style.fontSize = "";
+    setCurrentTextEl(el);
+    const store = readStore();
+    store[el.dataset.xsEditId] = {
+      html: el.innerHTML,
+      fontSize: ""
+    };
+    writeStore(store);
+    toast("字号已恢复为模板默认值");
   }
 
   /* ── Media badges ── */
@@ -1291,6 +1425,14 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     bar.innerHTML = [
       '<button type="button" data-xs-edit-toggle>编辑</button>',
       '<span class="xs-sep"></span>',
+      '<span class="xs-font-control" title="先点选文字，再调整字号">',
+      '  <label for="xsFontSizeInput">字号</label>',
+      '  <button type="button" data-xs-font-minus title="减小字号">A-</button>',
+      '  <input id="xsFontSizeInput" type="number" min="8" max="160" step="1" data-xs-font-size disabled>',
+      '  <button type="button" data-xs-font-plus title="增大字号">A+</button>',
+      '  <button type="button" data-xs-font-reset title="恢复模板默认字号">默认</button>',
+      '</span>',
+      '<span class="xs-sep"></span>',
       '<button type="button" data-xs-edit-save>保存</button>',
       '<button type="button" data-xs-edit-export>导出 HTML</button>',
       '<button type="button" data-xs-edit-reset>重置</button>',
@@ -1302,11 +1444,34 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     bar.querySelector("[data-xs-edit-save]").addEventListener("click", saveAll);
     bar.querySelector("[data-xs-edit-export]").addEventListener("click", exportHtml);
     bar.querySelector("[data-xs-edit-reset]").addEventListener("click", resetAll);
+    bar.querySelector("[data-xs-font-minus]").addEventListener("click", () => changeFontSize(-2));
+    bar.querySelector("[data-xs-font-plus]").addEventListener("click", () => changeFontSize(2));
+    bar.querySelector("[data-xs-font-reset]").addEventListener("click", resetFontSize);
+    bar.querySelector("[data-xs-font-size]").addEventListener("change", (event) => {
+      const value = Number.parseFloat(event.target.value);
+      if (Number.isFinite(value)) applyFontSize(value);
+    });
+    bar.querySelector("[data-xs-font-size]").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const value = Number.parseFloat(event.target.value);
+        if (Number.isFinite(value)) applyFontSize(value);
+      }
+    });
     bar.querySelector("[data-xs-edit-insert-img]").addEventListener("click", () => {
       if (!editing) { toast("请先点击「编辑」进入编辑模式"); return; }
       openInsertModal();
     });
   }
+
+  document.addEventListener("focusin", (event) => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (el) setCurrentTextEl(el);
+  });
+
+  document.addEventListener("click", (event) => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (el) setCurrentTextEl(el);
+  });
 
   /* ── Keyboard ── */
   document.addEventListener("keydown", (event) => {
@@ -1332,5 +1497,393 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
 </script>
 <!-- XIAOSHUI_PPT_EDIT_MODE_END -->
 
+<!-- SHUI_PRETTY_PPT_PRESENTER_MODE_START -->
+<script>
+(() => {
+  const root = document.documentElement;
+  const state = {
+    open: false,
+    index: 0,
+    startedAt: Date.now(),
+    timer: null,
+  };
+
+  const slideSelector = "[data-slide], section[id], header[id], article[id]";
+  const slides = [...document.querySelectorAll(slideSelector)]
+    .filter((slide) => !slide.closest(".shui-presenter-overlay"))
+    .filter((slide) => {
+      const rect = slide.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+
+  if (!slides.length || window.__shuiPresenterModeLoaded) return;
+  window.__shuiPresenterModeLoaded = true;
+
+  function titleOf(slide) {
+    const title = slide.querySelector("[data-slide-title], h1, h2, h3");
+    return (title?.textContent || slide.getAttribute("aria-label") || "Untitled slide").trim();
+  }
+
+  function summaryOf(slide) {
+    const explicit = slide.querySelector("[data-slide-summary]");
+    if (explicit) return explicit.textContent.trim();
+    const copy = slide.querySelector("p, li");
+    return (copy?.textContent || "").trim();
+  }
+
+  function notesOf(slide) {
+    const notes = notesElement(slide);
+    return (notes?.textContent || "No speaker notes for this slide.").trim();
+  }
+
+  function notesElement(slide) {
+    return slide.querySelector("[data-speaker-notes], .speaker-notes");
+  }
+
+  function ensureNotesElement(slide) {
+    let notes = notesElement(slide);
+    if (!notes) {
+      notes = document.createElement("aside");
+      notes.className = "speaker-notes";
+      slide.appendChild(notes);
+    }
+    return notes;
+  }
+
+  function formatTime(ms) {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const minutes = String(Math.floor(total / 60)).padStart(2, "0");
+    const seconds = String(total % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  }
+
+  function ensureStyles() {
+    if (document.getElementById("shui-presenter-style")) return;
+    const style = document.createElement("style");
+    style.id = "shui-presenter-style";
+    style.textContent = `
+      .speaker-notes, [data-speaker-notes] { display: none !important; }
+      .shui-presenter-hint {
+        position: fixed;
+        left: 14px;
+        bottom: 14px;
+        z-index: 2147483000;
+        padding: 7px 9px;
+        border: 1px solid rgba(17, 24, 39, .16);
+        background: rgba(255, 255, 255, .9);
+        color: #111827;
+        font: 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      .shui-presenter-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483600;
+        display: none;
+        grid-template-rows: auto minmax(0, 1fr);
+        background: #111;
+        color: #f8fafc;
+        font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      .shui-presenter-overlay.is-open { display: grid; }
+      .shui-presenter-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, .14);
+        background: rgba(255, 255, 255, .06);
+      }
+      .shui-presenter-topbar strong { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+      .shui-presenter-actions { display: flex; align-items: center; gap: 8px; }
+      .shui-presenter-actions button {
+        border: 1px solid rgba(255, 255, 255, .22);
+        background: rgba(255, 255, 255, .08);
+        color: #fff;
+        padding: 7px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .shui-presenter-actions button:hover { background: rgba(255, 255, 255, .16); }
+      .shui-presenter-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+        gap: 14px;
+        min-height: 0;
+        padding: 14px;
+      }
+      .shui-presenter-panel {
+        min-width: 0;
+        min-height: 0;
+        border: 1px solid rgba(255, 255, 255, .14);
+        background: rgba(255, 255, 255, .06);
+        overflow: hidden;
+      }
+      .shui-presenter-current {
+        display: flex;
+        flex-direction: column;
+      }
+      .shui-presenter-preview-frame {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+      }
+      .shui-presenter-card {
+        width: min(760px, 100%);
+        aspect-ratio: 16 / 9;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px;
+        border: 1px solid rgba(255, 255, 255, .2);
+        background: #fff;
+        color: #111827;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+      }
+      .shui-presenter-card h2 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 56px);
+        line-height: 1.02;
+      }
+      .shui-presenter-card p {
+        max-width: 680px;
+        margin: 18px 0 0;
+        color: #4b5563;
+        font-size: clamp(15px, 1.6vw, 20px);
+      }
+      .shui-presenter-sidebar {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+      }
+      .shui-presenter-section {
+        padding: 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, .12);
+      }
+      .shui-presenter-section h3 {
+        margin: 0 0 10px;
+        color: rgba(255, 255, 255, .62);
+        font-size: 12px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+      .shui-presenter-next-title {
+        margin: 0;
+        color: #fff;
+        font-size: 22px;
+        line-height: 1.18;
+      }
+      .shui-presenter-notes {
+        min-height: 0;
+        overflow: auto;
+        color: #f8fafc;
+        font-size: 20px;
+        line-height: 1.55;
+      }
+      [data-shui-presenter-notes] {
+        min-height: 160px;
+        padding: 10px 12px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        white-space: pre-wrap;
+      }
+      [data-shui-presenter-notes]:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, .28);
+        background: rgba(255, 255, 255, .08);
+      }
+      .shui-presenter-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        padding: 14px 18px;
+      }
+      .shui-presenter-meta div {
+        padding: 10px;
+        background: rgba(255, 255, 255, .08);
+      }
+      .shui-presenter-meta span {
+        display: block;
+        color: rgba(255, 255, 255, .58);
+        font-size: 11px;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+      .shui-presenter-meta b {
+        display: block;
+        margin-top: 4px;
+        font-size: 18px;
+      }
+      @media (max-width: 860px) {
+        .shui-presenter-grid { grid-template-columns: 1fr; }
+        .shui-presenter-sidebar { grid-template-rows: auto auto auto; }
+        .shui-presenter-notes { max-height: 220px; }
+      }
+      @media print {
+        .shui-presenter-hint, .shui-presenter-overlay { display: none !important; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function ensureDom() {
+    if (document.querySelector(".shui-presenter-overlay")) return;
+
+    const hint = document.createElement("div");
+    hint.className = "shui-presenter-hint";
+    hint.textContent = "Press P for presenter mode";
+    hint.setAttribute("data-no-edit", "true");
+    document.body.appendChild(hint);
+
+    const overlay = document.createElement("div");
+    overlay.className = "shui-presenter-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Presenter mode");
+    overlay.setAttribute("data-no-edit", "true");
+    overlay.innerHTML = `
+      <div class="shui-presenter-topbar">
+        <strong>Presenter Mode</strong>
+        <div class="shui-presenter-actions">
+          <button type="button" data-shui-presenter-prev>Prev</button>
+          <button type="button" data-shui-presenter-next>Next</button>
+          <button type="button" data-shui-presenter-close>Close</button>
+        </div>
+      </div>
+      <div class="shui-presenter-grid">
+        <div class="shui-presenter-panel shui-presenter-current">
+          <div class="shui-presenter-preview-frame">
+            <div class="shui-presenter-card">
+              <h2 data-shui-presenter-title></h2>
+              <p data-shui-presenter-summary></p>
+            </div>
+          </div>
+        </div>
+        <aside class="shui-presenter-panel shui-presenter-sidebar">
+          <div class="shui-presenter-section">
+            <h3>Next</h3>
+            <p class="shui-presenter-next-title" data-shui-presenter-next-title></p>
+          </div>
+          <div class="shui-presenter-section shui-presenter-notes">
+            <h3>Speaker Notes</h3>
+            <div data-shui-presenter-notes contenteditable="true" spellcheck="false"></div>
+          </div>
+          <div class="shui-presenter-meta">
+            <div><span>Slide</span><b data-shui-presenter-count></b></div>
+            <div><span>Timer</span><b data-shui-presenter-timer>00:00</b></div>
+            <div><span>Shortcut</span><b>P / Esc</b></div>
+          </div>
+        </aside>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    overlay.querySelector("[data-shui-presenter-close]").addEventListener("click", close);
+    overlay.querySelector("[data-shui-presenter-prev]").addEventListener("click", () => move(-1));
+    overlay.querySelector("[data-shui-presenter-next]").addEventListener("click", () => move(1));
+    overlay.querySelector("[data-shui-presenter-notes]").addEventListener("input", (event) => {
+      ensureNotesElement(slides[state.index]).textContent = event.currentTarget.textContent;
+    });
+  }
+
+  function update() {
+    const overlay = document.querySelector(".shui-presenter-overlay");
+    if (!overlay) return;
+    const current = slides[state.index];
+    const next = slides[Math.min(slides.length - 1, state.index + 1)];
+
+    overlay.querySelector("[data-shui-presenter-title]").textContent = titleOf(current);
+    overlay.querySelector("[data-shui-presenter-summary]").textContent = summaryOf(current);
+    overlay.querySelector("[data-shui-presenter-next-title]").textContent =
+      next === current ? "End of deck" : titleOf(next);
+    const notesTarget = overlay.querySelector("[data-shui-presenter-notes]");
+    if (document.activeElement !== notesTarget) {
+      notesTarget.textContent = notesOf(current);
+    }
+    overlay.querySelector("[data-shui-presenter-count]").textContent =
+      `${state.index + 1}/${slides.length}`;
+    overlay.querySelector("[data-shui-presenter-timer]").textContent =
+      formatTime(Date.now() - state.startedAt);
+  }
+
+  function open() {
+    ensureStyles();
+    ensureDom();
+    state.open = true;
+    state.startedAt = Date.now();
+    document.querySelector(".shui-presenter-overlay").classList.add("is-open");
+    root.classList.add("shui-presenter-is-open");
+    update();
+    clearInterval(state.timer);
+    state.timer = setInterval(update, 1000);
+  }
+
+  function close() {
+    state.open = false;
+    document.querySelector(".shui-presenter-overlay")?.classList.remove("is-open");
+    root.classList.remove("shui-presenter-is-open");
+    clearInterval(state.timer);
+    state.timer = null;
+  }
+
+  function toggle() {
+    state.open ? close() : open();
+  }
+
+  function move(delta) {
+    state.index = Math.max(0, Math.min(slides.length - 1, state.index + delta));
+    slides[state.index].scrollIntoView({ behavior: "smooth", block: "start" });
+    update();
+  }
+
+  function visibleIndex() {
+    let best = 0;
+    let bestDistance = Infinity;
+    slides.forEach((slide, index) => {
+      const distance = Math.abs(slide.getBoundingClientRect().top);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = index;
+      }
+    });
+    return best;
+  }
+
+  window.addEventListener("scroll", () => {
+    if (state.open) return;
+    state.index = visibleIndex();
+  }, { passive: true });
+
+  document.addEventListener("keydown", (event) => {
+    const key = event.key.toLowerCase();
+    const tag = document.activeElement?.tagName?.toLowerCase();
+    if (tag === "input" || tag === "textarea" || document.activeElement?.isContentEditable) return;
+
+    if (key === "p" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      event.preventDefault();
+      state.index = visibleIndex();
+      toggle();
+    }
+    if (key === "escape" && state.open) {
+      event.preventDefault();
+      close();
+    }
+    if (state.open && (key === "arrowright" || key === "pagedown")) {
+      event.preventDefault();
+      move(1);
+    }
+    if (state.open && (key === "arrowleft" || key === "pageup")) {
+      event.preventDefault();
+      move(-1);
+    }
+  });
+
+  ensureStyles();
+  ensureDom();
+})();
+
+</script>
+<!-- SHUI_PRETTY_PPT_PRESENTER_MODE_END -->
 </body>
 </html>

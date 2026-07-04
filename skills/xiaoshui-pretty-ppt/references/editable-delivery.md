@@ -17,6 +17,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 | Feature | How | Details |
 |---------|-----|---------|
 | **All text** | Press `E`, click any text | Titles, subtitles, paragraphs, labels, captions, list items, table cells, badges — every visible text element is editable. |
+| **Font size** | Press `E`, click text, use `字号`, `A-`, `A+`, or `默认` | Adjusts the selected text element's font size. Changes are saved locally and included in exported HTML. |
 | **Replace images** | Press `E`, click `替换图片` badge on any image | Paste a new URL or upload a local image file. Supports data-URL conversion for offline-safe exports. |
 | **Replace videos** | Press `E`, click `替换视频` badge on any video | Paste a new video URL. |
 | **Insert images** | Press `E`, click `➕ 插入图片` in toolbar | Inserts a new `<img>` at cursor position or at the end of the current slide. Supports URL paste or local file upload. |
@@ -26,6 +27,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 | Button | Action |
 |--------|--------|
 | `编辑` / `退出编辑` | Toggle edit mode (or press `E`) |
+| `字号` / `A-` / `A+` / `默认` | Adjust or reset the selected text element's font size |
 | `保存` | Save all edits to browser localStorage (or `Cmd+S` / `Ctrl+S`) |
 | `导出 HTML` | Download a standalone edited HTML file with all changes baked in |
 | `重置` | Clear all local edits and restore original template content |
@@ -41,9 +43,9 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 
 ## How It Works
 
-1. Text edits are stored in `localStorage` keyed by page path + element ID.
+1. Text edits and per-element font sizes are stored in `localStorage` keyed by page path + element ID.
 2. Image/video src changes are saved in the same storage.
-3. `导出 HTML` downloads a complete copy with all edits inlined — no localStorage dependency.
+3. `导出 HTML` downloads a complete copy with all edits and font-size styles inlined — no localStorage dependency.
 4. `重置` clears only the localStorage entries for this specific page.
 5. Edits survive page reloads but are per-browser (not synced across devices).
 
@@ -61,6 +63,7 @@ Use `--no-edit` when:
 这份 HTML PPT 已开启可编辑模式。右上角工具栏说明：
 
 - 按 E 进入编辑模式 → 直接点任何文字就能改
+- 点选文字后用 字号 / A- / A+ / 默认 → 调整或恢复字体大小
 - 编辑模式下点图片/视频上的「替换图片」「替换视频」→ 可以换 URL 或上传本地文件
 - 点工具栏「➕ 插入图片」→ 可以在页面里新增图片
 - Cmd+S / Ctrl+S 保存到本机浏览器

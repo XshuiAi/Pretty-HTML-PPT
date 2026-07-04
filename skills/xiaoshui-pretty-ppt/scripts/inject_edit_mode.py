@@ -58,6 +58,33 @@ SNIPPET = r'''
     background: rgba(17, 24, 39, 0.12);
     margin: 0 2px;
   }
+  .xs-edit-toolbar .xs-font-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .xs-edit-toolbar .xs-font-control label {
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .xs-edit-toolbar .xs-font-control input {
+    width: 52px;
+    height: 28px;
+    border: 1px solid rgba(17, 24, 39, 0.16);
+    border-radius: 5px;
+    background: #fff;
+    color: #111827;
+    font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    text-align: center;
+  }
+  .xs-edit-toolbar .xs-font-control input:disabled,
+  .xs-edit-toolbar button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
+  }
 
   /* Editing highlights */
   .xs-editing [contenteditable="true"] {
@@ -248,6 +275,7 @@ SNIPPET = r'''
   /* ── State ── */
   let editing = false;
   let toastTimer = null;
+  let currentTextEl = null;
 
   /* ── Helpers ── */
   function isTextNodeEmpty(el) {
@@ -276,6 +304,15 @@ SNIPPET = r'''
       .filter(el => !hasBlockParent(el))
       .filter(el => !isTextNodeEmpty(el))
       .filter(el => isOnlyChildren(el));
+  }
+
+  function isTextCandidate(el) {
+    return !!el
+      && el.matches?.(textSelector)
+      && !el.closest(blockedSelector)
+      && !hasBlockParent(el)
+      && !isTextNodeEmpty(el)
+      && isOnlyChildren(el);
   }
 
   function getMediaCandidates() {
@@ -321,7 +358,14 @@ SNIPPET = r'''
     const data = readStore();
     getTextCandidates().forEach(el => {
       const v = data[el.dataset.xsEditId];
-      if (v !== undefined) el.innerHTML = v;
+      if (v !== undefined) {
+        if (typeof v === "string") {
+          el.innerHTML = v;
+        } else {
+          if (v.html !== undefined) el.innerHTML = v.html;
+          if (v.fontSize) el.style.fontSize = v.fontSize;
+        }
+      }
     });
     getMediaCandidates().forEach(el => {
       const v = data[el.dataset.xsEditId];
@@ -340,7 +384,10 @@ SNIPPET = r'''
     ensureIds();
     const data = {};
     getTextCandidates().forEach(el => {
-      data[el.dataset.xsEditId] = el.innerHTML;
+      data[el.dataset.xsEditId] = {
+        html: el.innerHTML,
+        fontSize: el.style.fontSize || ""
+      };
     });
     getMediaCandidates().forEach(el => {
       const src = (el.tagName === "VIDEO")
@@ -362,6 +409,7 @@ SNIPPET = r'''
     });
     attachMediaBadges();
     updateToggleBtn();
+    updateFontControls();
     toast("编辑模式已开启 — 点任意文字即可修改，点图片/视频可替换");
   }
 
@@ -374,6 +422,7 @@ SNIPPET = r'''
     });
     removeMediaBadges();
     updateToggleBtn();
+    updateFontControls();
     toast("编辑模式已关闭");
   }
 
@@ -391,6 +440,91 @@ SNIPPET = r'''
       btn.textContent = editing ? "退出编辑" : "编辑";
       btn.classList.toggle("xs-active", editing);
     }
+  }
+
+  /* ── Font size controls ── */
+  function fontTargetFromEventTarget(target) {
+    const el = target?.closest?.(textSelector);
+    return isTextCandidate(el) ? el : null;
+  }
+
+  function setCurrentTextEl(el) {
+    if (!isTextCandidate(el)) return;
+    currentTextEl = el;
+    updateFontControls();
+  }
+
+  function getCurrentTextEl() {
+    if (isTextCandidate(document.activeElement)) return document.activeElement;
+    if (isTextCandidate(currentTextEl)) return currentTextEl;
+    return null;
+  }
+
+  function getFontPx(el) {
+    const size = window.getComputedStyle(el).fontSize;
+    const value = Number.parseFloat(size);
+    return Number.isFinite(value) ? Math.round(value) : 16;
+  }
+
+  function updateFontControls() {
+    const input = document.querySelector("[data-xs-font-size]");
+    const buttons = document.querySelectorAll("[data-xs-font-minus], [data-xs-font-plus], [data-xs-font-reset]");
+    if (!input) return;
+    const el = getCurrentTextEl();
+    input.disabled = !editing || !el;
+    buttons.forEach(btn => { btn.disabled = !editing || !el; });
+    input.value = el ? String(getFontPx(el)) : "";
+  }
+
+  function applyFontSize(px) {
+    if (!editing) {
+      toast("请先点击「编辑」进入编辑模式");
+      return;
+    }
+    const el = getCurrentTextEl();
+    if (!el) {
+      toast("请先点选一段文字，再调整字号");
+      updateFontControls();
+      return;
+    }
+    const value = Math.max(8, Math.min(160, Math.round(px)));
+    el.style.fontSize = value + "px";
+    setCurrentTextEl(el);
+    const store = readStore();
+    store[el.dataset.xsEditId] = {
+      html: el.innerHTML,
+      fontSize: el.style.fontSize || ""
+    };
+    writeStore(store);
+    toast("字号已调整，Cmd+S 保存或导出 HTML");
+  }
+
+  function changeFontSize(delta) {
+    const el = getCurrentTextEl();
+    if (!el) {
+      toast("请先点选一段文字，再调整字号");
+      updateFontControls();
+      return;
+    }
+    applyFontSize(getFontPx(el) + delta);
+  }
+
+  function resetFontSize() {
+    const el = getCurrentTextEl();
+    if (!el) {
+      toast("请先点选一段文字，再重置字号");
+      updateFontControls();
+      return;
+    }
+    el.style.fontSize = "";
+    setCurrentTextEl(el);
+    const store = readStore();
+    store[el.dataset.xsEditId] = {
+      html: el.innerHTML,
+      fontSize: ""
+    };
+    writeStore(store);
+    toast("字号已恢复为模板默认值");
   }
 
   /* ── Media badges ── */
@@ -624,6 +758,14 @@ SNIPPET = r'''
     bar.innerHTML = [
       '<button type="button" data-xs-edit-toggle>编辑</button>',
       '<span class="xs-sep"></span>',
+      '<span class="xs-font-control" title="先点选文字，再调整字号">',
+      '  <label for="xsFontSizeInput">字号</label>',
+      '  <button type="button" data-xs-font-minus title="减小字号">A-</button>',
+      '  <input id="xsFontSizeInput" type="number" min="8" max="160" step="1" data-xs-font-size disabled>',
+      '  <button type="button" data-xs-font-plus title="增大字号">A+</button>',
+      '  <button type="button" data-xs-font-reset title="恢复模板默认字号">默认</button>',
+      '</span>',
+      '<span class="xs-sep"></span>',
       '<button type="button" data-xs-edit-save>保存</button>',
       '<button type="button" data-xs-edit-export>导出 HTML</button>',
       '<button type="button" data-xs-edit-reset>重置</button>',
@@ -635,11 +777,34 @@ SNIPPET = r'''
     bar.querySelector("[data-xs-edit-save]").addEventListener("click", saveAll);
     bar.querySelector("[data-xs-edit-export]").addEventListener("click", exportHtml);
     bar.querySelector("[data-xs-edit-reset]").addEventListener("click", resetAll);
+    bar.querySelector("[data-xs-font-minus]").addEventListener("click", () => changeFontSize(-2));
+    bar.querySelector("[data-xs-font-plus]").addEventListener("click", () => changeFontSize(2));
+    bar.querySelector("[data-xs-font-reset]").addEventListener("click", resetFontSize);
+    bar.querySelector("[data-xs-font-size]").addEventListener("change", (event) => {
+      const value = Number.parseFloat(event.target.value);
+      if (Number.isFinite(value)) applyFontSize(value);
+    });
+    bar.querySelector("[data-xs-font-size]").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const value = Number.parseFloat(event.target.value);
+        if (Number.isFinite(value)) applyFontSize(value);
+      }
+    });
     bar.querySelector("[data-xs-edit-insert-img]").addEventListener("click", () => {
       if (!editing) { toast("请先点击「编辑」进入编辑模式"); return; }
       openInsertModal();
     });
   }
+
+  document.addEventListener("focusin", (event) => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (el) setCurrentTextEl(el);
+  });
+
+  document.addEventListener("click", (event) => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (el) setCurrentTextEl(el);
+  });
 
   /* ── Keyboard ── */
   document.addEventListener("keydown", (event) => {

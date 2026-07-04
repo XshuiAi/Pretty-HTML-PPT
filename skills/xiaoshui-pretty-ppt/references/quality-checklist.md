@@ -14,6 +14,7 @@ Use this before delivering a XiaoShui Pretty PPT deck.
 - Image paths are relative to the deck folder, not absolute `/Users/...` paths.
 - The deck uses one template grammar; do not mix classes from unrelated templates.
 - Browser edit mode is present by default unless the user explicitly requested `--no-edit`.
+- Font-size controls are present inside edit mode unless the user explicitly requested `--no-edit`.
 - Presenter mode is present by default unless the user explicitly requested `--no-presenter`.
 - The edit toolbar appears and does not cover primary slide content.
 - Presenter notes remain hidden in normal audience view.
@@ -36,13 +37,14 @@ Use this before delivering a XiaoShui Pretty PPT deck.
 - No repeated generic card grid across every page unless the template intentionally uses it.
 - Motion is restrained and does not hide content if scripts fail.
 - Browser edit mode should not make navigation labels, buttons, images, videos, canvas, or SVG graphics accidentally editable.
+- Font-size changes should apply only to the selected text element and should survive save/reload.
 
 ## P3 · Delivery
 
 - Report the local path.
 - Report the selected template.
 - Mention the density level used.
-- Mention whether edit mode is enabled. If enabled, explain `E`, `保存`, `导出 HTML`, and `重置`.
+- Mention whether edit mode is enabled. If enabled, explain `E`, `字号 / A- / A+`, `保存`, `导出 HTML`, and `重置`.
 - Mention whether presenter mode is enabled. If enabled, explain `P`, speaker notes, next-slide preview, and privacy during screen sharing.
 - Mention any missing assets or assumptions.
 - If publishing, package the final static folder only.
