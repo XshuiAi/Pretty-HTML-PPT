@@ -88,6 +88,10 @@
     }
 
     .nav a:hover { color: var(--ink); background: var(--pink-soft); }
+    .nav a.is-active {
+      color: #fff;
+      background: var(--pink);
+    }
 
     .shell {
       width: min(calc(100% - 40px), var(--content));
@@ -238,6 +242,100 @@
     .card,
     .step,
     .module { padding: 22px; }
+
+    .card[data-detail],
+    .step[data-detail],
+    .feature-card[data-detail],
+    .roadmap-card[data-detail],
+    .module[data-detail] {
+      cursor: pointer;
+      transition: transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s var(--ease);
+    }
+
+    .card[data-detail]:hover,
+    .step[data-detail]:hover,
+    .feature-card[data-detail]:hover,
+    .roadmap-card[data-detail]:hover,
+    .module[data-detail]:hover,
+    .card.is-expanded,
+    .step.is-expanded,
+    .feature-card.is-expanded,
+    .roadmap-card.is-expanded,
+    .module.is-expanded {
+      transform: translateY(-4px);
+      border-color: rgba(255, 79, 154, .48);
+      box-shadow: 0 28px 86px rgba(120, 42, 78, .16);
+    }
+
+    .demo-detail {
+      max-height: 0;
+      margin-top: 0;
+      overflow: hidden;
+      color: var(--pink-dark);
+      font-size: 14px;
+      font-weight: 780;
+      line-height: 1.55;
+      opacity: 0;
+      transition: max-height .32s var(--ease), margin-top .32s var(--ease), opacity .24s var(--ease);
+    }
+
+    .is-expanded > .demo-detail {
+      max-height: 180px;
+      margin-top: 14px;
+      opacity: 1;
+    }
+
+    .demo-enhanced .demo-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .58s var(--ease), transform .58s var(--ease);
+    }
+
+    .demo-enhanced .demo-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .demo-pager {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 26;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(234, 219, 212, .9);
+      border-radius: 999px;
+      background: rgba(255, 250, 247, .92);
+      box-shadow: 0 18px 45px rgba(120, 42, 78, .14);
+      backdrop-filter: blur(14px);
+    }
+
+    .demo-pager button {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .demo-pager button:hover {
+      color: #fff;
+      border-color: var(--pink);
+      background: var(--pink);
+    }
+
+    .demo-pager span {
+      min-width: 48px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
 
     .card::before,
     .step::before {
@@ -440,8 +538,17 @@
       .roadmap-grid { grid-template-columns: 1fr; }
       .slide { min-height: auto; padding: 72px 0; }
       .arrow-line { display: none; }
+      .demo-pager { right: 12px; bottom: 12px; }
       h1 { font-size: clamp(42px, 13vw, 68px); }
       h2 { font-size: clamp(34px, 10vw, 56px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .demo-enhanced .demo-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -487,15 +594,15 @@
         <p data-slide-summary>这套 skill 解决的是真实交付问题：中文清晰、结构可控、生成后还能继续修改和发布。</p>
       </div>
       <div class="problem-grid">
-        <article class="card" data-index="01">
+        <article class="card" data-index="01" data-detail="适合现场演示时展开讲：为什么 HTML 文本比图片式 PPT 更适合长期修改、复制和发布。">
           <h3>图片式生成</h3>
           <p>看起来像 PPT，但本质是图片。中文放大容易糊，文字和版式很难二次调整。</p>
         </article>
-        <article class="card" data-index="02">
+        <article class="card" data-index="02" data-detail="这里可以展开讲模板库的价值：不是每次重新抽卡，而是稳定复用一套已经设计好的视觉系统。">
           <h3>模板靠抽卡</h3>
           <p>每次都要赌结果，适合展示的很少，适合正式汇报的更少。</p>
         </article>
-        <article class="card" data-index="03">
+        <article class="card" data-index="03" data-detail="展开后可以补一句：同一个 HTML 文件既能演示，也能编辑、导出、部署，减少重复排版。">
           <h3>交付不连续</h3>
           <p>文档、PPT、网页、发布链接彼此割裂，内容改一遍，视觉还要再排一遍。</p>
         </article>
@@ -512,22 +619,22 @@
         <p data-slide-summary>先判断受众、场景和内容密度，再选模板、拆页面、生成 HTML，最后按 E 修改或按 P 演讲。</p>
       </div>
       <div class="workflow-grid">
-        <article class="step" data-index="Input">
+        <article class="step" data-index="Input" data-detail="可以接飞书文档、文章、Markdown、笔记、旧 PPT、截图和数据表。">
           <span class="arrow-line"></span>
           <h3>飞书文档 / 文章 / 笔记</h3>
           <p>把原始材料交给 Agent，不要求用户先手动改成 PPT 大纲。</p>
         </article>
-        <article class="step" data-index="Decide">
+        <article class="step" data-index="Decide" data-detail="默认只问 3 个问题：场景、密度、素材，避免把用户卡在复杂配置里。">
           <span class="arrow-line"></span>
           <h3>场景与密度判断</h3>
           <p>区分演讲型、分享型、报告型、教程型，不把长文硬塞进一页。</p>
         </article>
-        <article class="step" data-index="Render">
+        <article class="step" data-index="Render" data-detail="模板会保留自己的配色、字体层级、导航、滚动和卡片交互，而不是从零写网页。">
           <span class="arrow-line"></span>
           <h3>套用真实模板</h3>
           <p>从 12 套模板复制开始，保留配色、版式、导航和动效。</p>
         </article>
-        <article class="step" data-index="Deliver">
+        <article class="step" data-index="Deliver" data-detail="默认注入 E 编辑、P 演讲者模式和字号调节，除非用户明确要求纯净版。">
           <h3>打开、编辑、发布</h3>
           <p>本地浏览器打开；需要时按 E 改文字，按 P 进入演讲者模式。</p>
         </article>
@@ -544,7 +651,7 @@
         <p data-slide-summary>一组负责更有记忆点的公开展示，一组负责更稳的职场、政务和产品汇报。</p>
       </div>
       <div class="template-grid">
-        <article class="module creative">
+        <article class="module creative" data-detail="点击展开：这一组更适合公开传播、课程售卖、个人 IP、作品集和自媒体视频脚本。">
           <h3>自媒体 / 个人展示 / 作品集 <span class="pill">Creative</span></h3>
           <p>更适合文章分享、课程教程、个人项目、作品集和产品发布。</p>
           <div class="template-list">
@@ -556,7 +663,7 @@
             <div class="template-item"><strong>Garden Pop Landing</strong><span>花园跳色长页</span></div>
           </div>
         </article>
-        <article class="module report">
+        <article class="module report" data-detail="点击展开：这一组更适合行政政务、职场汇报、产品方案、论文答辩和正式提案。">
           <h3>行政政务 / 职场汇报 / 产品演讲 <span class="pill">Report</span></h3>
           <p>更适合领导汇报、项目复盘、商务提案、答辩和正式材料。</p>
           <div class="template-list">
@@ -611,17 +718,17 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
         <p data-slide-summary>这版已经加入基础演讲者模式：按 P 打开讲稿备注、下一页预览和计时器；按 E 仍然可以进入编辑模式。</p>
       </div>
       <div class="feature-grid">
-        <article class="feature-card">
+        <article class="feature-card" data-detail="演讲者模式的备注只在当前浏览器窗口打开 P 时显示；共享普通窗口时观众看不到。">
           <b>P</b>
           <h3>演讲者模式</h3>
           <p>展示当前页标题、摘要、下一页标题、讲稿备注和演讲计时。</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-detail="编辑模式支持改文字、调字号、换图片/视频、插入图片，并导出一份新 HTML。">
           <b>E</b>
           <h3>浏览器编辑</h3>
           <p>生成后可直接点文字修改，再导出一份改好的 HTML 文件。</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-detail="适合部署成公开链接，也可以只在本地或私有仓库里使用，避免公开完整模板源码。">
           <b>HTML</b>
           <h3>发布链接</h3>
           <p>静态文件可以放到 GitHub Pages、Cloudflare Workers 或任意静态托管。</p>
@@ -639,22 +746,22 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
         <p data-slide-summary>不急着把 PPT、HTML、飞书画板混成一个技能。先把 HTML 网页 PPT 做深，再拆出其他形态。</p>
       </div>
       <div class="roadmap-grid">
-        <article class="roadmap-card">
+        <article class="roadmap-card" data-detail="适合把补充案例、证据、长表格放到二级页面，主线页面保持清爽。">
           <span>01 Nested slides</span>
           <h3>横向主线 + 纵向详情</h3>
           <p>适合课程、产品介绍和长报告，把补充材料放到二级页面。</p>
         </article>
-        <article class="roadmap-card">
+        <article class="roadmap-card" data-detail="后续可以让同一张图、同一个卡片跨页面移动，形成更像 Keynote 的连续感。">
           <span>02 Auto Animate</span>
           <h3>章节之间自动过渡</h3>
           <p>让同一张图、同一个卡片在前后页之间自然移动，减少硬切。</p>
         </article>
-        <article class="roadmap-card">
+        <article class="roadmap-card" data-detail="数据页会优先做结论卡、KPI、趋势、对比和风险提示，而不是堆表格。">
           <span>03 Data report</span>
           <h3>数据汇报型 PPT</h3>
           <p>把 KPI、趋势、漏斗、对比和结论做成可读的报告页。</p>
         </article>
-        <article class="roadmap-card">
+        <article class="roadmap-card" data-detail="面向作品集和个人介绍，用全屏镜头、章节字幕、滚动叙事做高级感。">
           <span>04 Cinematic portfolio</span>
           <h3>电影播放感作品集</h3>
           <p>用全屏镜头、章节字幕和滚动叙事，把 HTML PPT 做成高级作品集网站。</p>
@@ -678,6 +785,112 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
       <aside class="speaker-notes">收尾强调：这是一个可以持续迭代的 skill，不是单次做图。下一版可以继续做数据汇报和电影感作品集。</aside>
     </section>
   </main>
+
+  <div class="demo-pager" data-no-edit aria-label="页面翻页">
+    <button type="button" data-demo-prev aria-label="上一页">‹</button>
+    <span data-demo-count>1 / 8</span>
+    <button type="button" data-demo-next aria-label="下一页">›</button>
+  </div>
+
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll("[data-slide]")];
+      const navLinks = [...document.querySelectorAll(".nav a[href^='#']")];
+      const pager = document.querySelector(".demo-pager");
+      const count = document.querySelector("[data-demo-count]");
+      let activeIndex = 0;
+
+      document.documentElement.classList.add("demo-enhanced");
+
+      function isEditing() {
+        return document.body.classList.contains("xs-editing");
+      }
+
+      function updateUI(index) {
+        activeIndex = Math.max(0, Math.min(slides.length - 1, index));
+        const current = slides[activeIndex];
+        navLinks.forEach((link) => {
+          link.classList.toggle("is-active", link.getAttribute("href") === "#" + current.id);
+        });
+        if (count) count.textContent = `${activeIndex + 1} / ${slides.length}`;
+      }
+
+      function go(delta) {
+        if (!slides.length) return;
+        const next = Math.max(0, Math.min(slides.length - 1, activeIndex + delta));
+        slides[next].scrollIntoView({ behavior: "smooth", block: "start" });
+        updateUI(next);
+      }
+
+      document.querySelector("[data-demo-prev]")?.addEventListener("click", () => go(-1));
+      document.querySelector("[data-demo-next]")?.addEventListener("click", () => go(1));
+
+      document.addEventListener("keydown", (event) => {
+        const tag = document.activeElement?.tagName?.toLowerCase();
+        if (isEditing() || tag === "input" || tag === "textarea" || tag === "select") return;
+        if (event.key === "ArrowRight" || event.key === "PageDown") {
+          event.preventDefault();
+          go(1);
+        }
+        if (event.key === "ArrowLeft" || event.key === "PageUp") {
+          event.preventDefault();
+          go(-1);
+        }
+      });
+
+      const revealItems = [
+        ...slides,
+        ...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card")
+      ];
+      revealItems.forEach((item) => item.classList.add("demo-reveal"));
+
+      if ("IntersectionObserver" in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          });
+        }, { threshold: .16 });
+        revealItems.forEach((item) => revealObserver.observe(item));
+
+        const slideObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            updateUI(slides.indexOf(entry.target));
+          });
+        }, { threshold: .45 });
+        slides.forEach((slide) => slideObserver.observe(slide));
+      } else {
+        revealItems.forEach((item) => item.classList.add("is-visible"));
+      }
+
+      document.querySelectorAll("[data-detail]").forEach((card) => {
+        const detail = document.createElement("div");
+        detail.className = "demo-detail";
+        detail.textContent = card.dataset.detail;
+        card.appendChild(detail);
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-expanded", "false");
+
+        const toggle = () => {
+          if (isEditing()) return;
+          const open = card.classList.toggle("is-expanded");
+          card.setAttribute("aria-expanded", String(open));
+        };
+        card.addEventListener("click", toggle);
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggle();
+          }
+        });
+      });
+
+      updateUI(0);
+    })();
+  </script>
 
   <script src="../../../skills/xiaoshui-pretty-ppt/runtime/presenter-mode.js"></script>
 
