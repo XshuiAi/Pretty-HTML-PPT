@@ -33,9 +33,10 @@ This is not a generic webpage generator. It turns source material into a **prese
 4. Copy the template instead of writing the PPT from scratch.
 5. Convert the user's content into cover, agenda, chapter, data, image, comparison, process, summary, and closing pages.
 6. Preserve the chosen template's color system, typography, navigation, interaction model, and motion rules.
-7. Decide whether the deck should include browser edit mode, so the user can directly revise text after generation.
-8. Decide whether the deck should include presenter mode, so the user can rehearse with speaker notes, next-slide preview, and a timer.
-9. Verify the resulting deck visually and structurally before delivery.
+7. Include browser edit mode and presenter mode by default, unless the user explicitly asks for a clean locked deck.
+8. Put long explanation into speaker notes instead of overloading visible pages.
+9. Add Feishu source links when the user requests traceability and Feishu CLI/tool access is available.
+10. Verify the resulting deck visually and structurally before delivery.
 
 ## What This Skill Is Not
 
@@ -87,27 +88,31 @@ Before asking questions, detect the user's mode:
 - **Mode E · Install / Use / Update**: user asks how to install, write, publish, or update the skill.
 - **Mode F · Editable Delivery**: user asks how to keep modifying the generated HTML PPT, edit text boxes, export an edited file, or make the result easier to hand off.
 - **Mode G · Presenter Delivery**: user asks for speaker notes, presenter view, next-slide preview, rehearsal, or a talk-ready deck.
+- **Mode H · Feishu Source Link Delivery**: user asks to jump from generated PPT pages back to Feishu docs, wiki pages, or specific document modules.
 
-For Mode D, summarize `references/ppt-template-catalog.md` and recommend 2-3 candidates. For Mode E, read `references/workflow-and-install.md`. For Mode F, read `references/editable-delivery.md`. For Mode G, use the presenter mode rules in this file and `references/workflow-and-install.md`.
+For Mode D, read `references/interactive-template-selector.md` and `references/ppt-template-catalog.md`, then recommend 2-3 candidates. For Mode E, read `references/workflow-and-install.md`. For Mode F, read `references/editable-delivery.md`. For Mode G, use the presenter mode rules in this file and `references/workflow-and-install.md`. For Mode H, read `references/feishu-source-links.md`.
 
 ### Step 1 · Intake And Density
 
 If the user already provides a clear outline, source material, and preferred style, start directly.
 
-If the user only gives a topic or rough idea, read `references/intake-and-density.md`, then ask at most three high-impact questions:
+If the user only gives a topic, rough idea, or simply invokes the skill, read `references/interactive-template-selector.md` and `references/intake-and-density.md`, then ask at most three high-impact questions:
 
 1. What is the deck for and who will watch it?
 2. Should it be low-density speaker slides, balanced share slides, or higher-density report slides?
-3. Which module is closer: creator/personal showcase or practical report/workplace presentation?
+3. What source material is available: Feishu doc link, article/Markdown, screenshots/images, data table, old PPT, or only a topic?
 
 Use reasonable assumptions when missing details do not block progress.
 
-When the user provides a full document, do not paste it slide-by-slide. First classify content into:
+When the user provides a full document, read `references/content-compression.md`; do not paste it slide-by-slide. First classify content into:
 
-- **Must show**: ideas, numbers, diagrams, screenshots, quotes that belong on slides.
-- **Can say**: supporting explanation that belongs in speaker notes or presenter narration.
-- **Can omit**: background details that would overload the deck.
+- **Visible slide/page**: ideas, numbers, diagrams, screenshots, quotes, conclusions, and frameworks that belong on slides.
+- **Speaker notes**: supporting explanation, nuance, transitions, examples, and talking points.
+- **Appendix or source link**: proof, full tables, full references, Feishu source links, and long supporting material.
+- **Omit**: repeated context, generic intro, and low-value detail.
 - **Need visual**: process, comparison, timeline, system, chart, screenshot, or case evidence that needs a visual layout.
+
+If the user asks for Feishu source traceability or section jump links, read `references/feishu-source-links.md` before planning the deck.
 
 ### Step 2 · Pick A Template
 
@@ -145,6 +150,8 @@ Before editing `index.html`, write a short build plan in your working notes:
 - source material used
 - image/screenshot assets
 - page map: page number -> slide role -> source content -> asset slot
+- notes map: page number -> what belongs in speaker notes
+- source-link map: page number -> Feishu/source link if needed
 
 Use the density rules in `references/intake-and-density.md`:
 
@@ -212,6 +219,8 @@ Follow these rules:
 - Preserve the template's color system unless the user explicitly asks for a new style.
 - Use the template's existing navigation, page markers, interactions, and motion system.
 - Convert long prose into presentation pages: cover, agenda, chapter, key point, data, process, comparison, example, summary, closing.
+- Use `references/content-compression.md`: visible pages carry the argument; speaker notes carry long explanation; appendix/source links carry supporting detail.
+- If the user requests Feishu jump links, use `references/feishu-source-links.md` and add quiet `查看飞书原文` links only when the user has provided links or tool access confirms them.
 - Images and videos should live next to `index.html` under a local `assets/` or `images/` folder unless the template already defines another path.
 - Do not reuse borrowed web images unless the user owns them, provides them, or explicitly approves the source.
 - Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, replace images/videos, insert new images directly in the browser, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
@@ -286,8 +295,11 @@ When a new PPT result should become a reusable template:
 5. Run:
    ```bash
    python3 scripts/copy_template.py <style-slug> /tmp/<style-slug>-test --force
+   python3 scripts/validate_deck.py /tmp/<style-slug>-test
+   python3 scripts/validate_template_library.py
    ```
 6. Open the copied `index.html` and verify it visually.
+7. Confirm the generated deck includes both default runtimes: `E` edit mode and `P` presenter mode.
 
 Keep each template distinct. Do not let all styles collapse into the same pastel/card look.
 
@@ -296,6 +308,9 @@ Keep each template distinct. Do not let all styles collapse into the same pastel
 | File | Purpose | When To Read |
 |---|---|---|
 | `references/intake-and-density.md` | intake questions, document-to-deck compression, density rules | before planning a deck |
+| `references/interactive-template-selector.md` | opening questions and 2-3 template recommendation flow | when the user invokes the skill or asks which template to use |
+| `references/content-compression.md` | rules for visible slides, speaker notes, appendix/source links, and omitted content | before converting long docs/articles/Feishu docs |
+| `references/feishu-source-links.md` | conditional Feishu doc/wiki/source-link handling | when the user wants PPT pages to jump back to Feishu material |
 | `references/ppt-template-catalog.md` | 13-template catalog and scenario mapping | before choosing a template |
 | `references/workflow-and-install.md` | install, update, publish, and validation instructions | install/use/update questions |
 | `references/editable-delivery.md` | browser edit mode, export flow, and what should still be changed through the agent | editable handoff questions |
@@ -305,3 +320,4 @@ Keep each template distinct. Do not let all styles collapse into the same pastel
 | `scripts/inject_presenter_mode.py` | add presenter mode to an existing HTML deck | when speaker notes or rehearsal view is needed |
 | `runtime/presenter-mode.js` | browser runtime for notes, next-slide preview, and timer | injected by default unless `--no-presenter` is used |
 | `scripts/validate_deck.py` | basic static validation for generated deck folders | before delivery |
+| `scripts/validate_template_library.py` | copy and validate every template with default edit/presenter runtimes | after adding or changing a reusable template |

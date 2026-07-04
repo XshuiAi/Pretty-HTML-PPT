@@ -17,6 +17,7 @@ python3 -m py_compile \
   "$AGENTS_DST/scripts/copy_template.py" \
   "$AGENTS_DST/scripts/inject_edit_mode.py" \
   "$AGENTS_DST/scripts/inject_presenter_mode.py" \
-  "$AGENTS_DST/scripts/validate_deck.py"
+  "$AGENTS_DST/scripts/validate_deck.py" \
+  "$AGENTS_DST/scripts/validate_template_library.py"
 
 echo "Synced XiaoShui Pretty PPT skill to: $AGENTS_DST"

@@ -16,6 +16,17 @@
 
 [docs/demo/blush-skill-intro/index.html](docs/demo/blush-skill-intro/index.html)
 
+第 13 个模板 **Meraki Learning Kit / 蓝绘课程册** 目前提供截图预览：
+
+[assets/previews/template-13-meraki-learning-kit.png](assets/previews/template-13-meraki-learning-kit.png)
+
+本地生成可交互预览：
+
+```bash
+python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py meraki-learning-kit /tmp/xiaoshui-meraki-preview --force
+open /tmp/xiaoshui-meraki-preview/index.html
+```
+
 打开后可以试两个快捷键：
 
 - `P`：演讲者模式，显示讲稿备注、下一页预览、计时器。
@@ -158,6 +169,9 @@ XiaoShui Pretty PPT 可以帮助 Coding Agent：
 - 生成可以直接打开的静态 HTML 网页 PPT，默认内置浏览器编辑模式和演讲者模式。
 - 保留每套模板自己的配色、字体层级、版式节奏和交互动效。
 - 根据内容长度决定应该做成几页，而不是把所有内容硬塞进一屏。
+- 主动询问最多 3 个问题，再推荐 2-3 套模板，而不是让用户自己翻完整模板库。
+- 将文档内容分成页面展示、讲稿备注、附录/来源链接、可省略内容。
+- 如果用户提供飞书链接并具备飞书 CLI/文档访问能力，可以在页面里保留跳回飞书原文或具体模块的链接。
 - 默认内置浏览器编辑模式：按 `E` 直接改任何文字、替换图片/视频、插入新图片，保存到本机或导出修改后的 HTML。
 - 默认内置演讲者模式：按 `P` 查看讲稿备注、下一页预览、计时器。
 
@@ -167,10 +181,12 @@ XiaoShui Pretty PPT 的独特之处：
 
 - **模板驱动**：不是从零生成代码，而是从 13 套精心设计的视觉模板出发，保持每组配色、字体层级和交互动画的一致性。
 - **先判断再动手**：在使用前会先了解场景、受众、内容密度和素材情况，再推荐最合适的模板方向。
+- **主动交互**：如果用户只说“帮我做 PPT”，Skill 会先问场景、密度、素材三件事，再推荐模板并要求用户发送内容。
 - **渐进式交付**：清晰的工作流 — 判断模式 → 内容摄入 → 选择模板 → 规划页面 → 复制模板 → 填充内容 → 质量验收 → 交付。
 - **可编辑交付物**：生成的 HTML PPT 默认内置编辑工具栏，按 `E` 即可编辑所有文字、替换图片/视频、插入新图片，按 `Cmd+S` 保存，点「导出 HTML」下载独立文件。
 - **演讲者模式**：按 `P` 可以打开讲稿备注、下一页预览和计时器，适合录课、分享会和产品演示。
-- **内容压缩**：不是把文档逐段贴进页面，而是将素材分类为"必须展示/可口头说明/可省略/需要可视化"再规划页面。
+- **内容压缩**：不是把文档逐段贴进页面，而是将素材分类为"页面展示/讲稿备注/附录或来源链接/可省略/需要可视化"再规划页面。
+- **来源追溯**：需要时可以在卡片、附录或讲稿备注里保留飞书原文链接；公开发布前应去掉私有飞书链接。
 
 ## Before Creating A PPT
 
@@ -190,6 +206,14 @@ XiaoShui Pretty PPT 的独特之处：
 2. 内容要少一点适合演讲，还是多一点适合阅读/汇报？
 3. 你有文档、截图、图片、数据或旧 PPT 吗？
 
+拿到回答后，只推荐 2-3 个模板，并主动要求用户继续发送内容：
+
+```text
+我建议优先看 Blush Editorial、Mono Curve Slides、Cobalt Executive Deck。
+如果要更正式，我会选 Cobalt；如果要更有传播感，我会选 Blush。
+接下来把飞书文档链接、文章、截图、数据表或旧 PPT 发给我，我先做页面结构图，再生成 HTML PPT。
+```
+
 内容密度默认分四档：
 
 | 密度 | 适合 | 页面规则 |
@@ -198,6 +222,20 @@ XiaoShui Pretty PPT 的独特之处：
 | Share Deck | 既演讲也发给别人看 | 3-5 个要点，图文均衡 |
 | Report Deck | 行政、政务、职场、研究 | 可放表格/卡片/KPI，但必须分组，不堆长段落 |
 | Tutorial / Portfolio | 教程、案例、作品集 | 以步骤、截图、案例前后对比为主 |
+
+内容会被分到四个位置：
+
+| 位置 | 放什么 |
+|---|---|
+| 页面展示 | 核心结论、关键数据、框架、流程、案例、截图、重要引用 |
+| 讲稿备注 | 背景解释、过渡话术、补充案例、风险提醒、长解释 |
+| 附录/来源链接 | 完整表格、长引用、飞书原文、政策/会议纪要等来源 |
+| 省略 | 重复背景、泛泛介绍、弱例子、和目标无关的细节 |
+
+如果需要从 PPT 跳回飞书文档，需要满足两个前提：
+
+- 用户或 Agent 能访问该飞书文档，必要时安装并登录飞书 CLI。
+- 不把私有飞书链接放进公开发布的 HTML，除非用户明确允许。
 
 ## How To Use
 
@@ -271,6 +309,23 @@ python3 skills/xiaoshui-pretty-ppt/scripts/inject_presenter_mode.py /tmp/shui-bl
 ```bash
 python3 skills/xiaoshui-pretty-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo
 ```
+
+验证全部模板默认都有编辑模式和演讲者模式：
+
+```bash
+python3 skills/xiaoshui-pretty-ppt/scripts/validate_template_library.py
+```
+
+## Public Showcase And Private Source
+
+如果不希望完整模板源码公开，推荐拆成两层：
+
+| 层级 | 放什么 | 建议位置 |
+|---|---|---|
+| 公开展示 | README、截图、GIF/视频、少量脱敏 demo、安装/联系说明 | GitHub public showcase 仓库或公开 Pages |
+| 私有源码 | `skills/`、完整模板 HTML、运行脚本、未公开模板 | GitHub private 仓库，同时本地保留一份 |
+
+只放在本地最安全，但不方便跨设备和版本管理；放在 GitHub private 仓库更适合长期维护、回滚和授权安装。公开 HTML demo 本身无法隐藏前端代码，所以公开 demo 只放可以被别人看到的样式和脱敏内容。
 
 ## Install
 

@@ -12,7 +12,8 @@ skills/xiaoshui-pretty-ppt/
 │   ├── copy_template.py
 │   ├── inject_edit_mode.py
 │   ├── inject_presenter_mode.py
-│   └── validate_deck.py
+│   ├── validate_deck.py
+│   └── validate_template_library.py
 ├── runtime/
 │   └── presenter-mode.js
 └── assets/templates/<style-slug>/index.html
@@ -90,6 +91,19 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
 python3 skills/xiaoshui-pretty-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo
 open /tmp/shui-cobalt-demo/index.html
+```
+
+The validator should report:
+
+```text
+edit_mode: true
+presenter_mode: true
+```
+
+Validate every template after changing the library:
+
+```bash
+python3 skills/xiaoshui-pretty-ppt/scripts/validate_template_library.py
 ```
 
 ## Create A Default Dual-Mode Deck

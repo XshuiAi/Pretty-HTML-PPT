@@ -22,6 +22,16 @@ def is_external(value: str) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate a XiaoShui Pretty PPT output folder.")
     parser.add_argument("deck_dir", help="Deck folder containing index.html")
+    parser.add_argument(
+        "--allow-no-edit",
+        action="store_true",
+        help="Do not fail when browser edit mode is absent.",
+    )
+    parser.add_argument(
+        "--allow-no-presenter",
+        action="store_true",
+        help="Do not fail when presenter mode is absent.",
+    )
     args = parser.parse_args()
 
     deck_dir = Path(args.deck_dir).expanduser().resolve()
@@ -40,6 +50,17 @@ def main() -> int:
         return 1
 
     html = index.read_text(encoding="utf-8", errors="replace")
+
+    has_edit_mode = "XIAOSHUI_PPT_EDIT_MODE_START" in html and "xs-edit-toolbar" in html
+    has_presenter_mode = (
+        "SHUI_PRETTY_PPT_PRESENTER_MODE_START" in html
+        and "data-shui-presenter-notes" in html
+    )
+
+    if not args.allow_no_edit and not has_edit_mode:
+        errors.append("Missing browser edit mode. Expected default E-to-edit runtime.")
+    if not args.allow_no_presenter and not has_presenter_mode:
+        errors.append("Missing presenter mode. Expected default P-to-present runtime.")
 
     if PLACEHOLDERS.search(html):
         warnings.append("Found placeholder-like text.")
@@ -70,6 +91,8 @@ def main() -> int:
     print(f"index: {index}")
     print(f"local_refs: {len(local_refs)}")
     print(f"slide_like_blocks: {slide_like}")
+    print(f"edit_mode: {str(has_edit_mode).lower()}")
+    print(f"presenter_mode: {str(has_presenter_mode).lower()}")
 
     for item in warnings:
         print(f"WARNING: {item}")
