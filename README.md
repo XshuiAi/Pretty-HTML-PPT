@@ -14,7 +14,10 @@
 
 推荐先看粉白时尚风的动态介绍页：
 
-[docs/demo/blush-skill-intro/index.html](docs/demo/blush-skill-intro/index.html)
+**在线网页预览：**  
+[打开 xiaoshui-Pretty PPT 动态介绍页](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/)
+
+这个链接打开的是可交互网页，不是 GitHub 代码页。
 
 第 13 个模板 **Meraki Learning Kit / 蓝绘课程册** 目前提供截图预览：
 
