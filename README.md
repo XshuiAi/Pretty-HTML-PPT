@@ -1,20 +1,18 @@
 # xiaoshui-Pretty PPT
 
-很多内容不是写不出来，而是很难被讲出来。
+我经常遇到一种情况：内容已经有了，但还差一个能被讲出来的样子。
 
-一篇文章、一份飞书文档、几张截图、一组数据，原本只是散在不同地方的材料。xiaoshui-Pretty PPT 想做的，是让 Coding Agent 帮你把这些材料整理成一份可以打开、可以演示、可以继续编辑，也可以直接发链接分享的 **HTML 网页 PPT**。
-
-你不用先想清楚每一页怎么排版。把材料交给它，它会先判断内容适合哪种场景，再选择模板、拆出页面节奏，把重点放到观众能看懂的位置，把长解释放进讲稿备注里。最后得到的不是一张张死图，而是一份能点击、能翻页、能改字、能发布的网页演示稿。
+xiaoshui-Pretty PPT 就是把文章、飞书文档、截图、数据和旧 PPT，整理成一份能翻页、能编辑、能演示、也能发链接的 **HTML 网页 PPT**。你把材料交给 Coding Agent，它负责选模板、拆页面、放重点，把一堆散材料变成一份可以拿出去讲的作品。
 
 [在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [查看模板](#模板图库)
 
 ## 适合谁
 
-- **自媒体和视频创作者**：把文章、脚本、教程、工具清单、案例复盘做成适合录屏讲解和对外分享的网页演示。
-- **商务汇报和产品团队**：把产品介绍、商业方案、数据结论、公司介绍、合作提案做成可以演讲、可以发链接、后续还能继续修改的演示稿。
-- **行政、政务和职场汇报者**：把工作总结、项目复盘、正式汇报、公共服务材料整理成结构更清楚、视觉更稳重的 HTML PPT。
-- **学生、老师和研究者**：把课程讲义、论文答辩、研究综述、学习笔记做成有章节、有备注、有演示节奏的网页幻灯片。
-- **个人品牌和作品集展示者**：把项目经历、作品集、课程产品、个人介绍做成更有记忆点的展示页。
+- **自媒体 / 视频创作者**：文章、脚本、教程、工具清单，做成适合录屏和分享的网页 PPT。
+- **商务 / 产品团队**：产品介绍、方案、数据结论、合作提案，做成能讲也能发链接的演示稿。
+- **行政 / 政务 / 职场汇报者**：总结、复盘、正式材料，做成结构清楚、风格稳的汇报页。
+- **学生 / 老师 / 研究者**：讲义、答辩、研究综述，做成有章节和讲稿备注的演示页。
+- **个人作品集 / IP 展示者**：项目经历、作品截图、课程产品，做成更有记忆点的展示页。
 
 ## 它能处理什么
 
@@ -61,7 +59,7 @@
 
 ## 模板图库
 
-当前内置 13 套模板，分成两类：一类更适合公开传播和个人展示，一类更适合正式汇报和产品演讲。
+当前内置 12 套模板，分成两类：一类更适合公开传播和个人展示，一类更适合正式汇报和产品演讲。
 
 ### 创作者展示型
 
@@ -72,8 +70,7 @@
 | Mono Curve Slides / 墨线白稿 | 动态幻灯片、课程说明、产品更新、轻量演示页 | ![Mono Curve Slides](assets/previews/template-03-mono-curve-slides.png) |
 | Ribbon Tab Brochure / 彩签页报 | 项目资料册、产品说明、运营复盘、对外提案 | ![Ribbon Tab Brochure](assets/previews/template-08-ribbon-tab-brochure.png) |
 | Blue Growth Deck / 蓝色增长稿 | AI 产品、运营增长、GEO 复盘、轻商务互动演示 | ![Blue Growth Deck](assets/previews/template-11-blue-growth-deck.png) |
-| Garden Pop Landing / 花园跳色长页 | 自媒体教程、课程产品、创作者发布、轻快产品长页 | ![Garden Pop Landing](assets/previews/template-12-garden-pop-landing.png) |
-| Meraki Learning Kit / 蓝绘课程册 | 课程产品、儿童友好科普、创作者产品 Demo、学习地图 | ![Meraki Learning Kit](assets/previews/template-13-meraki-learning-kit.png) |
+| Garden Pop Landing / 花园跳色长页 | 课程产品、儿童友好科普、自媒体教程、创作者发布 | ![Garden Pop Landing](assets/previews/template-12-garden-pop-landing.png) |
 
 ### 正式汇报型
 

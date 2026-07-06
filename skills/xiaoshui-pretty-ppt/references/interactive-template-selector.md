@@ -45,7 +45,7 @@ After the user answers, recommend only 2-3 candidates:
 | User Need | Recommend First | Alternatives |
 |---|---|---|
 | self-media explanation, public share, tool list | Blush Editorial | Pastel Blockfolio, Garden Pop Landing |
-| course product, workshop, learning map | Meraki Learning Kit | Garden Pop Landing, Mono Curve Slides |
+| course product, workshop, learning map | Garden Pop Landing | Mono Curve Slides, Pastel Blockfolio |
 | personal portfolio, creator demo | Pastel Blockfolio | Blush Editorial, Mono Curve Slides |
 | product roadshow or business proposal | Cobalt Executive Deck | Coral Startup Deck, Blue Growth Deck |
 | administrative or government-adjacent report | Vermilion Civic Deck | One Dot Cinnabar, Sapphire Defense Deck |
@@ -65,6 +65,6 @@ Once a template direction is chosen, ask for source material directly:
 ## Do Not Over-Ask
 
 - Do not ask more than three questions before giving a recommendation.
-- Do not ask the user to choose from all 13 templates unless they explicitly want to browse the whole library.
+- Do not ask the user to choose from all 12 templates unless they explicitly want to browse the whole library.
 - Do not ask for exact page count unless the user has a fixed presentation time or formal requirement.
 - Do not delay generation when the user already provides enough context.

@@ -1,13 +1,13 @@
 ---
 name: xiaoshui-pretty-ppt
-description: Create polished standalone HTML presentation decks using the XiaoShui Pretty PPT template library. Use when turning notes, scripts, reports, self-media outlines, portfolios, work summaries, academic/business/government/finance-tech materials, product proposals, course products, creator demos, or Feishu docs into visual web PPT decks. Includes lively creator/personal templates and practical report/presentation templates such as Pastel Blockfolio, Blush Editorial, Mono Curve Slides, One Dot Cinnabar, Ivory Research Deck, Cobalt Executive Deck, Coral Startup Deck, Ribbon Tab Brochure, Sapphire Defense Deck, Vermilion Civic Deck, Blue Growth Deck, Garden Pop Landing, and Meraki Learning Kit.
+description: Create polished standalone HTML presentation decks using the XiaoShui Pretty PPT template library. Use when turning notes, scripts, reports, self-media outlines, portfolios, work summaries, academic/business/government/finance-tech materials, product proposals, course products, creator demos, or Feishu docs into visual web PPT decks. Includes lively creator/personal templates and practical report/presentation templates such as Pastel Blockfolio, Blush Editorial, Mono Curve Slides, One Dot Cinnabar, Ivory Research Deck, Cobalt Executive Deck, Coral Startup Deck, Ribbon Tab Brochure, Sapphire Defense Deck, Vermilion Civic Deck, Blue Growth Deck, and Garden Pop Landing.
 ---
 
 # XiaoShui Pretty PPT
 
 Use this skill to build **standalone HTML web PPT decks** from a fixed library of reusable visual templates. The output is usually a local static folder containing `index.html` and any required assets. It can be opened directly in a browser, shared as a static page, or used as the visual basis for a talk.
 
-The skill contains thirteen templates:
+The skill contains twelve templates:
 
 - **Pastel Blockfolio**（粉彩拼贴志）
 - **Blush Editorial**（暖粉编辑志）
@@ -21,7 +21,6 @@ The skill contains thirteen templates:
 - **Vermilion Civic Deck**（红色汇报稿）
 - **Blue Growth Deck**（蓝色增长稿）
 - **Garden Pop Landing**（花园跳色长页）
-- **Meraki Learning Kit**（蓝绘课程册）
 
 ## What This Skill Does
 
@@ -61,8 +60,7 @@ Use this module when the user wants something more memorable, colorful, editoria
 - **Mono Curve Slides**（墨线白稿）: clean slide-gallery stories, video lesson pages, lightweight product updates.
 - **Ribbon Tab Brochure**（彩签页报）: brochure-like project pages, external proposals, service packages.
 - **Blue Growth Deck**（蓝色增长稿）: AI products, growth recaps, creator product launches, friendly business decks.
-- **Garden Pop Landing**（花园跳色长页）: self-media tutorials, course launches, creator products, high-energy landing decks.
-- **Meraki Learning Kit**（蓝绘课程册）: course products, children-friendly explainers, creator product demos, learning maps, personal IP introductions.
+- **Garden Pop Landing**（花园跳色长页）: self-media tutorials, course launches, creator products, children-friendly explainers, learning maps, high-energy landing decks.
 
 ### Module B · Practical Reports, Government, Workplace, Product Talks
 
@@ -127,7 +125,7 @@ If the user asks for Feishu source traceability or section jump links, read `ref
 
 Open `references/ppt-template-catalog.md`, then choose one template by scenario. If the user names a template, use it.
 
-If the user is unsure, recommend 2-3 templates with reasons instead of listing all 13. Let the user choose only when style preference is materially unclear.
+If the user is unsure, recommend 2-3 templates with reasons instead of listing all 12. Let the user choose only when style preference is materially unclear.
 
 Detailed style references:
 
@@ -143,7 +141,6 @@ Detailed style references:
 - `references/vermilion-civic-deck.md`
 - `references/blue-growth-deck.md`
 - `references/garden-pop-landing.md`
-- `references/meraki-learning-kit.md`
 
 Read the chosen reference before editing the deck.
 
@@ -215,7 +212,6 @@ sapphire-defense-deck
 vermilion-civic-deck
 blue-growth-deck
 garden-pop-landing
-meraki-learning-kit
 ```
 
 ### Step 5 · Build The Deck
