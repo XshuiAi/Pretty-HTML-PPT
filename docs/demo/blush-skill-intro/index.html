@@ -163,7 +163,6 @@
     .hero-panel {
       padding-top: 24px;
       border-top: 1px solid var(--line);
-      animation: float-panel 4.8s var(--ease) infinite alternate;
     }
 
     @keyframes float-panel {
@@ -197,6 +196,64 @@
       border-color: var(--pink);
       color: #fff;
       background: var(--pink);
+    }
+
+    .talk-timer {
+      margin-top: 22px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 250, 247, .82);
+      box-shadow: 0 14px 36px rgba(120, 42, 78, .08);
+    }
+
+    .talk-timer-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .talk-timer-time {
+      display: block;
+      margin-top: 6px;
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .talk-timer-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .talk-timer-controls button {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 7px 11px;
+      font: 800 12px/1 var(--font);
+      cursor: pointer;
+      transition: transform 140ms var(--ease), background 140ms var(--ease), color 140ms var(--ease);
+    }
+
+    .talk-timer-controls button:hover {
+      transform: translateY(-1px);
+      background: var(--pink-soft);
+    }
+
+    .talk-timer-controls button[data-timer-action="start"] {
+      border-color: var(--pink);
+      background: var(--pink);
+      color: #fff;
     }
 
     .section-head {
@@ -612,6 +669,18 @@
           <span class="tag">P 演讲者模式</span>
           <span class="tag">HTML 发布</span>
         </div>
+        <div class="talk-timer" data-talk-timer data-no-edit>
+          <div class="talk-timer-label">
+            <span>演讲计时</span>
+            <span>Talk Timer</span>
+          </div>
+          <strong class="talk-timer-time" data-talk-timer-display>00:00</strong>
+          <div class="talk-timer-controls" aria-label="演讲计时控制">
+            <button type="button" data-timer-action="start">开始</button>
+            <button type="button" data-timer-action="pause">暂停</button>
+            <button type="button" data-timer-action="reset">重置</button>
+          </div>
+        </div>
       </aside>
       <aside class="speaker-notes">开场先讲痛点：不是再做一个普通网页模板，而是把文档变成可以直接演示、改动和分享的网页 PPT。</aside>
     </section>
@@ -821,6 +890,80 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
   <button class="demo-next" type="button" data-demo-next data-no-edit aria-label="下一页">↓</button>
 
   <script>
+    (() => {
+      const displays = () => [...document.querySelectorAll("[data-talk-timer-display], [data-shui-presenter-timer]")];
+      const state = {
+        startedAt: 0,
+        elapsedBeforeStart: 0,
+        running: false,
+        timer: null,
+      };
+
+      function elapsedMs() {
+        return state.elapsedBeforeStart + (state.running ? Date.now() - state.startedAt : 0);
+      }
+
+      function format(ms) {
+        const total = Math.max(0, Math.floor(ms / 1000));
+        const minutes = String(Math.floor(total / 60)).padStart(2, "0");
+        const seconds = String(total % 60).padStart(2, "0");
+        return `${minutes}:${seconds}`;
+      }
+
+      function render() {
+        const text = format(elapsedMs());
+        displays().forEach((node) => { node.textContent = text; });
+        document.dispatchEvent(new CustomEvent("shui-talk-timer:update", {
+          detail: { elapsed: elapsedMs(), running: state.running, text },
+        }));
+      }
+
+      function start() {
+        if (state.running) return;
+        state.running = true;
+        state.startedAt = Date.now();
+        clearInterval(state.timer);
+        state.timer = setInterval(render, 250);
+        render();
+      }
+
+      function pause() {
+        if (!state.running) return;
+        state.elapsedBeforeStart = elapsedMs();
+        state.running = false;
+        clearInterval(state.timer);
+        state.timer = null;
+        render();
+      }
+
+      function reset() {
+        state.startedAt = state.running ? Date.now() : 0;
+        state.elapsedBeforeStart = 0;
+        render();
+      }
+
+      window.ShuiDeckTimer = {
+        start,
+        pause,
+        reset,
+        elapsed: elapsedMs,
+        isRunning: () => state.running,
+        format,
+        render,
+      };
+
+      document.addEventListener("click", (event) => {
+        const control = event.target.closest("[data-timer-action]");
+        if (!control) return;
+        const action = control.dataset.timerAction;
+        if (action === "start") start();
+        if (action === "pause") pause();
+        if (action === "reset") reset();
+      });
+
+      render();
+    })();
+
     (() => {
       const slides = [...document.querySelectorAll("[data-slide]")];
       const navLinks = [...document.querySelectorAll(".nav a[href^='#']")];

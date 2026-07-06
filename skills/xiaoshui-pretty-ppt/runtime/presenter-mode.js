@@ -3,7 +3,9 @@
   const state = {
     open: false,
     index: 0,
-    startedAt: Date.now(),
+    startedAt: 0,
+    elapsedBeforeStart: 0,
+    running: false,
     timer: null,
   };
 
@@ -54,6 +56,55 @@
     const minutes = String(Math.floor(total / 60)).padStart(2, "0");
     const seconds = String(total % 60).padStart(2, "0");
     return `${minutes}:${seconds}`;
+  }
+
+  function elapsedMs() {
+    return state.elapsedBeforeStart + (state.running ? Date.now() - state.startedAt : 0);
+  }
+
+  function deckTimer() {
+    return window.ShuiDeckTimer || null;
+  }
+
+  function timerText() {
+    const external = deckTimer();
+    if (external?.elapsed) {
+      const elapsed = external.elapsed();
+      return external.format ? external.format(elapsed) : formatTime(elapsed);
+    }
+    return formatTime(elapsedMs());
+  }
+
+  function startTimer() {
+    const external = deckTimer();
+    if (external?.start) {
+      external.start();
+      return;
+    }
+    if (state.running) return;
+    state.running = true;
+    state.startedAt = Date.now();
+  }
+
+  function pauseTimer() {
+    const external = deckTimer();
+    if (external?.pause) {
+      external.pause();
+      return;
+    }
+    if (!state.running) return;
+    state.elapsedBeforeStart = elapsedMs();
+    state.running = false;
+  }
+
+  function resetTimer() {
+    const external = deckTimer();
+    if (external?.reset) {
+      external.reset();
+      return;
+    }
+    state.elapsedBeforeStart = 0;
+    state.startedAt = state.running ? Date.now() : 0;
   }
 
   function ensureStyles() {
@@ -214,6 +265,22 @@
         margin-top: 4px;
         font-size: 18px;
       }
+      .shui-presenter-timer-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .shui-presenter-timer-controls button {
+        border: 1px solid rgba(255, 255, 255, .2);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .08);
+        color: #fff;
+        padding: 5px 8px;
+        font: 700 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        cursor: pointer;
+      }
+      .shui-presenter-timer-controls button:hover { background: rgba(255, 255, 255, .16); }
       @media (max-width: 860px) {
         .shui-presenter-grid { grid-template-columns: 1fr; }
         .shui-presenter-sidebar { grid-template-rows: auto auto auto; }
@@ -270,7 +337,15 @@
           </div>
           <div class="shui-presenter-meta">
             <div><span>Slide</span><b data-shui-presenter-count></b></div>
-            <div><span>Timer</span><b data-shui-presenter-timer>00:00</b></div>
+            <div>
+              <span>Talk Timer</span>
+              <b data-shui-presenter-timer>00:00</b>
+              <div class="shui-presenter-timer-controls">
+                <button type="button" data-shui-presenter-timer-start>Start</button>
+                <button type="button" data-shui-presenter-timer-pause>Pause</button>
+                <button type="button" data-shui-presenter-timer-reset>Reset</button>
+              </div>
+            </div>
             <div><span>Shortcut</span><b>P / Esc</b></div>
           </div>
         </aside>
@@ -281,6 +356,18 @@
     overlay.querySelector("[data-shui-presenter-close]").addEventListener("click", close);
     overlay.querySelector("[data-shui-presenter-prev]").addEventListener("click", () => move(-1));
     overlay.querySelector("[data-shui-presenter-next]").addEventListener("click", () => move(1));
+    overlay.querySelector("[data-shui-presenter-timer-start]").addEventListener("click", () => {
+      startTimer();
+      update();
+    });
+    overlay.querySelector("[data-shui-presenter-timer-pause]").addEventListener("click", () => {
+      pauseTimer();
+      update();
+    });
+    overlay.querySelector("[data-shui-presenter-timer-reset]").addEventListener("click", () => {
+      resetTimer();
+      update();
+    });
     overlay.querySelector("[data-shui-presenter-notes]").addEventListener("input", (event) => {
       ensureNotesElement(slides[state.index]).textContent = event.currentTarget.textContent;
     });
@@ -303,14 +390,13 @@
     overlay.querySelector("[data-shui-presenter-count]").textContent =
       `${state.index + 1}/${slides.length}`;
     overlay.querySelector("[data-shui-presenter-timer]").textContent =
-      formatTime(Date.now() - state.startedAt);
+      timerText();
   }
 
   function open() {
     ensureStyles();
     ensureDom();
     state.open = true;
-    state.startedAt = Date.now();
     document.querySelector(".shui-presenter-overlay").classList.add("is-open");
     root.classList.add("shui-presenter-is-open");
     update();
@@ -353,6 +439,10 @@
     if (state.open) return;
     state.index = visibleIndex();
   }, { passive: true });
+
+  document.addEventListener("shui-talk-timer:update", () => {
+    if (state.open) update();
+  });
 
   document.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
