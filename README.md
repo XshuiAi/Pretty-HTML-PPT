@@ -1,17 +1,20 @@
 # xiaoshui-Pretty PPT
 
-把文档、素材和想法，变成可以演示、编辑、发布的 **HTML 网页 PPT**。
+很多内容不是写不出来，而是很难被讲出来。
 
-它不是图片式 AI PPT，也不是普通网页模板。它更像一条 presentation workflow：AI Agent 先理解内容和场景，再选择模板、拆成页面、生成可打开的网页演示稿。你可以发链接给别人看，也可以在浏览器里继续改。
+一篇文章、一份飞书文档、几张截图、一组数据，原本只是散在不同地方的材料。xiaoshui-Pretty PPT 想做的，是让 Coding Agent 帮你把这些材料整理成一份可以打开、可以演示、可以继续编辑，也可以直接发链接分享的 **HTML 网页 PPT**。
+
+你不用先想清楚每一页怎么排版。把材料交给它，它会先判断内容适合哪种场景，再选择模板、拆出页面节奏，把重点放到观众能看懂的位置，把长解释放进讲稿备注里。最后得到的不是一张张死图，而是一份能点击、能翻页、能改字、能发布的网页演示稿。
 
 [在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [查看模板](#模板图库)
 
 ## 适合谁
 
-- 自媒体创作者：把文章、脚本、教程、案例复盘做成可分享的网页演示。
-- 个人展示者：把作品集、项目经历、课程产品做成更有记忆点的展示页。
-- 职场和产品团队：把汇报、方案、产品介绍、数据结论做成可讲、可改、可发链接的演示稿。
-- AI Agent 使用者：适合 Codex、Claude Code、Cursor、Windsurf、Workbody 或其他能读写本地文件的 AI Agent 工作流。
+- **自媒体和视频创作者**：把文章、脚本、教程、工具清单、案例复盘做成适合录屏讲解和对外分享的网页演示。
+- **商务汇报和产品团队**：把产品介绍、商业方案、数据结论、公司介绍、合作提案做成可以演讲、可以发链接、后续还能继续修改的演示稿。
+- **行政、政务和职场汇报者**：把工作总结、项目复盘、正式汇报、公共服务材料整理成结构更清楚、视觉更稳重的 HTML PPT。
+- **学生、老师和研究者**：把课程讲义、论文答辩、研究综述、学习笔记做成有章节、有备注、有演示节奏的网页幻灯片。
+- **个人品牌和作品集展示者**：把项目经历、作品集、课程产品、个人介绍做成更有记忆点的展示页。
 
 ## 它能处理什么
 
@@ -52,7 +55,7 @@
 
 - 点击右下角箭头或左下角页码切换页面。
 - 点击卡片展开补充说明。
-- 首页点击“开始”启动演讲计时。
+- 点击右下角“计时”，按“开始”启动演讲计时。
 - 按 `P` 进入演讲者模式，看讲稿备注、下一页和同一个计时器。
 - 按 `E` 进入编辑模式，直接改文字和字号。
 
@@ -84,6 +87,8 @@
 | Vermilion Civic Deck / 红色汇报稿 | 政务、行政、党建和公共服务类正式汇报 | ![Vermilion Civic Deck](assets/previews/template-10-vermilion-civic-deck.png) |
 
 ## 安装
+
+这个 Skill 是给 **Coding Agent** 使用的，适合 Claude Code、Codex、Workbody、Cursor 等能读写本地文件的 Agent 工作流。
 
 推荐使用 `skills` CLI：
 
@@ -132,7 +137,7 @@ git clone https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
 不是。飞书文档只是来源之一。文章、Markdown、本地图片、截图、数据表、旧 PPT 和普通文本都可以作为输入。
 
 **它只能在 Codex 里用吗？**  
-不是。这个仓库按 Skill 结构组织，最适合 Coding Agent / AI Agent 使用。Codex、Claude Code、Cursor、Windsurf、Workbody 或其他能读写本地文件的 Agent 都可以参考或接入。
+不是。它本质上是给 Coding Agent 使用的 Skill。Claude Code、Codex、Workbody、Cursor 等能读写本地文件的 Agent 都可以参考或接入。
 
 **编辑后别人会自动看到吗？**  
 不会。浏览器里按 `E` 的修改只在当前浏览器本地生效。要让别人看到，需要导出 HTML 后提交到仓库或重新部署。
@@ -146,4 +151,3 @@ git clone https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
 ## 维护说明
 
 公开 README 只保留对外展示、安装和使用说明。内部设计原则、路线图和开发结构放在 `docs/internal/`。
-
