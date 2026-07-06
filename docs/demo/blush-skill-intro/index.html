@@ -163,6 +163,7 @@
     .hero-panel {
       padding-top: 24px;
       border-top: 1px solid var(--line);
+      animation: float-panel 4.8s var(--ease) infinite alternate;
     }
 
     @keyframes float-panel {
@@ -199,12 +200,17 @@
     }
 
     .talk-timer {
+      width: min(360px, 100%);
       margin-top: 22px;
       padding: 14px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: rgba(255, 250, 247, .82);
       box-shadow: 0 14px 36px rgba(120, 42, 78, .08);
+    }
+
+    .hero-copy .talk-timer {
+      margin-top: 24px;
     }
 
     .talk-timer-label {
@@ -655,20 +661,10 @@
 
   <main>
     <section class="shell slide hero" id="cover" data-slide>
-      <div>
+      <div class="hero-copy">
         <span class="eyebrow">Blush Editorial / 暖粉编辑志</span>
         <h1 data-slide-title>把文档变成会动、能改、能分享的 HTML 网页 PPT</h1>
         <p class="lead" data-slide-summary>xiaoshui-Pretty PPT 是一个面向 Codex / Claude Code 的演示型 skill，用 12 套真实模板把飞书文档、文章、汇报和作品集整理成可打开、可编辑、可部署的网页 PPT。</p>
-      </div>
-      <aside class="hero-panel" aria-label="Skill highlights">
-        <span class="tag hot">Presentation Skill</span>
-        <strong class="metric">12</strong>
-        <p>套模板，覆盖自媒体、个人展示、作品集、行政政务、职场汇报和产品演讲。</p>
-        <div class="mini-tags">
-          <span class="tag">E 编辑</span>
-          <span class="tag">P 演讲者模式</span>
-          <span class="tag">HTML 发布</span>
-        </div>
         <div class="talk-timer" data-talk-timer data-no-edit>
           <div class="talk-timer-label">
             <span>演讲计时</span>
@@ -680,6 +676,16 @@
             <button type="button" data-timer-action="pause">暂停</button>
             <button type="button" data-timer-action="reset">重置</button>
           </div>
+        </div>
+      </div>
+      <aside class="hero-panel" aria-label="Skill highlights">
+        <span class="tag hot">Presentation Skill</span>
+        <strong class="metric">12</strong>
+        <p>套模板，覆盖自媒体、个人展示、作品集、行政政务、职场汇报和产品演讲。</p>
+        <div class="mini-tags">
+          <span class="tag">E 编辑</span>
+          <span class="tag">P 演讲者模式</span>
+          <span class="tag">HTML 发布</span>
         </div>
       </aside>
       <aside class="speaker-notes">开场先讲痛点：不是再做一个普通网页模板，而是把文档变成可以直接演示、改动和分享的网页 PPT。</aside>
