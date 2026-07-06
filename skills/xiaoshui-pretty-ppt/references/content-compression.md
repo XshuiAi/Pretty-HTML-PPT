@@ -61,6 +61,25 @@ Convert content into a visual page when it contains:
 - case study -> problem/action/result page
 - course or learning path -> module map
 
+## Image-Text Matching
+
+When the source includes screenshots, photos, charts, or local image files, do not place images randomly. Do an image-text matching pass before building pages:
+
+1. Inspect each image and name what it shows: person, product, UI screenshot, chart, process, document, scene, proof, or decorative material.
+2. Match the image to the nearest sentence, claim, step, data point, case, or section.
+3. Put a matched image on the same page as the text it supports.
+4. Add a short caption or alt text when the relationship is not obvious.
+5. If an image is attractive but weakly related, use it as supporting material, not as the main proof.
+6. If an image conflicts with or does not match the nearby text, ask the user or leave it out of the main deck.
+
+Preferred patterns:
+
+- `Claim + screenshot`: one key statement next to a UI/product screenshot.
+- `Step + photo`: each process step paired with one evidence image.
+- `Data + chart`: conclusion first, chart second, caption third.
+- `Case + before/after`: two images with a short contrast sentence.
+- `Gallery + labels`: several images in one section when they support the same theme.
+
 ## Active Clarification Questions
 
 Ask at most one compression question when the content can reasonably go in multiple directions:

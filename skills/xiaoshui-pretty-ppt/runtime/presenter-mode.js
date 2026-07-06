@@ -113,17 +113,6 @@
     style.id = "shui-presenter-style";
     style.textContent = `
       .speaker-notes, [data-speaker-notes] { display: none !important; }
-      .shui-presenter-hint {
-        position: fixed;
-        left: 14px;
-        bottom: 14px;
-        z-index: 2147483000;
-        padding: 7px 9px;
-        border: 1px solid rgba(17, 24, 39, .16);
-        background: rgba(255, 255, 255, .9);
-        color: #111827;
-        font: 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      }
       .shui-presenter-overlay {
         position: fixed;
         inset: 0;
@@ -287,7 +276,7 @@
         .shui-presenter-notes { max-height: 220px; }
       }
       @media print {
-        .shui-presenter-hint, .shui-presenter-overlay { display: none !important; }
+        .shui-presenter-overlay { display: none !important; }
       }
     `;
     document.head.appendChild(style);
@@ -295,12 +284,6 @@
 
   function ensureDom() {
     if (document.querySelector(".shui-presenter-overlay")) return;
-
-    const hint = document.createElement("div");
-    hint.className = "shui-presenter-hint";
-    hint.textContent = "Press P for presenter mode";
-    hint.setAttribute("data-no-edit", "true");
-    document.body.appendChild(hint);
 
     const overlay = document.createElement("div");
     overlay.className = "shui-presenter-overlay";

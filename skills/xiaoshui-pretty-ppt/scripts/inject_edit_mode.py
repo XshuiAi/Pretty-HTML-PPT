@@ -34,6 +34,21 @@ SNIPPET = r'''
     color: #111827;
     font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   }
+  .xs-edit-toolbar:not(.xs-collapsed) {
+    top: 72px;
+    width: min(390px, calc(100vw - 28px));
+    align-items: center;
+  }
+  .xs-edit-toolbar.xs-collapsed {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  .xs-edit-toolbar.xs-collapsed > :not([data-xs-edit-toggle]) {
+    display: none !important;
+  }
   .xs-edit-toolbar button {
     appearance: none;
     border: 1px solid rgba(17, 24, 39, 0.16);
@@ -52,6 +67,10 @@ SNIPPET = r'''
     background: #111827;
     color: #fff;
     border-color: #111827;
+  }
+  .xs-edit-toolbar.xs-collapsed [data-xs-edit-toggle] {
+    border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(17, 24, 39, 0.12);
   }
   .xs-edit-toolbar .xs-sep {
     width: 1px;
@@ -434,6 +453,12 @@ SNIPPET = r'''
     }
   }
 
+  function setToolbarExpanded(expanded) {
+    const bar = document.querySelector(".xs-edit-toolbar");
+    if (!bar) return;
+    bar.classList.toggle("xs-collapsed", !expanded);
+  }
+
   function updateToggleBtn() {
     const btn = document.querySelector("[data-xs-edit-toggle]");
     if (btn) {
@@ -618,10 +643,12 @@ SNIPPET = r'''
     mask.addEventListener("click", (e) => {
       if (e.target === mask) closeModal();
     });
+    const fileInput = mask.querySelector("#xsFileInput");
     mask.querySelector(".xs-btn-cancel").addEventListener("click", closeModal);
     mask.querySelector(".xs-btn-apply").addEventListener("click", apply);
-    mask.querySelector("#xsFileInput").addEventListener("change", () => {
-      const f = mask.querySelector("#xsFileInput").files[0];
+    mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+      const f = fileInput.files[0];
       if (f) mask.querySelector(".xs-new-url").placeholder = f.name;
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
@@ -668,10 +695,12 @@ SNIPPET = r'''
         img.dataset.xsEditId = "m" + Date.now();
 
         const active = document.activeElement;
+        const currentSlide = active?.closest?.("[data-slide], section[id], article[id], main")
+          || document.querySelector("[data-slide], section[id], article[id], main");
         if (active && active.isContentEditable && active !== document.body) {
-          active.appendChild(img);
+          active.insertAdjacentElement("afterend", img);
         } else {
-          const lastSlide = document.querySelector(".slide-card:last-of-type, .deck-section:last-of-type, main");
+          const lastSlide = currentSlide || document.querySelector(".slide-card:last-of-type, .deck-section:last-of-type, main");
           if (lastSlide) lastSlide.appendChild(img);
           else document.body.appendChild(img);
         }
@@ -696,10 +725,12 @@ SNIPPET = r'''
     };
 
     mask.addEventListener("click", (e) => { if (e.target === mask) closeModal(); });
+    const fileInput = mask.querySelector("#xsFileInput");
     mask.querySelector(".xs-btn-cancel").addEventListener("click", closeModal);
     mask.querySelector(".xs-btn-apply").addEventListener("click", apply);
-    mask.querySelector("#xsFileInput").addEventListener("change", () => {
-      const f = mask.querySelector("#xsFileInput").files[0];
+    mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+      const f = fileInput.files[0];
       if (f) mask.querySelector(".xs-new-url").placeholder = f.name;
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
@@ -753,7 +784,7 @@ SNIPPET = r'''
   function buildToolbar() {
     if (document.querySelector(".xs-edit-toolbar")) return;
     const bar = document.createElement("div");
-    bar.className = "xs-edit-toolbar";
+    bar.className = "xs-edit-toolbar xs-collapsed";
     bar.setAttribute("data-no-edit", "true");
     bar.innerHTML = [
       '<button type="button" data-xs-edit-toggle>编辑</button>',
@@ -770,10 +801,18 @@ SNIPPET = r'''
       '<button type="button" data-xs-edit-export>导出 HTML</button>',
       '<button type="button" data-xs-edit-reset>重置</button>',
       '<span class="xs-sep"></span>',
-      '<button type="button" data-xs-edit-insert-img title="插入一张图片到光标位置">➕ 插入图片</button>'
+      '<button type="button" data-xs-edit-insert-img title="插入一张图片到当前页面">➕ 插入图片</button>',
+      '<button type="button" data-xs-edit-collapse title="收起工具栏">收起</button>'
     ].join("");
     document.body.appendChild(bar);
-    bar.querySelector("[data-xs-edit-toggle]").addEventListener("click", () => toggleEdit());
+    bar.querySelector("[data-xs-edit-toggle]").addEventListener("click", () => {
+      if (bar.classList.contains("xs-collapsed")) {
+        setToolbarExpanded(true);
+        toggleEdit(true);
+      } else {
+        toggleEdit();
+      }
+    });
     bar.querySelector("[data-xs-edit-save]").addEventListener("click", saveAll);
     bar.querySelector("[data-xs-edit-export]").addEventListener("click", exportHtml);
     bar.querySelector("[data-xs-edit-reset]").addEventListener("click", resetAll);
@@ -794,6 +833,10 @@ SNIPPET = r'''
       if (!editing) { toast("请先点击「编辑」进入编辑模式"); return; }
       openInsertModal();
     });
+    bar.querySelector("[data-xs-edit-collapse]").addEventListener("click", () => {
+      if (editing) exitEdit();
+      setToolbarExpanded(false);
+    });
   }
 
   document.addEventListener("focusin", (event) => {
@@ -811,7 +854,10 @@ SNIPPET = r'''
     const key = event.key.toLowerCase();
     if (key === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
       const tag = document.activeElement?.tagName?.toLowerCase();
-      if (tag !== "input" && tag !== "textarea") toggleEdit();
+      if (tag !== "input" && tag !== "textarea") {
+        setToolbarExpanded(true);
+        toggleEdit();
+      }
     }
     if (key === "s" && (event.metaKey || event.ctrlKey)) {
       if (editing) { event.preventDefault(); saveAll(); }

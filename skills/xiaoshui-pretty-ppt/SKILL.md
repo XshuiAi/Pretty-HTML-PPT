@@ -112,6 +112,15 @@ When the user provides a full document, read `references/content-compression.md`
 - **Omit**: repeated context, generic intro, and low-value detail.
 - **Need visual**: process, comparison, timeline, system, chart, screenshot, or case evidence that needs a visual layout.
 
+When the user provides images together with text, do an image-text matching pass before placing assets:
+
+- Identify what each image actually shows: person, product, UI screenshot, chart, process, document, scene, proof, or decorative material.
+- Match each image to the closest claim, paragraph, data point, step, case, or section title.
+- Use matched images as visual evidence on the same page as the corresponding text.
+- If an image is relevant but not tied to a specific claim, place it in a gallery, appendix, or supporting material page.
+- If an image conflicts with the nearby text or the match is unclear, do not force it into the main page; ask the user or label it as a candidate asset.
+- Add short captions or alt text when they help explain why the image is on that page.
+
 If the user asks for Feishu source traceability or section jump links, read `references/feishu-source-links.md` before planning the deck.
 
 ### Step 2 · Pick A Template
@@ -223,6 +232,8 @@ Follow these rules:
 - If the user requests Feishu jump links, use `references/feishu-source-links.md` and add quiet `查看飞书原文` links only when the user has provided links or tool access confirms them.
 - Images and videos should live next to `index.html` under a local `assets/` or `images/` folder unless the template already defines another path.
 - Do not reuse borrowed web images unless the user owns them, provides them, or explicitly approves the source.
+- When text and images are supplied together, preserve meaningful pairs: image + matching sentence/claim/case should appear on the same page whenever it improves comprehension.
+- Do not insert images merely because they were supplied. Every main-page image should support the page's argument, example, data, or scene.
 - Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, insert new images directly in the browser, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
 - For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
