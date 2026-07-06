@@ -651,11 +651,11 @@
     <nav class="nav" aria-label="Demo navigation">
       <div class="brand">xiaoshui-Pretty PPT</div>
       <a href="#why">Why</a>
-      <a href="#flow">Flow</a>
+      <a href="#flow">Input</a>
       <a href="#templates">Templates</a>
       <a href="#use">Use</a>
-      <a href="#presenter">Presenter</a>
-      <a href="#next">Next</a>
+      <a href="#presenter">Live</a>
+      <a href="#next">Cases</a>
     </nav>
   </div>
 
@@ -664,7 +664,7 @@
       <div class="hero-copy">
         <span class="eyebrow">Blush Editorial / 暖粉编辑志</span>
         <h1 data-slide-title>把文档变成会动、能改、能分享的 HTML 网页 PPT</h1>
-        <p class="lead" data-slide-summary>xiaoshui-Pretty PPT 是一个面向 Codex / Claude Code 的演示型 skill，用 12 套真实模板把飞书文档、文章、汇报和作品集整理成可打开、可编辑、可部署的网页 PPT。</p>
+        <p class="lead" data-slide-summary>xiaoshui-Pretty PPT 是一个面向 AI Agent 的演示型 Skill，用 13 套真实模板把文档、文章、图片、截图、数据和作品集整理成可打开、可编辑、可发布的网页 PPT。</p>
         <div class="talk-timer" data-talk-timer data-no-edit>
           <div class="talk-timer-label">
             <span>演讲计时</span>
@@ -680,7 +680,7 @@
       </div>
       <aside class="hero-panel" aria-label="Skill highlights">
         <span class="tag hot">Presentation Skill</span>
-        <strong class="metric">12</strong>
+        <strong class="metric">13</strong>
         <p>套模板，覆盖自媒体、个人展示、作品集、行政政务、职场汇报和产品演讲。</p>
         <div class="mini-tags">
           <span class="tag">E 编辑</span>
@@ -720,15 +720,15 @@
       <div class="section-head">
         <div>
           <span class="eyebrow">Workflow</span>
-          <h2 data-slide-title>从飞书文档到网页 PPT，中间只保留必要判断。</h2>
+          <h2 data-slide-title>从文档和素材到网页 PPT，中间只保留必要判断。</h2>
         </div>
-        <p data-slide-summary>先判断受众、场景和内容密度，再选模板、拆页面、生成 HTML，最后按 E 修改或按 P 演讲。</p>
+        <p data-slide-summary>先判断受众、场景、内容密度和素材状态，再选模板、拆页面、生成 HTML，最后按 E 修改或按 P 演讲。</p>
       </div>
       <div class="workflow-grid">
-        <article class="step" data-index="Input" data-detail="可以接飞书文档、文章、Markdown、笔记、旧 PPT、截图和数据表。">
+        <article class="step" data-index="Input" data-detail="可以接文章、Markdown、飞书文档、会议纪要、本地图片、截图、视频封面、旧 PPT 和数据表。">
           <span class="arrow-line"></span>
-          <h3>飞书文档 / 文章 / 笔记</h3>
-          <p>把原始材料交给 Agent，不要求用户先手动改成 PPT 大纲。</p>
+          <h3>文档 / 图片 / 截图 / 数据</h3>
+          <p>把原始材料交给 AI Agent，不要求用户先手动改成 PPT 大纲。</p>
         </article>
         <article class="step" data-index="Decide" data-detail="默认只问 3 个问题：场景、密度、素材，避免把用户卡在复杂配置里。">
           <span class="arrow-line"></span>
@@ -738,7 +738,7 @@
         <article class="step" data-index="Render" data-detail="模板会保留自己的配色、字体层级、导航、滚动和卡片交互，而不是从零写网页。">
           <span class="arrow-line"></span>
           <h3>套用真实模板</h3>
-          <p>从 12 套模板复制开始，保留配色、版式、导航和动效。</p>
+          <p>从 13 套模板复制开始，保留配色、版式、导航和动效。</p>
         </article>
         <article class="step" data-index="Deliver" data-detail="默认注入 E 编辑、P 演讲者模式和字号调节，除非用户明确要求纯净版。">
           <h3>打开、编辑、发布</h3>
@@ -752,7 +752,7 @@
       <div class="section-head">
         <div>
           <span class="eyebrow">Template map</span>
-          <h2 data-slide-title>12 套模板，分成两种使用场景。</h2>
+          <h2 data-slide-title>13 套模板，分成两种使用场景。</h2>
         </div>
         <p data-slide-summary>一组负责更有记忆点的公开展示，一组负责更稳的职场、政务和产品汇报。</p>
       </div>
@@ -767,6 +767,7 @@
             <div class="template-item"><strong>Ribbon Tab Brochure</strong><span>彩签页报</span></div>
             <div class="template-item"><strong>Blue Growth Deck</strong><span>蓝色增长稿</span></div>
             <div class="template-item"><strong>Garden Pop Landing</strong><span>花园跳色长页</span></div>
+            <div class="template-item"><strong>Meraki Learning Kit</strong><span>蓝绘课程册</span></div>
           </div>
         </article>
         <article class="module report" data-detail="点击展开：这一组更适合行政政务、职场汇报、产品方案、论文答辩和正式提案。">
@@ -789,27 +790,26 @@
       <div class="section-head">
         <div>
           <span class="eyebrow">Install and prompt</span>
-          <h2 data-slide-title>用户只需要说清楚用途，skill 负责判断模板。</h2>
+          <h2 data-slide-title>用户只需要说清楚用途，Skill 负责判断模板。</h2>
         </div>
-        <p data-slide-summary>安装后可以自动选模板，也可以指定 Cobalt、Blush、Mono 等某一套模板。</p>
+        <p data-slide-summary>安装后可以自动选模板，也可以指定 Cobalt、Blush、Mono 等某一套模板。适合 Codex、Claude Code、Cursor、Windsurf、Workbody 等 AI Agent 工作流。</p>
       </div>
       <div class="code-grid">
         <article class="code-card">
-          <div class="code-title"><span>Install</span><span>Feishu + Skill</span></div>
-          <pre>帮我安装飞书 CLI：
-https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-guide.md
-
-安装这个 skill：
-https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
+          <div class="code-title"><span>Install</span><span>Skill</span></div>
+          <pre>npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
+  --skill xiaoshui-pretty-ppt \
+  --agent codex \
+  --global</pre>
         </article>
         <article class="code-card">
           <div class="code-title"><span>Prompt</span><span>Document to deck</span></div>
-          <pre>使用 $xiaoshui-pretty-ppt，把这个飞书文档做成一份适合对外分享的 HTML 网页 PPT。
+          <pre>使用 $xiaoshui-pretty-ppt，把这份文档和素材做成一份适合对外分享的 HTML 网页 PPT。
 要求：
 1. 先判断内容更适合哪一套模板；
-2. 把长文档拆成封面、钩子、核心观点、案例、流程、总结；
-3. 开启可编辑模式，方便我录视频时展示生成后还能改；
-4. 最后告诉我本地 HTML 路径和如何打开。</pre>
+2. 把长内容拆成封面、钩子、核心观点、案例、流程、总结；
+3. 图片、截图、表格和旧 PPT 素材要转成页面里的视觉证据；
+4. 保留可编辑模式、演讲者模式和网页发布能力。</pre>
         </article>
       </div>
       <aside class="speaker-notes">这里可以直接复制给观众。重点是让用户不用懂模板细节，只需要讲明内容、场景、密度和是否要编辑。</aside>
@@ -818,10 +818,10 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     <section class="shell slide" id="presenter" data-slide>
       <div class="section-head">
         <div>
-          <span class="eyebrow">Presenter mode</span>
-          <h2 data-slide-title>下一步不是只做页面，而是补齐演示能力。</h2>
+          <span class="eyebrow">Live presentation</span>
+          <h2 data-slide-title>它不是静态页面，而是一套可以拿去讲的演示作品。</h2>
         </div>
-        <p data-slide-summary>这版已经加入基础演讲者模式：按 P 打开讲稿备注、下一页预览和计时器；按 E 仍然可以进入编辑模式。</p>
+        <p data-slide-summary>按 P 打开讲稿备注、下一页预览和计时器；按 E 进入编辑模式，直接修改文字、字号和素材。</p>
       </div>
       <div class="feature-grid">
         <article class="feature-card" data-detail="演讲者模式的备注只在当前浏览器窗口打开 P 时显示；共享普通窗口时观众看不到。">
@@ -846,34 +846,34 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
     <section class="shell slide" id="next" data-slide>
       <div class="section-head">
         <div>
-          <span class="eyebrow">Roadmap</span>
-          <h2 data-slide-title>后续优化会围绕四个更高级的 presentation 能力展开。</h2>
+          <span class="eyebrow">Use cases</span>
+          <h2 data-slide-title>它可以做的不只是 PPT，而是更容易传播的内容展示。</h2>
         </div>
-        <p data-slide-summary>不急着把 PPT、HTML、飞书画板混成一个技能。先把 HTML 网页 PPT 做深，再拆出其他形态。</p>
+        <p data-slide-summary>同一套能力可以服务公开分享、个人作品集、课程产品、数据汇报和正式提案。</p>
       </div>
       <div class="roadmap-grid">
-        <article class="roadmap-card" data-detail="适合把补充案例、证据、长表格放到二级页面，主线页面保持清爽。">
-          <span>01 Nested slides</span>
-          <h3>横向主线 + 纵向详情</h3>
-          <p>适合课程、产品介绍和长报告，把补充材料放到二级页面。</p>
+        <article class="roadmap-card" data-detail="把长文章、教程、工具清单整理成能被收藏和转发的演示网页。">
+          <span>01 Creator share</span>
+          <h3>自媒体分享</h3>
+          <p>把文章、脚本和教程变成一套有节奏的网页 PPT，适合公开发布和二次传播。</p>
         </article>
-        <article class="roadmap-card" data-detail="后续可以让同一张图、同一个卡片跨页面移动，形成更像 Keynote 的连续感。">
-          <span>02 Auto Animate</span>
-          <h3>章节之间自动过渡</h3>
-          <p>让同一张图、同一个卡片在前后页之间自然移动，减少硬切。</p>
+        <article class="roadmap-card" data-detail="把作品、截图、项目背景和讲述线索组织成可浏览的个人展示页。">
+          <span>02 Portfolio</span>
+          <h3>个人作品集</h3>
+          <p>把项目经历、作品截图和个人介绍做成可以演示也可以发链接的作品页。</p>
         </article>
-        <article class="roadmap-card" data-detail="数据页会优先做结论卡、KPI、趋势、对比和风险提示，而不是堆表格。">
-          <span>03 Data report</span>
-          <h3>数据汇报型 PPT</h3>
-          <p>把 KPI、趋势、漏斗、对比和结论做成可读的报告页。</p>
+        <article class="roadmap-card" data-detail="把产品卖点、用户问题、功能流程和截图整合成更像路演的网页演示。">
+          <span>03 Product pitch</span>
+          <h3>产品路演</h3>
+          <p>把产品介绍、功能截图、案例和方案整理成可以讲给客户或团队看的展示稿。</p>
         </article>
-        <article class="roadmap-card" data-detail="面向作品集和个人介绍，用全屏镜头、章节字幕、滚动叙事做高级感。">
-          <span>04 Cinematic portfolio</span>
-          <h3>电影播放感作品集</h3>
-          <p>用全屏镜头、章节字幕和滚动叙事，把 HTML PPT 做成高级作品集网站。</p>
+        <article class="roadmap-card" data-detail="把表格、KPI、趋势和结论转成可阅读、可讲解的正式汇报页面。">
+          <span>04 Work report</span>
+          <h3>职场汇报</h3>
+          <p>把数据表、项目复盘和工作总结转成结构清楚、能现场讲的报告页。</p>
         </article>
       </div>
-      <aside class="speaker-notes">这里回应用户关心的前沿实践：Reveal.js 的标准能力可以分阶段吸收，但先做最容易转化的演讲者模式和数据页。</aside>
+      <aside class="speaker-notes">这里不要讲内部 roadmap，只讲对外用户马上能理解的使用场景。</aside>
     </section>
 
     <section class="slide closing" id="closing" data-slide>
@@ -1038,6 +1038,7 @@ https://github.com/XshuiAi/xiaoshui-pretty-ppt.git</pre>
         ...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card")
       ];
       revealItems.forEach((item) => item.classList.add("demo-reveal"));
+      slides[0]?.classList.add("is-visible");
 
       if ("IntersectionObserver" in window) {
         const revealObserver = new IntersectionObserver((entries, observer) => {
