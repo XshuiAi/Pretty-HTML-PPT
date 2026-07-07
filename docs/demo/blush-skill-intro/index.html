@@ -1609,6 +1609,12 @@
   .xs-insert-controls button:hover {
     background: #f3f4f6;
   }
+  .xs-insert-controls button[data-xs-delete] {
+    color: #b91c1c;
+  }
+  .xs-insert-controls button[data-xs-delete]:hover {
+    background: #fee2e2;
+  }
   .xs-insert-resize {
     position: absolute;
     right: -9px;
@@ -1736,7 +1742,9 @@
     background: #1f2937;
   }
   .xs-modal .xs-file-upload {
-    display: block;
+    display: grid;
+    gap: 6px;
+    place-items: center;
     padding: 14px;
     border: 2px dashed #d1d5db;
     border-radius: 8px;
@@ -1747,9 +1755,29 @@
     margin-top: 8px;
     transition: border-color 140ms ease, background 140ms ease;
   }
-  .xs-modal .xs-file-upload:hover {
+  .xs-modal .xs-file-upload:hover,
+  .xs-modal .xs-file-upload.is-dragover {
     border-color: #2563eb;
     background: #f0f4ff;
+  }
+  .xs-modal .xs-file-upload strong {
+    color: #111827;
+    font-size: 14px;
+  }
+  .xs-modal .xs-file-upload span {
+    color: #6b7280;
+    font-size: 12px;
+  }
+  .xs-modal details {
+    margin-top: 14px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 12px;
+  }
+  .xs-modal summary {
+    cursor: pointer;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 800;
   }
   .xs-modal .xs-file-upload input { display: none; }
 
@@ -1786,6 +1814,7 @@
   let toastTimer = null;
   let currentTextEl = null;
   let currentImageFrame = null;
+  let insertedFrameCounter = 0;
 
   /* ── Helpers ── */
   function isTextNodeEmpty(el) {
@@ -1861,6 +1890,11 @@
     node.classList.add("is-visible");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => node.classList.remove("is-visible"), 1800);
+  }
+
+  function nextFrameId() {
+    insertedFrameCounter += 1;
+    return "m" + Date.now() + "-" + insertedFrameCounter;
   }
 
   /* ── Restore ── */
@@ -2336,6 +2370,44 @@
     });
     currentImageFrame = frame;
     frame.classList.add("is-selected");
+    frame.focus?.({ preventScroll: true });
+  }
+
+  function deleteFrame(frame) {
+    if (!frame?.classList?.contains("xs-inserted-frame")) return;
+    const parent = frame.parentElement;
+    frame.remove();
+    hideSnapGuides(parent);
+    if (currentImageFrame === frame) currentImageFrame = null;
+    persistInsertedFrames();
+    toast("图片已删除");
+  }
+
+  function arrangeInsertedBatch(frames) {
+    const liveFrames = frames.filter(frame => frame?.isConnected);
+    if (liveFrames.length <= 1) return;
+    const parent = liveFrames[0].parentElement;
+    if (!parent) return;
+    const parentRect = parent.getBoundingClientRect();
+    const pad = 34;
+    const count = liveFrames.length;
+    const columns = Math.min(count, 3);
+    const widthRatio = count === 2 ? 0.28 : 0.22;
+    liveFrames.forEach((frame, index) => {
+      const col = index % columns;
+      const row = Math.floor(index / columns);
+      const targetWidth = widthThatFitsParent(frame, parentRect.width * widthRatio);
+      frame.style.width = targetWidth + "px";
+      const rect = frame.getBoundingClientRect();
+      const available = Math.max(0, parentRect.width - pad * 2 - rect.width);
+      const left = columns === 1 ? (parentRect.width - rect.width) / 2 : pad + (available * col / Math.max(1, columns - 1));
+      const topBase = Math.max(pad, parentRect.height * 0.26);
+      const top = topBase + row * Math.min(160, rect.height * .32);
+      frame.style.left = Math.round(clamp(left, pad, Math.max(pad, parentRect.width - rect.width - pad))) + "px";
+      frame.style.top = Math.round(clamp(top, pad, Math.max(pad, parentRect.height - rect.height - pad))) + "px";
+    });
+    selectFrame(liveFrames[liveFrames.length - 1]);
+    persistInsertedFrames();
   }
 
   function attachFrameEvents(frame) {
@@ -2396,6 +2468,12 @@
       });
     });
 
+    frame.querySelector("[data-xs-delete]")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteFrame(frame);
+    });
+
     const resize = frame.querySelector(".xs-insert-resize");
     resize?.addEventListener("pointerdown", (event) => {
       if (!editing) return;
@@ -2428,7 +2506,7 @@
     const frame = document.createElement("figure");
     frame.className = "xs-inserted-frame";
     frame.dataset.xsInsertedImage = "true";
-    frame.dataset.xsEditId = options.id || "m" + Date.now();
+    frame.dataset.xsEditId = options.id || nextFrameId();
     frame.innerHTML = [
       '<div class="xs-insert-controls" data-no-edit="true" aria-label="图片位置控制">',
       '  <button type="button" data-xs-place="left">左</button>',
@@ -2438,6 +2516,7 @@
       '  <button type="button" data-xs-size="0.24">小</button>',
       '  <button type="button" data-xs-size="0.36">中</button>',
       '  <button type="button" data-xs-size="0.52">大</button>',
+      '  <button type="button" data-xs-delete title="删除这张图片">删</button>',
       '</div>',
       '<img alt="' + escapeHtml(alt || "插入图片") + '">',
       '<span class="xs-insert-resize" data-no-edit="true" aria-hidden="true"></span>'
@@ -2466,6 +2545,14 @@
       requestAnimationFrame(() => {
         fitFrameToParent(frame);
         placeFrame(frame, "right");
+        if (options.offsetIndex) {
+          const left = parseFloat(frame.style.left || "0") - options.offsetIndex * 22;
+          const top = parseFloat(frame.style.top || "0") + options.offsetIndex * 22;
+          const pos = snapPosition(frame, left, top);
+          frame.style.left = Math.round(pos.left) + "px";
+          frame.style.top = Math.round(pos.top) + "px";
+          hideSnapGuides(frame.parentElement);
+        }
         persistInsertedFrames();
       });
     }
@@ -2478,15 +2565,17 @@
     mask.className = "xs-modal-mask is-open";
     mask.innerHTML = '<div class="xs-modal">'
       + '<h3>插入图片</h3>'
-      + '<p style="margin:0 0 14px;color:#6b7280;font-size:12px;">插入后可拖动图片，靠近左侧、居中、右侧或底部会自动吸附，也可以用图片上方按钮快速对齐。</p>'
-      + '<label>图片地址 (URL)</label>'
-      + '<input type="url" class="xs-new-url" aria-label="图片地址，示例 https://example.com/image.png">'
-      + '<label style="margin-top:14px;">图片说明 (alt)</label>'
-      + '<input type="text" class="xs-new-alt" aria-label="图片描述文字">'
+      + '<p style="margin:0 0 14px;color:#6b7280;font-size:12px;">把图片拖进来，或点击选择本地图片。支持一次选择多张；插入后可拖动、吸附、调大小和删除。</p>'
       + '<div class="xs-file-upload" id="xsFileUpload">'
-      + '  或 点击上传本地图片'
-      + '  <input type="file" id="xsFileInput" accept="image/*">'
+      + '  <strong>把图片拖到这里</strong>'
+      + '  <span>或点击选择本地图片，可多选</span>'
+      + '  <input type="file" id="xsFileInput" accept="image/*" multiple>'
       + '</div>'
+      + '<details>'
+      + '  <summary>高级：使用图片链接</summary>'
+      + '  <label style="margin-top:12px;">图片地址 (URL)</label>'
+      + '  <input type="url" class="xs-new-url" aria-label="图片地址，示例 https://example.com/image.png">'
+      + '</details>'
       + '<div class="xs-modal-actions">'
       + '  <button class="xs-btn-cancel">取消</button>'
       + '  <button class="xs-btn-primary xs-btn-apply">插入</button>'
@@ -2495,46 +2584,90 @@
     document.body.appendChild(mask);
 
     const closeModal = () => { mask.remove(); };
-    const apply = () => {
+    const fileUpload = mask.querySelector("#xsFileUpload");
+    const fileInput = mask.querySelector("#xsFileInput");
+    const currentSlide = activeSlideContainer();
+
+    const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error("图片读取失败"));
+      reader.readAsDataURL(file);
+    });
+
+    const insertFiles = async (files) => {
+      const images = [...files].filter(file => file.type.startsWith("image/"));
+      if (!images.length) {
+        toast("请选择图片文件");
+        return false;
+      }
+      const frames = [];
+      for (let index = 0; index < images.length; index += 1) {
+        const file = images[index];
+        const url = await readFileAsDataUrl(file);
+        frames.push(createInsertedFrame(url, file.name || "插入图片", currentSlide, { offsetIndex: index }));
+      }
+      if (frames.length > 1) {
+        window.setTimeout(() => arrangeInsertedBatch(frames), 360);
+      }
+      toast(images.length === 1 ? "图片已插入，可拖动或删除" : "已插入 " + images.length + " 张图片");
+      return true;
+    };
+
+    const insertUrl = (url) => {
+      if (!url) return false;
+      createInsertedFrame(url, "插入图片", currentSlide);
+      toast("图片已插入，可拖动或删除");
+      return true;
+    };
+
+    const apply = async () => {
       const newUrl = mask.querySelector(".xs-new-url").value.trim();
-      const alt = mask.querySelector(".xs-new-alt").value.trim();
-      const fileInput = mask.querySelector("#xsFileInput");
-      const file = fileInput.files[0];
-
-      const doInsert = (url) => {
-        const active = document.activeElement;
-        const currentSlide = active?.closest?.("[data-slide], section[id], article[id], main")
-          || activeSlideContainer();
-        const frame = createInsertedFrame(url, alt, currentSlide);
-        toast("图片已插入：可拖动，或点 左/居中/右/置底 吸附");
-      };
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => doInsert(reader.result);
-        reader.readAsDataURL(file);
-      } else if (newUrl) {
-        doInsert(newUrl);
-      } else {
-        toast("请输入图片地址或选择文件");
+      const files = fileInput.files;
+      try {
+        if (files.length) {
+          if (!await insertFiles(files)) return;
+        } else if (!insertUrl(newUrl)) {
+          toast("请拖入图片、选择本地图片，或在高级里填图片链接");
+          return;
+        }
+      } catch {
+        toast("图片读取失败，请换一张再试");
         return;
       }
       closeModal();
     };
 
     mask.addEventListener("click", (e) => { if (e.target === mask) closeModal(); });
-    const fileInput = mask.querySelector("#xsFileInput");
     mask.querySelector(".xs-btn-cancel").addEventListener("click", closeModal);
     mask.querySelector(".xs-btn-apply").addEventListener("click", apply);
-    mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
-    fileInput.addEventListener("change", () => {
-      const f = fileInput.files[0];
-      if (f) mask.querySelector(".xs-new-url").title = f.name;
+    fileUpload.addEventListener("click", () => fileInput.click());
+    fileUpload.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      fileUpload.classList.add("is-dragover");
+    });
+    fileUpload.addEventListener("dragleave", () => {
+      fileUpload.classList.remove("is-dragover");
+    });
+    fileUpload.addEventListener("drop", async (event) => {
+      event.preventDefault();
+      fileUpload.classList.remove("is-dragover");
+      try {
+        if (await insertFiles(event.dataTransfer.files)) closeModal();
+      } catch {
+        toast("图片读取失败，请换一张再试");
+      }
+    });
+    fileInput.addEventListener("change", async () => {
+      try {
+        if (await insertFiles(fileInput.files)) closeModal();
+      } catch {
+        toast("图片读取失败，请换一张再试");
+      }
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
       if (e.key === "Enter") apply();
     });
-    setTimeout(() => mask.querySelector(".xs-new-url").focus(), 120);
   }
 
   function escapeHtml(s) {
@@ -2659,8 +2792,14 @@
   /* ── Keyboard ── */
   document.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
+    const tag = document.activeElement?.tagName?.toLowerCase();
+    const typing = tag === "input" || tag === "textarea" || tag === "select" || document.activeElement?.isContentEditable;
+    if (editing && currentImageFrame && !typing && (key === "delete" || key === "backspace")) {
+      event.preventDefault();
+      deleteFrame(currentImageFrame);
+      return;
+    }
     if (key === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
-      const tag = document.activeElement?.tagName?.toLowerCase();
       if (tag !== "input" && tag !== "textarea") {
         setToolbarExpanded(true);
         toggleEdit();

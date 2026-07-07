@@ -230,7 +230,7 @@ Follow these rules:
 - Do not reuse borrowed web images unless the user owns them, provides them, or explicitly approves the source.
 - When text and images are supplied together, preserve meaningful pairs: image + matching sentence/claim/case should appear on the same page whenever it improves comprehension.
 - Do not insert images merely because they were supplied. Every main-page image should support the page's argument, example, data, or scene.
-- Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, insert new draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
+- Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, drag/drop or select one or more local images, insert them as draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, delete them when selected, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
 - For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
 Presenter mode conventions:
@@ -284,7 +284,7 @@ Return:
 - local deck path
 - selected template name
 - what content was transformed
-- confirmed that the edit toolbar is present (press `E` to edit text, use `字号 / A- / A+` to adjust font size, click images/videos to replace, click `➕ 插入图片` to add draggable images, then snap them left/center/right/bottom or resize them)
+- confirmed that the edit toolbar is present (press `E` to edit text, use `字号 / A- / A+` to adjust font size, click images/videos to replace, click `➕ 插入图片` to drag/drop or select local images, then snap, resize, or delete inserted image frames)
 - confirmed that presenter mode is present (press `P` for notes, next-slide preview, and timer)
 - any assets that still need the user's replacement
 - any verification command results
