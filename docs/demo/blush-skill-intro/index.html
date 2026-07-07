@@ -44,6 +44,18 @@
       line-height: 1.62;
     }
 
+    html.demo-enhanced body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle 260px at var(--mx, 50%) var(--my, 36%), rgba(255, 79, 154, .13), transparent 68%);
+      mix-blend-mode: multiply;
+    }
+
+    body > * { position: relative; z-index: 1; }
+
     a { color: inherit; }
     code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
     ::selection { color: #fff; background: var(--pink); }
@@ -55,6 +67,27 @@
       border-bottom: 1px solid rgba(234, 219, 212, .9);
       background: rgba(255, 245, 237, .92);
       backdrop-filter: blur(14px);
+    }
+
+    .demo-progress {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 80;
+      width: 100%;
+      height: 3px;
+      pointer-events: none;
+      background: transparent;
+    }
+
+    .demo-progress span {
+      display: block;
+      width: var(--progress, 0%);
+      height: 100%;
+      border-radius: 0 999px 999px 0;
+      background: linear-gradient(90deg, var(--pink), #ffd9c7);
+      box-shadow: 0 0 18px rgba(255, 79, 154, .45);
+      transition: width .18s var(--ease);
     }
 
     .nav {
@@ -336,6 +369,16 @@
     .step,
     .module { padding: 22px; }
 
+    .card,
+    .step,
+    .module,
+    .feature-card,
+    .roadmap-card,
+    .code-card {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
     .card[data-detail],
     .step[data-detail],
     .feature-card[data-detail],
@@ -358,6 +401,40 @@
       transform: translateY(-4px);
       border-color: rgba(255, 79, 154, .48);
       box-shadow: 0 28px 86px rgba(120, 42, 78, .16);
+    }
+
+    .demo-enhanced .card[data-tilt],
+    .demo-enhanced .step[data-tilt],
+    .demo-enhanced .module[data-tilt],
+    .demo-enhanced .feature-card[data-tilt],
+    .demo-enhanced .roadmap-card[data-tilt],
+    .demo-enhanced .code-card[data-tilt] {
+      transform: perspective(900px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg)) translateY(var(--lift, 0px));
+      transition: transform .18s var(--ease), box-shadow .22s var(--ease), border-color .22s var(--ease);
+    }
+
+    .demo-enhanced .card[data-tilt]:hover,
+    .demo-enhanced .step[data-tilt]:hover,
+    .demo-enhanced .module[data-tilt]:hover,
+    .demo-enhanced .feature-card[data-tilt]:hover,
+    .demo-enhanced .roadmap-card[data-tilt]:hover,
+    .demo-enhanced .code-card[data-tilt]:hover {
+      --lift: -5px;
+    }
+
+    .demo-ripple {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      pointer-events: none;
+      background: rgba(255, 79, 154, .32);
+      transform: translate(-50%, -50%) scale(1);
+      animation: ripple-out .62s var(--ease) forwards;
+    }
+
+    @keyframes ripple-out {
+      to { opacity: 0; transform: translate(-50%, -50%) scale(24); }
     }
 
     .demo-detail {
@@ -548,6 +625,25 @@
       overflow: hidden;
       background: #151217;
       color: #fff;
+    }
+
+    .code-card::after {
+      content: "";
+      position: absolute;
+      left: -24%;
+      top: 0;
+      width: 22%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .13), transparent);
+      transform: skewX(-14deg);
+      animation: scan-code 4.8s var(--ease) infinite;
+    }
+
+    @keyframes scan-code {
+      0%, 42% { left: -28%; opacity: 0; }
+      52% { opacity: 1; }
+      72% { left: 106%; opacity: 0; }
+      100% { left: 106%; opacity: 0; }
     }
 
     .code-title {
@@ -790,6 +886,13 @@
     .roadmap-card:nth-child(3) { background: #eef6ff; }
     .roadmap-card:nth-child(4) { background: #fff4dc; }
 
+    .step.is-hot,
+    .feature-card.is-hot,
+    .roadmap-card.is-hot {
+      border-color: rgba(255, 79, 154, .58);
+      box-shadow: 0 30px 90px rgba(255, 79, 154, .16);
+    }
+
     .roadmap-card span {
       display: block;
       margin-bottom: 44px;
@@ -892,6 +995,7 @@
   </style>
 </head>
 <body>
+  <div class="demo-progress" data-demo-progress data-no-edit aria-hidden="true"><span></span></div>
   <div class="topline">
     <nav class="nav" aria-label="Demo navigation">
       <div class="brand">xiaoshui-Pretty PPT</div>
@@ -1264,6 +1368,22 @@
 
       document.documentElement.classList.add("demo-enhanced");
 
+      const progress = document.querySelector("[data-demo-progress] span");
+      function updateProgress() {
+        const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const percent = Math.max(0, Math.min(100, window.scrollY / max * 100));
+        if (progress) progress.style.setProperty("--progress", percent + "%");
+      }
+
+      document.addEventListener("pointermove", (event) => {
+        if (isEditing()) return;
+        document.documentElement.style.setProperty("--mx", event.clientX + "px");
+        document.documentElement.style.setProperty("--my", event.clientY + "px");
+      }, { passive: true });
+
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
       if (dotNav && !dotNav.children.length) {
         dotNav.innerHTML = slides.map((slide, index) => (
           `<a href="#${slide.id}" data-demo-dot="${index}" aria-label="跳转到第 ${index + 1} 页">${String(index + 1).padStart(2, "0")}</a>`
@@ -1325,6 +1445,44 @@
       ];
       revealItems.forEach((item) => item.classList.add("demo-reveal"));
       slides[0]?.classList.add("is-visible");
+
+      const motionCards = [...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card")];
+      motionCards.forEach((card) => {
+        card.dataset.tilt = "true";
+        card.addEventListener("pointermove", (event) => {
+          if (isEditing()) return;
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - .5;
+          const y = (event.clientY - rect.top) / rect.height - .5;
+          card.style.setProperty("--tilt-x", (x * 5).toFixed(2) + "deg");
+          card.style.setProperty("--tilt-y", (-y * 5).toFixed(2) + "deg");
+        });
+        card.addEventListener("pointerleave", () => {
+          card.style.setProperty("--tilt-x", "0deg");
+          card.style.setProperty("--tilt-y", "0deg");
+        });
+        card.addEventListener("click", (event) => {
+          if (isEditing() || card.querySelector(".demo-ripple")) return;
+          const rect = card.getBoundingClientRect();
+          const ripple = document.createElement("span");
+          ripple.className = "demo-ripple";
+          ripple.style.left = (event.clientX - rect.left) + "px";
+          ripple.style.top = (event.clientY - rect.top) + "px";
+          card.appendChild(ripple);
+          ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+        });
+      });
+
+      document.querySelectorAll(".workflow-grid, .feature-grid, .roadmap-grid").forEach((grid) => {
+        grid.addEventListener("pointerover", (event) => {
+          const item = event.target.closest(".step, .feature-card, .roadmap-card");
+          if (!item || isEditing()) return;
+          [...grid.children].forEach(child => child.classList.toggle("is-hot", child === item));
+        });
+        grid.addEventListener("pointerleave", () => {
+          [...grid.children].forEach(child => child.classList.remove("is-hot"));
+        });
+      });
 
       if ("IntersectionObserver" in window) {
         const revealObserver = new IntersectionObserver((entries, observer) => {

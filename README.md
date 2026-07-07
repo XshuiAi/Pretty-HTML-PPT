@@ -1,8 +1,12 @@
 # xiaoshui-Pretty PPT
 
-我经常遇到一种情况：内容已经有了，但还差一个能被讲出来的样子。
+很多内容不是写不出来，而是很难被讲出来。
 
-xiaoshui-Pretty PPT 就是把文章、飞书文档、截图、数据和旧 PPT，整理成一份能翻页、能编辑、能演示、也能发链接的 **HTML 网页 PPT**。你把材料交给 Coding Agent，它负责选模板、拆页面、放重点，把一堆散材料变成一份可以拿出去讲的作品。
+你可能已经有一篇文章、一份飞书文档、几张截图、一组数据，甚至一份旧 PPT。材料都在，但它们还不是一份能拿出去讲、能让别人看懂、也方便继续修改的演示稿。
+
+xiaoshui-Pretty PPT 是一个给 Claude Code / Codex 等 Coding Agent 使用的网页 PPT Skill。你把材料交给 Agent，它会判断场景、选择模板、拆页面、提重点，把散材料整理成一份能翻页、能编辑、能演示、也能发链接的 **HTML 网页 PPT**。
+
+它内置 12 套设计风格，适合自媒体分享、作品集展示、课程产品、商务汇报、行政政务和产品演讲。你不用先手动排版，也不用从空白页开始做 PPT，重点是把想法变成一份可以讲出来的作品。
 
 [在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [查看模板](#模板图库)
 
