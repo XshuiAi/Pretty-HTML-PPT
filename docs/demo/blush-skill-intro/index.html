@@ -592,6 +592,191 @@
       color: var(--muted);
     }
 
+    .media-lab {
+      display: grid;
+      grid-template-columns: minmax(260px, .42fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .layout-controls {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .layout-controls button {
+      appearance: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 250, 247, .9);
+      color: var(--ink);
+      padding: 15px 16px;
+      text-align: left;
+      font: 900 14px/1.25 var(--font);
+      cursor: pointer;
+      box-shadow: 0 14px 38px rgba(120, 42, 78, .08);
+      transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+    }
+
+    .layout-controls button::after {
+      content: attr(data-short);
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--pink-soft);
+      color: var(--pink-dark);
+      font-size: 12px;
+    }
+
+    .layout-controls button:hover,
+    .layout-controls button.is-active {
+      transform: translateY(-2px);
+      border-color: rgba(255, 79, 154, .5);
+      background: #fff;
+    }
+
+    .layout-controls button.is-active::after {
+      color: #fff;
+      background: var(--pink);
+    }
+
+    .layout-preview {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(90deg, rgba(255, 79, 154, .08) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(0deg, rgba(255, 79, 154, .07) 1px, transparent 1px) 0 0 / 42px 42px,
+        #fffaf7;
+      box-shadow: var(--shadow);
+    }
+
+    .layout-photo,
+    .layout-copy,
+    .layout-note {
+      position: absolute;
+      transition: inset .42s var(--ease), width .42s var(--ease), height .42s var(--ease), transform .42s var(--ease), opacity .25s ease;
+    }
+
+    .layout-photo {
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(18, 17, 22, .86);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 28% 24%, rgba(255, 79, 154, .35), transparent 18%),
+        radial-gradient(circle at 74% 68%, rgba(216, 244, 229, .95), transparent 22%),
+        linear-gradient(135deg, #fff0f6, #dce9ff 56%, #fffaf7);
+      box-shadow: 0 24px 60px rgba(120, 42, 78, .14);
+      animation: float-photo 3.8s var(--ease) infinite alternate;
+    }
+
+    .layout-photo::before {
+      content: "";
+      width: 52%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 2px solid rgba(18, 17, 22, .72);
+      background: rgba(255, 255, 255, .58);
+    }
+
+    .layout-photo::after {
+      content: "image";
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--pink);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    @keyframes float-photo {
+      from { transform: translateY(0) rotate(-1deg); }
+      to { transform: translateY(-10px) rotate(1deg); }
+    }
+
+    .layout-copy {
+      padding: 26px;
+      border: 1px solid rgba(234, 219, 212, .9);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .78);
+      backdrop-filter: blur(6px);
+    }
+
+    .layout-copy h3 {
+      margin-bottom: 12px;
+      font-size: clamp(26px, 4vw, 48px);
+      line-height: 1.02;
+    }
+
+    .layout-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 760;
+    }
+
+    .layout-note {
+      left: 24px;
+      bottom: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--pink-soft);
+      color: var(--pink-dark);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .layout-preview.layout-right .layout-photo { left: auto; right: 34px; top: 78px; width: 42%; height: 64%; }
+    .layout-preview.layout-right .layout-copy { left: 34px; top: 112px; width: 46%; }
+    .layout-preview.layout-left .layout-photo { left: 34px; top: 78px; width: 42%; height: 64%; }
+    .layout-preview.layout-left .layout-copy { right: 34px; top: 112px; width: 46%; }
+    .layout-preview.layout-center .layout-photo { left: 50%; top: 52px; width: 62%; height: 56%; transform: translateX(-50%); }
+    .layout-preview.layout-center .layout-copy { left: 50%; bottom: 48px; width: 70%; transform: translateX(-50%); }
+    .layout-preview.layout-bottom .layout-photo { left: 44px; right: 44px; top: auto; bottom: 36px; width: auto; height: 34%; }
+    .layout-preview.layout-bottom .layout-copy { left: 44px; top: 52px; width: calc(100% - 88px); }
+
+    .snap-points {
+      position: absolute;
+      inset: 18px;
+      pointer-events: none;
+    }
+
+    .snap-points span {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 0 0 8px rgba(255, 79, 154, .12);
+      animation: pulse-snap 1.8s ease-in-out infinite;
+    }
+
+    .snap-points span:nth-child(1) { left: 0; top: 50%; }
+    .snap-points span:nth-child(2) { left: 50%; top: 0; animation-delay: .2s; }
+    .snap-points span:nth-child(3) { right: 0; top: 50%; animation-delay: .4s; }
+    .snap-points span:nth-child(4) { left: 50%; bottom: 0; animation-delay: .6s; }
+
+    @keyframes pulse-snap {
+      0%, 100% { transform: scale(.82); opacity: .5; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
     .roadmap-card {
       padding: 20px;
       min-height: 250px;
@@ -653,7 +838,8 @@
     @media (max-width: 920px) {
       .hero,
       .section-head,
-      .code-grid { grid-template-columns: 1fr; }
+      .code-grid,
+      .media-lab { grid-template-columns: 1fr; }
       .problem-grid,
       .workflow-grid,
       .feature-grid,
@@ -664,6 +850,34 @@
       .demo-dots { left: 12px; right: 82px; bottom: 12px; overflow-x: auto; }
       .demo-next { right: 12px; bottom: 12px; width: 54px; height: 54px; }
       .talk-timer-dock { right: 12px; bottom: 78px; }
+      .layout-preview { min-height: 560px; }
+      .layout-preview.layout-right .layout-photo,
+      .layout-preview.layout-left .layout-photo,
+      .layout-preview.layout-center .layout-photo {
+        left: 22px;
+        right: 22px;
+        top: 34px;
+        width: auto;
+        height: 260px;
+        transform: none;
+      }
+      .layout-preview.layout-right .layout-copy,
+      .layout-preview.layout-left .layout-copy,
+      .layout-preview.layout-center .layout-copy,
+      .layout-preview.layout-bottom .layout-copy {
+        left: 22px;
+        right: 22px;
+        top: 330px;
+        bottom: auto;
+        width: auto;
+        transform: none;
+      }
+      .layout-preview.layout-bottom .layout-photo {
+        left: 22px;
+        right: 22px;
+        bottom: 22px;
+        height: 160px;
+      }
       h1 { font-size: clamp(42px, 13vw, 68px); }
       h2 { font-size: clamp(34px, 10vw, 56px); }
     }
@@ -686,6 +900,7 @@
       <a href="#templates">Templates</a>
       <a href="#use">Use</a>
       <a href="#presenter">Live</a>
+      <a href="#media">Media</a>
       <a href="#next">Cases</a>
     </nav>
   </div>
@@ -859,6 +1074,36 @@
         </article>
       </div>
       <aside class="speaker-notes">现场可以按 P 演示这个页面本身的演讲者模式，让大家看到它不是静态截图。</aside>
+    </section>
+
+    <section class="shell slide" id="media" data-slide>
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Image layout</span>
+          <h2 data-slide-title>插入图片之后，不应该只丢在页面底部。</h2>
+        </div>
+        <p data-slide-summary>编辑模式里的图片会变成可拖动的画面块，可以吸附到左侧、居中、右侧或置底，也可以快速切换尺寸。</p>
+      </div>
+      <div class="media-lab">
+        <div class="layout-controls" aria-label="图片布局切换">
+          <button type="button" class="is-active" data-layout-choice="right" data-short="R">右图左文</button>
+          <button type="button" data-layout-choice="left" data-short="L">左图右文</button>
+          <button type="button" data-layout-choice="center" data-short="C">居中大图</button>
+          <button type="button" data-layout-choice="bottom" data-short="B">置底横图</button>
+        </div>
+        <div class="layout-preview layout-right" data-layout-preview>
+          <div class="snap-points" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="layout-photo" aria-label="图片占位"></div>
+          <article class="layout-copy">
+            <h3 data-layout-title>图片变成可以摆放的内容块</h3>
+            <p data-layout-text>适合人物照片、产品截图、案例证据、课程封面和数据图。用户上传后可以拖动，靠近对齐点会自动吸附。</p>
+          </article>
+          <span class="layout-note" data-layout-note>拖动 / 吸附 / 调尺寸</span>
+        </div>
+      </div>
+      <aside class="speaker-notes">这一页用来解释最新插图能力：不是复杂设计软件，只保留最重要的拖动、吸附、尺寸和导出保留。</aside>
     </section>
 
     <section class="shell slide" id="next" data-slide>
@@ -1076,7 +1321,7 @@
 
       const revealItems = [
         ...slides,
-        ...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card")
+        ...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card, .layout-controls button, .layout-preview")
       ];
       revealItems.forEach((item) => item.classList.add("demo-reveal"));
       slides[0]?.classList.add("is-visible");
@@ -1122,6 +1367,47 @@
             event.preventDefault();
             toggle();
           }
+        });
+      });
+
+      const layoutPreview = document.querySelector("[data-layout-preview]");
+      const layoutTitle = document.querySelector("[data-layout-title]");
+      const layoutText = document.querySelector("[data-layout-text]");
+      const layoutNote = document.querySelector("[data-layout-note]");
+      const layoutCopy = {
+        right: {
+          title: "右图左文，适合讲产品和人物",
+          text: "文字先把观点讲清楚，图片作为证据放在右侧。适合产品截图、案例图和人物介绍。",
+          note: "右侧吸附"
+        },
+        left: {
+          title: "左图右文，适合做案例拆解",
+          text: "图片先进入视线，再用右侧文字解释重点。适合作品集、界面截图和前后对比。",
+          note: "左侧吸附"
+        },
+        center: {
+          title: "居中大图，适合视觉主场",
+          text: "让图片成为这一页的主角，文字退到下方。适合封面图、作品预览和课程海报。",
+          note: "居中吸附"
+        },
+        bottom: {
+          title: "置底横图，适合保留讲述空间",
+          text: "上方继续讲逻辑，下方放截图、流程或数据图。适合汇报页和教程页。",
+          note: "底部吸附"
+        }
+      };
+
+      document.querySelectorAll("[data-layout-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (isEditing() || !layoutPreview) return;
+          const choice = button.dataset.layoutChoice || "right";
+          document.querySelectorAll("[data-layout-choice]").forEach(item => {
+            item.classList.toggle("is-active", item === button);
+          });
+          layoutPreview.className = "layout-preview layout-" + choice;
+          layoutTitle.textContent = layoutCopy[choice].title;
+          layoutText.textContent = layoutCopy[choice].text;
+          layoutNote.textContent = layoutCopy[choice].note;
         });
       });
 
@@ -1264,6 +1550,93 @@
     pointer-events: auto;
   }
 
+  /* Inserted image canvas */
+  .xs-inserted-frame {
+    position: absolute;
+    z-index: 60;
+    display: block;
+    width: min(320px, 36vw);
+    min-width: 120px;
+    max-width: calc(100% - 32px);
+    border-radius: 10px;
+    box-shadow: 0 18px 44px rgba(17, 24, 39, 0.16);
+    touch-action: none;
+  }
+  .xs-inserted-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .xs-editing .xs-inserted-frame {
+    outline: 1.5px dashed rgba(37, 99, 235, 0.72);
+    outline-offset: 4px;
+    cursor: grab;
+  }
+  .xs-editing .xs-inserted-frame.is-selected {
+    outline: 2px solid rgba(255, 79, 154, 0.95);
+    box-shadow: 0 20px 54px rgba(255, 79, 154, 0.22);
+  }
+  .xs-insert-controls {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    z-index: 2;
+    display: none;
+    gap: 4px;
+    padding: 5px;
+    border: 1px solid rgba(17, 24, 39, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 28px rgba(17, 24, 39, 0.14);
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .xs-editing .xs-inserted-frame.is-selected .xs-insert-controls {
+    display: inline-flex;
+  }
+  .xs-insert-controls button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #111827;
+    padding: 5px 7px;
+    font: 700 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    cursor: pointer;
+  }
+  .xs-insert-controls button:hover {
+    background: #f3f4f6;
+  }
+  .xs-insert-resize {
+    position: absolute;
+    right: -9px;
+    bottom: -9px;
+    z-index: 3;
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #ff4f9a;
+    box-shadow: 0 4px 12px rgba(17, 24, 39, .2);
+    cursor: nwse-resize;
+  }
+  .xs-editing .xs-inserted-frame.is-selected .xs-insert-resize {
+    display: block;
+  }
+  .xs-snap-guide {
+    position: absolute;
+    z-index: 59;
+    display: none;
+    pointer-events: none;
+    background: rgba(255, 79, 154, .72);
+  }
+  .xs-snap-guide.is-visible { display: block; }
+  .xs-snap-guide.x { height: 1px; left: 0; right: 0; }
+  .xs-snap-guide.y { width: 1px; top: 0; bottom: 0; }
+
   /* Toast */
   .xs-toast {
     position: fixed;
@@ -1381,7 +1754,7 @@
   .xs-modal .xs-file-upload input { display: none; }
 
   @media print {
-    .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask { display: none !important; }
+    .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide { display: none !important; }
   }
 </style>
 <script id="xiaoshui-edit-script">
@@ -1401,7 +1774,7 @@
     "script", "style", "svg", "canvas", "video", "audio",
     "button", "nav", "input", "textarea", "select", "option",
     "[data-no-edit]", ".xs-edit-toolbar", ".xs-toast", ".xs-modal-mask",
-    ".xs-media-badge"
+    ".xs-media-badge", ".xs-insert-controls", ".xs-snap-guide"
   ].join(",");
 
   /* ── Blacklist: parent tags whose children should NOT get contenteditable ── */
@@ -1412,6 +1785,7 @@
   let editing = false;
   let toastTimer = null;
   let currentTextEl = null;
+  let currentImageFrame = null;
 
   /* ── Helpers ── */
   function isTextNodeEmpty(el) {
@@ -1454,7 +1828,7 @@
   function getMediaCandidates() {
     return [...document.querySelectorAll("img, video")]
       .filter(el => !el.closest(blockedSelector))
-      .filter(el => !el.closest(".xs-media-wrapper") && !el.closest(".xs-modal-mask"));
+      .filter(el => !el.closest(".xs-media-wrapper") && !el.closest(".xs-modal-mask") && !el.closest(".xs-inserted-frame"));
   }
 
   /* ── ID assignment ── */
@@ -1513,6 +1887,7 @@
         }
       }
     });
+    restoreInsertedFrames(data);
   }
 
   /* ── Save ── */
@@ -1531,6 +1906,7 @@
         : el.src;
       if (src) data[el.dataset.xsEditId] = src;
     });
+    data.__xsInsertedFrames = collectInsertedFrames();
     writeStore(data);
     toast("已保存到本机浏览器");
   }
@@ -1711,7 +2087,7 @@
       + '<label>当前地址</label>'
       + '<input type="text" class="xs-current-url" value="' + escapeHtml(currentSrc) + '" readonly style="color:#6b7280;font-size:11px;">'
       + '<label style="margin-top:14px;">新地址 (URL)</label>'
-      + '<input type="url" class="xs-new-url" placeholder="https://...">'
+      + '<input type="url" class="xs-new-url" aria-label="新媒体地址，示例 https://example.com/file.png">'
       + '<div class="xs-file-upload" id="xsFileUpload">'
       + '  或 点击上传本地文件'
       + '  <input type="file" id="xsFileInput" accept="' + (isImg ? 'image/*' : 'video/*') + '">'
@@ -1766,12 +2142,334 @@
     mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => {
       const f = fileInput.files[0];
-      if (f) mask.querySelector(".xs-new-url").placeholder = f.name;
+      if (f) mask.querySelector(".xs-new-url").title = f.name;
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
       if (e.key === "Enter") apply();
     });
     setTimeout(() => mask.querySelector(".xs-new-url").focus(), 120);
+  }
+
+  /* ── Inserted image positioning ── */
+  function slideContainers() {
+    const slides = [...document.querySelectorAll("[data-slide], section[id], article[id]")]
+      .filter((slide, index, all) => all.indexOf(slide) === index);
+    return slides.length ? slides : [...document.querySelectorAll("main")];
+  }
+
+  function activeSlideContainer() {
+    const slides = slideContainers();
+    if (!slides.length) return document.body;
+    const viewportCenter = window.innerHeight / 2;
+    const centered = slides.find(slide => {
+      const rect = slide.getBoundingClientRect();
+      return rect.top <= viewportCenter && rect.bottom >= viewportCenter;
+    });
+    if (centered) return centered;
+    return slides
+      .map(slide => {
+        const rect = slide.getBoundingClientRect();
+        const visible = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+        return { slide, visible };
+      })
+      .sort((a, b) => b.visible - a.visible)[0]?.slide || slides[0];
+  }
+
+  function slideContainerFor(node) {
+    return node?.closest?.("[data-slide], section[id], article[id], main")
+      || activeSlideContainer()
+      || document.body;
+  }
+
+  function prepareImageCanvas(container) {
+    if (!container || container === document.body) return document.body;
+    const style = window.getComputedStyle(container);
+    if (style.position === "static") container.style.position = "relative";
+    return container;
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function frameMetrics(frame) {
+    const parent = frame.parentElement || document.body;
+    const parentRect = parent.getBoundingClientRect();
+    const rect = frame.getBoundingClientRect();
+    return { parent, parentRect, rect };
+  }
+
+  function widthThatFitsParent(frame, targetWidth) {
+    const img = frame.querySelector("img");
+    const { parentRect } = frameMetrics(frame);
+    const maxByParent = Math.max(140, parentRect.width - 56);
+    let next = Math.min(targetWidth, maxByParent);
+    if (img?.naturalWidth && img?.naturalHeight) {
+      const maxHeight = Math.max(180, parentRect.height - 84);
+      const maxByHeight = maxHeight * img.naturalWidth / img.naturalHeight;
+      next = Math.min(next, Math.max(120, maxByHeight));
+    }
+    return Math.round(next);
+  }
+
+  function fitFrameToParent(frame) {
+    const { parentRect, rect } = frameMetrics(frame);
+    if (!parentRect.width || !parentRect.height || !rect.width) return;
+    const fitted = widthThatFitsParent(frame, rect.width);
+    if (fitted && fitted < rect.width) frame.style.width = fitted + "px";
+  }
+
+  function ensureSnapGuides(parent) {
+    let x = parent.querySelector(":scope > .xs-snap-guide.x");
+    let y = parent.querySelector(":scope > .xs-snap-guide.y");
+    if (!x) {
+      x = document.createElement("span");
+      x.className = "xs-snap-guide x";
+      x.setAttribute("data-no-edit", "true");
+      parent.appendChild(x);
+    }
+    if (!y) {
+      y = document.createElement("span");
+      y.className = "xs-snap-guide y";
+      y.setAttribute("data-no-edit", "true");
+      parent.appendChild(y);
+    }
+    return { x, y };
+  }
+
+  function hideSnapGuides(parent) {
+    parent?.querySelectorAll?.(":scope > .xs-snap-guide").forEach(guide => guide.classList.remove("is-visible"));
+  }
+
+  function collectInsertedFrames() {
+    const slides = slideContainers();
+    return [...document.querySelectorAll(".xs-inserted-frame")].map(frame => {
+      const img = frame.querySelector("img");
+      return {
+        id: frame.dataset.xsEditId || "",
+        parentIndex: Math.max(0, slides.indexOf(frame.parentElement)),
+        src: img?.src || "",
+        alt: img?.alt || "",
+        style: {
+          left: frame.style.left || "",
+          top: frame.style.top || "",
+          width: frame.style.width || "",
+          zIndex: frame.style.zIndex || ""
+        }
+      };
+    }).filter(item => item.src);
+  }
+
+  function persistInsertedFrames() {
+    const store = readStore();
+    store.__xsInsertedFrames = collectInsertedFrames();
+    writeStore(store);
+  }
+
+  function restoreInsertedFrames(data) {
+    const frames = Array.isArray(data.__xsInsertedFrames) ? data.__xsInsertedFrames : [];
+    if (!frames.length) return;
+    const slides = slideContainers();
+    frames.forEach(item => {
+      if (!item?.src) return;
+      if (item.id && document.querySelector('.xs-inserted-frame[data-xs-edit-id="' + CSS.escape(item.id) + '"]')) return;
+      const parent = slides[item.parentIndex] || activeSlideContainer();
+      createInsertedFrame(item.src, item.alt || "插入图片", parent, {
+        id: item.id,
+        style: item.style || {},
+        restored: true
+      });
+    });
+  }
+
+  function nearest(value, anchors, threshold = 18) {
+    let best = { value, snapped: false };
+    let distance = threshold + 1;
+    anchors.forEach(anchor => {
+      const diff = Math.abs(value - anchor);
+      if (diff < distance && diff <= threshold) {
+        distance = diff;
+        best = { value: anchor, snapped: true };
+      }
+    });
+    return best;
+  }
+
+  function snapPosition(frame, left, top) {
+    const { parent, parentRect, rect } = frameMetrics(frame);
+    const pad = 24;
+    const maxLeft = Math.max(pad, parentRect.width - rect.width - pad);
+    const maxTop = Math.max(pad, parentRect.height - rect.height - pad);
+    const xAnchors = [pad, (parentRect.width - rect.width) / 2, maxLeft];
+    const yAnchors = [pad, (parentRect.height - rect.height) / 2, maxTop];
+    const snappedX = nearest(clamp(left, pad, maxLeft), xAnchors);
+    const snappedY = nearest(clamp(top, pad, maxTop), yAnchors);
+    const guides = ensureSnapGuides(parent);
+    guides.y.style.left = Math.round(snappedX.value + rect.width / 2) + "px";
+    guides.x.style.top = Math.round(snappedY.value + rect.height / 2) + "px";
+    guides.y.classList.toggle("is-visible", snappedX.snapped);
+    guides.x.classList.toggle("is-visible", snappedY.snapped);
+    return { left: snappedX.value, top: snappedY.value };
+  }
+
+  function placeFrame(frame, placement) {
+    const { parentRect, rect } = frameMetrics(frame);
+    const pad = 28;
+    const maxLeft = Math.max(pad, parentRect.width - rect.width - pad);
+    const maxTop = Math.max(pad, parentRect.height - rect.height - pad);
+    const positions = {
+      left: { left: pad, top: Math.max(pad, (parentRect.height - rect.height) / 2) },
+      center: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: Math.max(pad, (parentRect.height - rect.height) / 2) },
+      right: { left: maxLeft, top: Math.max(pad, (parentRect.height - rect.height) / 2) },
+      bottom: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: maxTop },
+    };
+    const pos = positions[placement] || positions.right;
+    frame.style.left = Math.round(pos.left) + "px";
+    frame.style.top = Math.round(pos.top) + "px";
+    selectFrame(frame);
+    persistInsertedFrames();
+  }
+
+  function selectFrame(frame) {
+    document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(item => {
+      if (item !== frame) item.classList.remove("is-selected");
+    });
+    currentImageFrame = frame;
+    frame.classList.add("is-selected");
+  }
+
+  function attachFrameEvents(frame) {
+    if (frame.dataset.xsFrameReady === "true") return;
+    frame.dataset.xsFrameReady = "true";
+    frame.tabIndex = 0;
+    frame.addEventListener("click", (event) => {
+      if (!editing) return;
+      event.stopPropagation();
+      selectFrame(frame);
+    });
+    frame.addEventListener("pointerdown", (event) => {
+      if (!editing || event.target.closest(".xs-insert-controls") || event.target.closest(".xs-insert-resize")) return;
+      event.preventDefault();
+      selectFrame(frame);
+      const { parentRect, rect } = frameMetrics(frame);
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+      frame.setPointerCapture?.(event.pointerId);
+      const move = (moveEvent) => {
+        const pos = snapPosition(
+          frame,
+          moveEvent.clientX - parentRect.left - offsetX,
+          moveEvent.clientY - parentRect.top - offsetY
+        );
+        frame.style.left = Math.round(pos.left) + "px";
+        frame.style.top = Math.round(pos.top) + "px";
+      };
+      const up = () => {
+        hideSnapGuides(frame.parentElement);
+        frame.removeEventListener("pointermove", move);
+        frame.removeEventListener("pointerup", up);
+        frame.removeEventListener("pointercancel", up);
+        persistInsertedFrames();
+        toast("图片位置已更新，导出 HTML 后会保留");
+      };
+      frame.addEventListener("pointermove", move);
+      frame.addEventListener("pointerup", up);
+      frame.addEventListener("pointercancel", up);
+    });
+
+    frame.querySelectorAll("[data-xs-place]").forEach(button => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        placeFrame(frame, button.dataset.xsPlace);
+      });
+    });
+
+    frame.querySelectorAll("[data-xs-size]").forEach(button => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const { parentRect } = frameMetrics(frame);
+        const ratio = Number(button.dataset.xsSize || .34);
+        frame.style.width = widthThatFitsParent(frame, parentRect.width * ratio) + "px";
+        placeFrame(frame, "right");
+      });
+    });
+
+    const resize = frame.querySelector(".xs-insert-resize");
+    resize?.addEventListener("pointerdown", (event) => {
+      if (!editing) return;
+      event.preventDefault();
+      event.stopPropagation();
+      selectFrame(frame);
+      const startX = event.clientX;
+      const startWidth = frame.getBoundingClientRect().width;
+      const { parentRect } = frameMetrics(frame);
+      resize.setPointerCapture?.(event.pointerId);
+      const move = (moveEvent) => {
+        const next = clamp(startWidth + (moveEvent.clientX - startX), 120, Math.max(160, parentRect.width - 48));
+        frame.style.width = Math.round(next) + "px";
+      };
+      const up = () => {
+        resize.removeEventListener("pointermove", move);
+        resize.removeEventListener("pointerup", up);
+        resize.removeEventListener("pointercancel", up);
+        persistInsertedFrames();
+        toast("图片尺寸已更新，导出 HTML 后会保留");
+      };
+      resize.addEventListener("pointermove", move);
+      resize.addEventListener("pointerup", up);
+      resize.addEventListener("pointercancel", up);
+    });
+  }
+
+  function createInsertedFrame(url, alt, container, options = {}) {
+    const parent = prepareImageCanvas(container);
+    const frame = document.createElement("figure");
+    frame.className = "xs-inserted-frame";
+    frame.dataset.xsInsertedImage = "true";
+    frame.dataset.xsEditId = options.id || "m" + Date.now();
+    frame.innerHTML = [
+      '<div class="xs-insert-controls" data-no-edit="true" aria-label="图片位置控制">',
+      '  <button type="button" data-xs-place="left">左</button>',
+      '  <button type="button" data-xs-place="center">居中</button>',
+      '  <button type="button" data-xs-place="right">右</button>',
+      '  <button type="button" data-xs-place="bottom">置底</button>',
+      '  <button type="button" data-xs-size="0.24">小</button>',
+      '  <button type="button" data-xs-size="0.36">中</button>',
+      '  <button type="button" data-xs-size="0.52">大</button>',
+      '</div>',
+      '<img alt="' + escapeHtml(alt || "插入图片") + '">',
+      '<span class="xs-insert-resize" data-no-edit="true" aria-hidden="true"></span>'
+    ].join("");
+    const img = frame.querySelector("img");
+    img.addEventListener("load", () => {
+      fitFrameToParent(frame);
+      if (!options.restored) placeFrame(frame, "right");
+      persistInsertedFrames();
+    }, { once: true });
+    img.src = url;
+    parent.appendChild(frame);
+    if (options.style) {
+      if (options.style.left) frame.style.left = options.style.left;
+      if (options.style.top) frame.style.top = options.style.top;
+      if (options.style.width) frame.style.width = options.style.width;
+      if (options.style.zIndex) frame.style.zIndex = options.style.zIndex;
+    }
+    attachFrameEvents(frame);
+    if (options.restored) {
+      requestAnimationFrame(() => {
+        fitFrameToParent(frame);
+        selectFrame(frame);
+      });
+    } else {
+      requestAnimationFrame(() => {
+        fitFrameToParent(frame);
+        placeFrame(frame, "right");
+        persistInsertedFrames();
+      });
+    }
+    return frame;
   }
 
   /* ── Insert image ── */
@@ -1780,10 +2478,11 @@
     mask.className = "xs-modal-mask is-open";
     mask.innerHTML = '<div class="xs-modal">'
       + '<h3>插入图片</h3>'
+      + '<p style="margin:0 0 14px;color:#6b7280;font-size:12px;">插入后可拖动图片，靠近左侧、居中、右侧或底部会自动吸附，也可以用图片上方按钮快速对齐。</p>'
       + '<label>图片地址 (URL)</label>'
-      + '<input type="url" class="xs-new-url" placeholder="https://...">'
+      + '<input type="url" class="xs-new-url" aria-label="图片地址，示例 https://example.com/image.png">'
       + '<label style="margin-top:14px;">图片说明 (alt)</label>'
-      + '<input type="text" class="xs-new-alt" placeholder="图片描述文字">'
+      + '<input type="text" class="xs-new-alt" aria-label="图片描述文字">'
       + '<div class="xs-file-upload" id="xsFileUpload">'
       + '  或 点击上传本地图片'
       + '  <input type="file" id="xsFileInput" accept="image/*">'
@@ -1803,29 +2502,11 @@
       const file = fileInput.files[0];
 
       const doInsert = (url) => {
-        const img = document.createElement("img");
-        img.src = url;
-        if (alt) img.alt = alt;
-        img.style.maxWidth = "100%";
-        img.style.display = "block";
-        img.style.margin = "12px 0";
-        img.dataset.xsEditId = "m" + Date.now();
-
         const active = document.activeElement;
         const currentSlide = active?.closest?.("[data-slide], section[id], article[id], main")
-          || document.querySelector("[data-slide], section[id], article[id], main");
-        if (active && active.isContentEditable && active !== document.body) {
-          active.insertAdjacentElement("afterend", img);
-        } else {
-          const lastSlide = currentSlide || document.querySelector(".slide-card:last-of-type, .deck-section:last-of-type, main");
-          if (lastSlide) lastSlide.appendChild(img);
-          else document.body.appendChild(img);
-        }
-
-        const store = readStore();
-        store[img.dataset.xsEditId] = url;
-        writeStore(store);
-        toast("图片已插入，Cmd+S 保存");
+          || activeSlideContainer();
+        const frame = createInsertedFrame(url, alt, currentSlide);
+        toast("图片已插入：可拖动，或点 左/居中/右/置底 吸附");
       };
 
       if (file) {
@@ -1848,7 +2529,7 @@
     mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => {
       const f = fileInput.files[0];
-      if (f) mask.querySelector(".xs-new-url").placeholder = f.name;
+      if (f) mask.querySelector(".xs-new-url").title = f.name;
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
       if (e.key === "Enter") apply();
@@ -1875,8 +2556,13 @@
       el.removeAttribute("contenteditable");
       el.removeAttribute("spellcheck");
     });
-    clone.querySelectorAll(".xs-edit-toolbar, .xs-toast, .xs-media-wrapper, .xs-media-badge, .xs-modal-mask")
+    clone.querySelectorAll(".xs-edit-toolbar, .xs-toast, .xs-media-wrapper, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide")
       .forEach(el => el.remove());
+    clone.querySelectorAll(".xs-inserted-frame").forEach(frame => {
+      frame.classList.remove("is-selected");
+      frame.removeAttribute("tabindex");
+      delete frame.dataset.xsFrameReady;
+    });
     // Unwrap media wrappers in clone
     clone.querySelectorAll(".xs-media-wrapper").forEach(w => {
       const p = w.parentElement;
@@ -1964,6 +2650,10 @@
   document.addEventListener("click", (event) => {
     const el = fontTargetFromEventTarget(event.target);
     if (el) setCurrentTextEl(el);
+    if (editing && !event.target.closest(".xs-inserted-frame")) {
+      document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(frame => frame.classList.remove("is-selected"));
+      currentImageFrame = null;
+    }
   });
 
   /* ── Keyboard ── */
@@ -1989,6 +2679,7 @@
   ensureIds();
   restoreAll();
   buildToolbar();
+  document.querySelectorAll(".xs-inserted-frame").forEach(attachFrameEvents);
 })();
 </script>
 <!-- XIAOSHUI_PPT_EDIT_MODE_END -->

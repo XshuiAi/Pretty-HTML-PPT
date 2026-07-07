@@ -147,6 +147,93 @@ SNIPPET = r'''
     pointer-events: auto;
   }
 
+  /* Inserted image canvas */
+  .xs-inserted-frame {
+    position: absolute;
+    z-index: 60;
+    display: block;
+    width: min(320px, 36vw);
+    min-width: 120px;
+    max-width: calc(100% - 32px);
+    border-radius: 10px;
+    box-shadow: 0 18px 44px rgba(17, 24, 39, 0.16);
+    touch-action: none;
+  }
+  .xs-inserted-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .xs-editing .xs-inserted-frame {
+    outline: 1.5px dashed rgba(37, 99, 235, 0.72);
+    outline-offset: 4px;
+    cursor: grab;
+  }
+  .xs-editing .xs-inserted-frame.is-selected {
+    outline: 2px solid rgba(255, 79, 154, 0.95);
+    box-shadow: 0 20px 54px rgba(255, 79, 154, 0.22);
+  }
+  .xs-insert-controls {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    z-index: 2;
+    display: none;
+    gap: 4px;
+    padding: 5px;
+    border: 1px solid rgba(17, 24, 39, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 28px rgba(17, 24, 39, 0.14);
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .xs-editing .xs-inserted-frame.is-selected .xs-insert-controls {
+    display: inline-flex;
+  }
+  .xs-insert-controls button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #111827;
+    padding: 5px 7px;
+    font: 700 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    cursor: pointer;
+  }
+  .xs-insert-controls button:hover {
+    background: #f3f4f6;
+  }
+  .xs-insert-resize {
+    position: absolute;
+    right: -9px;
+    bottom: -9px;
+    z-index: 3;
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #ff4f9a;
+    box-shadow: 0 4px 12px rgba(17, 24, 39, .2);
+    cursor: nwse-resize;
+  }
+  .xs-editing .xs-inserted-frame.is-selected .xs-insert-resize {
+    display: block;
+  }
+  .xs-snap-guide {
+    position: absolute;
+    z-index: 59;
+    display: none;
+    pointer-events: none;
+    background: rgba(255, 79, 154, .72);
+  }
+  .xs-snap-guide.is-visible { display: block; }
+  .xs-snap-guide.x { height: 1px; left: 0; right: 0; }
+  .xs-snap-guide.y { width: 1px; top: 0; bottom: 0; }
+
   /* Toast */
   .xs-toast {
     position: fixed;
@@ -264,7 +351,7 @@ SNIPPET = r'''
   .xs-modal .xs-file-upload input { display: none; }
 
   @media print {
-    .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask { display: none !important; }
+    .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide { display: none !important; }
   }
 </style>
 <script id="xiaoshui-edit-script">
@@ -284,7 +371,7 @@ SNIPPET = r'''
     "script", "style", "svg", "canvas", "video", "audio",
     "button", "nav", "input", "textarea", "select", "option",
     "[data-no-edit]", ".xs-edit-toolbar", ".xs-toast", ".xs-modal-mask",
-    ".xs-media-badge"
+    ".xs-media-badge", ".xs-insert-controls", ".xs-snap-guide"
   ].join(",");
 
   /* ── Blacklist: parent tags whose children should NOT get contenteditable ── */
@@ -295,6 +382,7 @@ SNIPPET = r'''
   let editing = false;
   let toastTimer = null;
   let currentTextEl = null;
+  let currentImageFrame = null;
 
   /* ── Helpers ── */
   function isTextNodeEmpty(el) {
@@ -337,7 +425,7 @@ SNIPPET = r'''
   function getMediaCandidates() {
     return [...document.querySelectorAll("img, video")]
       .filter(el => !el.closest(blockedSelector))
-      .filter(el => !el.closest(".xs-media-wrapper") && !el.closest(".xs-modal-mask"));
+      .filter(el => !el.closest(".xs-media-wrapper") && !el.closest(".xs-modal-mask") && !el.closest(".xs-inserted-frame"));
   }
 
   /* ── ID assignment ── */
@@ -396,6 +484,7 @@ SNIPPET = r'''
         }
       }
     });
+    restoreInsertedFrames(data);
   }
 
   /* ── Save ── */
@@ -414,6 +503,7 @@ SNIPPET = r'''
         : el.src;
       if (src) data[el.dataset.xsEditId] = src;
     });
+    data.__xsInsertedFrames = collectInsertedFrames();
     writeStore(data);
     toast("已保存到本机浏览器");
   }
@@ -594,7 +684,7 @@ SNIPPET = r'''
       + '<label>当前地址</label>'
       + '<input type="text" class="xs-current-url" value="' + escapeHtml(currentSrc) + '" readonly style="color:#6b7280;font-size:11px;">'
       + '<label style="margin-top:14px;">新地址 (URL)</label>'
-      + '<input type="url" class="xs-new-url" placeholder="https://...">'
+      + '<input type="url" class="xs-new-url" aria-label="新媒体地址，示例 https://example.com/file.png">'
       + '<div class="xs-file-upload" id="xsFileUpload">'
       + '  或 点击上传本地文件'
       + '  <input type="file" id="xsFileInput" accept="' + (isImg ? 'image/*' : 'video/*') + '">'
@@ -649,12 +739,334 @@ SNIPPET = r'''
     mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => {
       const f = fileInput.files[0];
-      if (f) mask.querySelector(".xs-new-url").placeholder = f.name;
+      if (f) mask.querySelector(".xs-new-url").title = f.name;
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
       if (e.key === "Enter") apply();
     });
     setTimeout(() => mask.querySelector(".xs-new-url").focus(), 120);
+  }
+
+  /* ── Inserted image positioning ── */
+  function slideContainers() {
+    const slides = [...document.querySelectorAll("[data-slide], section[id], article[id]")]
+      .filter((slide, index, all) => all.indexOf(slide) === index);
+    return slides.length ? slides : [...document.querySelectorAll("main")];
+  }
+
+  function activeSlideContainer() {
+    const slides = slideContainers();
+    if (!slides.length) return document.body;
+    const viewportCenter = window.innerHeight / 2;
+    const centered = slides.find(slide => {
+      const rect = slide.getBoundingClientRect();
+      return rect.top <= viewportCenter && rect.bottom >= viewportCenter;
+    });
+    if (centered) return centered;
+    return slides
+      .map(slide => {
+        const rect = slide.getBoundingClientRect();
+        const visible = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+        return { slide, visible };
+      })
+      .sort((a, b) => b.visible - a.visible)[0]?.slide || slides[0];
+  }
+
+  function slideContainerFor(node) {
+    return node?.closest?.("[data-slide], section[id], article[id], main")
+      || activeSlideContainer()
+      || document.body;
+  }
+
+  function prepareImageCanvas(container) {
+    if (!container || container === document.body) return document.body;
+    const style = window.getComputedStyle(container);
+    if (style.position === "static") container.style.position = "relative";
+    return container;
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function frameMetrics(frame) {
+    const parent = frame.parentElement || document.body;
+    const parentRect = parent.getBoundingClientRect();
+    const rect = frame.getBoundingClientRect();
+    return { parent, parentRect, rect };
+  }
+
+  function widthThatFitsParent(frame, targetWidth) {
+    const img = frame.querySelector("img");
+    const { parentRect } = frameMetrics(frame);
+    const maxByParent = Math.max(140, parentRect.width - 56);
+    let next = Math.min(targetWidth, maxByParent);
+    if (img?.naturalWidth && img?.naturalHeight) {
+      const maxHeight = Math.max(180, parentRect.height - 84);
+      const maxByHeight = maxHeight * img.naturalWidth / img.naturalHeight;
+      next = Math.min(next, Math.max(120, maxByHeight));
+    }
+    return Math.round(next);
+  }
+
+  function fitFrameToParent(frame) {
+    const { parentRect, rect } = frameMetrics(frame);
+    if (!parentRect.width || !parentRect.height || !rect.width) return;
+    const fitted = widthThatFitsParent(frame, rect.width);
+    if (fitted && fitted < rect.width) frame.style.width = fitted + "px";
+  }
+
+  function ensureSnapGuides(parent) {
+    let x = parent.querySelector(":scope > .xs-snap-guide.x");
+    let y = parent.querySelector(":scope > .xs-snap-guide.y");
+    if (!x) {
+      x = document.createElement("span");
+      x.className = "xs-snap-guide x";
+      x.setAttribute("data-no-edit", "true");
+      parent.appendChild(x);
+    }
+    if (!y) {
+      y = document.createElement("span");
+      y.className = "xs-snap-guide y";
+      y.setAttribute("data-no-edit", "true");
+      parent.appendChild(y);
+    }
+    return { x, y };
+  }
+
+  function hideSnapGuides(parent) {
+    parent?.querySelectorAll?.(":scope > .xs-snap-guide").forEach(guide => guide.classList.remove("is-visible"));
+  }
+
+  function collectInsertedFrames() {
+    const slides = slideContainers();
+    return [...document.querySelectorAll(".xs-inserted-frame")].map(frame => {
+      const img = frame.querySelector("img");
+      return {
+        id: frame.dataset.xsEditId || "",
+        parentIndex: Math.max(0, slides.indexOf(frame.parentElement)),
+        src: img?.src || "",
+        alt: img?.alt || "",
+        style: {
+          left: frame.style.left || "",
+          top: frame.style.top || "",
+          width: frame.style.width || "",
+          zIndex: frame.style.zIndex || ""
+        }
+      };
+    }).filter(item => item.src);
+  }
+
+  function persistInsertedFrames() {
+    const store = readStore();
+    store.__xsInsertedFrames = collectInsertedFrames();
+    writeStore(store);
+  }
+
+  function restoreInsertedFrames(data) {
+    const frames = Array.isArray(data.__xsInsertedFrames) ? data.__xsInsertedFrames : [];
+    if (!frames.length) return;
+    const slides = slideContainers();
+    frames.forEach(item => {
+      if (!item?.src) return;
+      if (item.id && document.querySelector('.xs-inserted-frame[data-xs-edit-id="' + CSS.escape(item.id) + '"]')) return;
+      const parent = slides[item.parentIndex] || activeSlideContainer();
+      createInsertedFrame(item.src, item.alt || "插入图片", parent, {
+        id: item.id,
+        style: item.style || {},
+        restored: true
+      });
+    });
+  }
+
+  function nearest(value, anchors, threshold = 18) {
+    let best = { value, snapped: false };
+    let distance = threshold + 1;
+    anchors.forEach(anchor => {
+      const diff = Math.abs(value - anchor);
+      if (diff < distance && diff <= threshold) {
+        distance = diff;
+        best = { value: anchor, snapped: true };
+      }
+    });
+    return best;
+  }
+
+  function snapPosition(frame, left, top) {
+    const { parent, parentRect, rect } = frameMetrics(frame);
+    const pad = 24;
+    const maxLeft = Math.max(pad, parentRect.width - rect.width - pad);
+    const maxTop = Math.max(pad, parentRect.height - rect.height - pad);
+    const xAnchors = [pad, (parentRect.width - rect.width) / 2, maxLeft];
+    const yAnchors = [pad, (parentRect.height - rect.height) / 2, maxTop];
+    const snappedX = nearest(clamp(left, pad, maxLeft), xAnchors);
+    const snappedY = nearest(clamp(top, pad, maxTop), yAnchors);
+    const guides = ensureSnapGuides(parent);
+    guides.y.style.left = Math.round(snappedX.value + rect.width / 2) + "px";
+    guides.x.style.top = Math.round(snappedY.value + rect.height / 2) + "px";
+    guides.y.classList.toggle("is-visible", snappedX.snapped);
+    guides.x.classList.toggle("is-visible", snappedY.snapped);
+    return { left: snappedX.value, top: snappedY.value };
+  }
+
+  function placeFrame(frame, placement) {
+    const { parentRect, rect } = frameMetrics(frame);
+    const pad = 28;
+    const maxLeft = Math.max(pad, parentRect.width - rect.width - pad);
+    const maxTop = Math.max(pad, parentRect.height - rect.height - pad);
+    const positions = {
+      left: { left: pad, top: Math.max(pad, (parentRect.height - rect.height) / 2) },
+      center: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: Math.max(pad, (parentRect.height - rect.height) / 2) },
+      right: { left: maxLeft, top: Math.max(pad, (parentRect.height - rect.height) / 2) },
+      bottom: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: maxTop },
+    };
+    const pos = positions[placement] || positions.right;
+    frame.style.left = Math.round(pos.left) + "px";
+    frame.style.top = Math.round(pos.top) + "px";
+    selectFrame(frame);
+    persistInsertedFrames();
+  }
+
+  function selectFrame(frame) {
+    document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(item => {
+      if (item !== frame) item.classList.remove("is-selected");
+    });
+    currentImageFrame = frame;
+    frame.classList.add("is-selected");
+  }
+
+  function attachFrameEvents(frame) {
+    if (frame.dataset.xsFrameReady === "true") return;
+    frame.dataset.xsFrameReady = "true";
+    frame.tabIndex = 0;
+    frame.addEventListener("click", (event) => {
+      if (!editing) return;
+      event.stopPropagation();
+      selectFrame(frame);
+    });
+    frame.addEventListener("pointerdown", (event) => {
+      if (!editing || event.target.closest(".xs-insert-controls") || event.target.closest(".xs-insert-resize")) return;
+      event.preventDefault();
+      selectFrame(frame);
+      const { parentRect, rect } = frameMetrics(frame);
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+      frame.setPointerCapture?.(event.pointerId);
+      const move = (moveEvent) => {
+        const pos = snapPosition(
+          frame,
+          moveEvent.clientX - parentRect.left - offsetX,
+          moveEvent.clientY - parentRect.top - offsetY
+        );
+        frame.style.left = Math.round(pos.left) + "px";
+        frame.style.top = Math.round(pos.top) + "px";
+      };
+      const up = () => {
+        hideSnapGuides(frame.parentElement);
+        frame.removeEventListener("pointermove", move);
+        frame.removeEventListener("pointerup", up);
+        frame.removeEventListener("pointercancel", up);
+        persistInsertedFrames();
+        toast("图片位置已更新，导出 HTML 后会保留");
+      };
+      frame.addEventListener("pointermove", move);
+      frame.addEventListener("pointerup", up);
+      frame.addEventListener("pointercancel", up);
+    });
+
+    frame.querySelectorAll("[data-xs-place]").forEach(button => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        placeFrame(frame, button.dataset.xsPlace);
+      });
+    });
+
+    frame.querySelectorAll("[data-xs-size]").forEach(button => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const { parentRect } = frameMetrics(frame);
+        const ratio = Number(button.dataset.xsSize || .34);
+        frame.style.width = widthThatFitsParent(frame, parentRect.width * ratio) + "px";
+        placeFrame(frame, "right");
+      });
+    });
+
+    const resize = frame.querySelector(".xs-insert-resize");
+    resize?.addEventListener("pointerdown", (event) => {
+      if (!editing) return;
+      event.preventDefault();
+      event.stopPropagation();
+      selectFrame(frame);
+      const startX = event.clientX;
+      const startWidth = frame.getBoundingClientRect().width;
+      const { parentRect } = frameMetrics(frame);
+      resize.setPointerCapture?.(event.pointerId);
+      const move = (moveEvent) => {
+        const next = clamp(startWidth + (moveEvent.clientX - startX), 120, Math.max(160, parentRect.width - 48));
+        frame.style.width = Math.round(next) + "px";
+      };
+      const up = () => {
+        resize.removeEventListener("pointermove", move);
+        resize.removeEventListener("pointerup", up);
+        resize.removeEventListener("pointercancel", up);
+        persistInsertedFrames();
+        toast("图片尺寸已更新，导出 HTML 后会保留");
+      };
+      resize.addEventListener("pointermove", move);
+      resize.addEventListener("pointerup", up);
+      resize.addEventListener("pointercancel", up);
+    });
+  }
+
+  function createInsertedFrame(url, alt, container, options = {}) {
+    const parent = prepareImageCanvas(container);
+    const frame = document.createElement("figure");
+    frame.className = "xs-inserted-frame";
+    frame.dataset.xsInsertedImage = "true";
+    frame.dataset.xsEditId = options.id || "m" + Date.now();
+    frame.innerHTML = [
+      '<div class="xs-insert-controls" data-no-edit="true" aria-label="图片位置控制">',
+      '  <button type="button" data-xs-place="left">左</button>',
+      '  <button type="button" data-xs-place="center">居中</button>',
+      '  <button type="button" data-xs-place="right">右</button>',
+      '  <button type="button" data-xs-place="bottom">置底</button>',
+      '  <button type="button" data-xs-size="0.24">小</button>',
+      '  <button type="button" data-xs-size="0.36">中</button>',
+      '  <button type="button" data-xs-size="0.52">大</button>',
+      '</div>',
+      '<img alt="' + escapeHtml(alt || "插入图片") + '">',
+      '<span class="xs-insert-resize" data-no-edit="true" aria-hidden="true"></span>'
+    ].join("");
+    const img = frame.querySelector("img");
+    img.addEventListener("load", () => {
+      fitFrameToParent(frame);
+      if (!options.restored) placeFrame(frame, "right");
+      persistInsertedFrames();
+    }, { once: true });
+    img.src = url;
+    parent.appendChild(frame);
+    if (options.style) {
+      if (options.style.left) frame.style.left = options.style.left;
+      if (options.style.top) frame.style.top = options.style.top;
+      if (options.style.width) frame.style.width = options.style.width;
+      if (options.style.zIndex) frame.style.zIndex = options.style.zIndex;
+    }
+    attachFrameEvents(frame);
+    if (options.restored) {
+      requestAnimationFrame(() => {
+        fitFrameToParent(frame);
+        selectFrame(frame);
+      });
+    } else {
+      requestAnimationFrame(() => {
+        fitFrameToParent(frame);
+        placeFrame(frame, "right");
+        persistInsertedFrames();
+      });
+    }
+    return frame;
   }
 
   /* ── Insert image ── */
@@ -663,10 +1075,11 @@ SNIPPET = r'''
     mask.className = "xs-modal-mask is-open";
     mask.innerHTML = '<div class="xs-modal">'
       + '<h3>插入图片</h3>'
+      + '<p style="margin:0 0 14px;color:#6b7280;font-size:12px;">插入后可拖动图片，靠近左侧、居中、右侧或底部会自动吸附，也可以用图片上方按钮快速对齐。</p>'
       + '<label>图片地址 (URL)</label>'
-      + '<input type="url" class="xs-new-url" placeholder="https://...">'
+      + '<input type="url" class="xs-new-url" aria-label="图片地址，示例 https://example.com/image.png">'
       + '<label style="margin-top:14px;">图片说明 (alt)</label>'
-      + '<input type="text" class="xs-new-alt" placeholder="图片描述文字">'
+      + '<input type="text" class="xs-new-alt" aria-label="图片描述文字">'
       + '<div class="xs-file-upload" id="xsFileUpload">'
       + '  或 点击上传本地图片'
       + '  <input type="file" id="xsFileInput" accept="image/*">'
@@ -686,29 +1099,11 @@ SNIPPET = r'''
       const file = fileInput.files[0];
 
       const doInsert = (url) => {
-        const img = document.createElement("img");
-        img.src = url;
-        if (alt) img.alt = alt;
-        img.style.maxWidth = "100%";
-        img.style.display = "block";
-        img.style.margin = "12px 0";
-        img.dataset.xsEditId = "m" + Date.now();
-
         const active = document.activeElement;
         const currentSlide = active?.closest?.("[data-slide], section[id], article[id], main")
-          || document.querySelector("[data-slide], section[id], article[id], main");
-        if (active && active.isContentEditable && active !== document.body) {
-          active.insertAdjacentElement("afterend", img);
-        } else {
-          const lastSlide = currentSlide || document.querySelector(".slide-card:last-of-type, .deck-section:last-of-type, main");
-          if (lastSlide) lastSlide.appendChild(img);
-          else document.body.appendChild(img);
-        }
-
-        const store = readStore();
-        store[img.dataset.xsEditId] = url;
-        writeStore(store);
-        toast("图片已插入，Cmd+S 保存");
+          || activeSlideContainer();
+        const frame = createInsertedFrame(url, alt, currentSlide);
+        toast("图片已插入：可拖动，或点 左/居中/右/置底 吸附");
       };
 
       if (file) {
@@ -731,7 +1126,7 @@ SNIPPET = r'''
     mask.querySelector("#xsFileUpload").addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => {
       const f = fileInput.files[0];
-      if (f) mask.querySelector(".xs-new-url").placeholder = f.name;
+      if (f) mask.querySelector(".xs-new-url").title = f.name;
     });
     mask.querySelector(".xs-new-url").addEventListener("keydown", (e) => {
       if (e.key === "Enter") apply();
@@ -758,8 +1153,13 @@ SNIPPET = r'''
       el.removeAttribute("contenteditable");
       el.removeAttribute("spellcheck");
     });
-    clone.querySelectorAll(".xs-edit-toolbar, .xs-toast, .xs-media-wrapper, .xs-media-badge, .xs-modal-mask")
+    clone.querySelectorAll(".xs-edit-toolbar, .xs-toast, .xs-media-wrapper, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide")
       .forEach(el => el.remove());
+    clone.querySelectorAll(".xs-inserted-frame").forEach(frame => {
+      frame.classList.remove("is-selected");
+      frame.removeAttribute("tabindex");
+      delete frame.dataset.xsFrameReady;
+    });
     // Unwrap media wrappers in clone
     clone.querySelectorAll(".xs-media-wrapper").forEach(w => {
       const p = w.parentElement;
@@ -847,6 +1247,10 @@ SNIPPET = r'''
   document.addEventListener("click", (event) => {
     const el = fontTargetFromEventTarget(event.target);
     if (el) setCurrentTextEl(el);
+    if (editing && !event.target.closest(".xs-inserted-frame")) {
+      document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(frame => frame.classList.remove("is-selected"));
+      currentImageFrame = null;
+    }
   });
 
   /* ── Keyboard ── */
@@ -872,6 +1276,7 @@ SNIPPET = r'''
   ensureIds();
   restoreAll();
   buildToolbar();
+  document.querySelectorAll(".xs-inserted-frame").forEach(attachFrameEvents);
 })();
 </script>
 <!-- XIAOSHUI_PPT_EDIT_MODE_END -->

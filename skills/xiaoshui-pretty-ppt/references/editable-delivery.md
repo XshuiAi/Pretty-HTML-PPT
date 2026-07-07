@@ -20,7 +20,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 | **Font size** | Press `E`, click text, use `字号`, `A-`, `A+`, or `默认` | Adjusts the selected text element's font size. Changes are saved locally and included in exported HTML. |
 | **Replace images** | Press `E`, click `替换图片` badge on any image | Paste a new URL or upload a local image file. Supports data-URL conversion for offline-safe exports. |
 | **Replace videos** | Press `E`, click `替换视频` badge on any video | Paste a new video URL. |
-| **Insert images** | Press `E`, click `➕ 插入图片` in toolbar | Inserts a new `<img>` at cursor position or at the end of the current slide. Supports URL paste or local file upload. |
+| **Insert images** | Press `E`, click `➕ 插入图片` in toolbar | Inserts a draggable image frame on the current slide. Supports URL paste or local upload, drag positioning, left/center/right/bottom snap, S/M/L sizing, local save, and exported HTML layout retention. |
 
 ## Toolbar Reference
 
@@ -31,7 +31,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 | `保存` | Save all edits to browser localStorage (or `Cmd+S` / `Ctrl+S`) |
 | `导出 HTML` | Download a standalone edited HTML file with all changes baked in |
 | `重置` | Clear all local edits and restore original template content |
-| `➕ 插入图片` | Open a modal to insert a new image (URL or local file upload) |
+| `➕ 插入图片` | Open a modal to insert a draggable image frame; use the image controls for left/center/right/bottom snap and S/M/L sizing |
 
 ## Keyboard Shortcuts
 
@@ -65,7 +65,7 @@ Use `--no-edit` when:
 - 按 E 进入编辑模式 → 直接点任何文字就能改
 - 点选文字后用 字号 / A- / A+ / 默认 → 调整或恢复字体大小
 - 编辑模式下点图片/视频上的「替换图片」「替换视频」→ 可以换 URL 或上传本地文件
-- 点工具栏「➕ 插入图片」→ 可以在页面里新增图片
+- 点工具栏「➕ 插入图片」→ 可以新增图片，拖动摆放，也可以一键吸附到左侧、居中、右侧或置底
 - Cmd+S / Ctrl+S 保存到本机浏览器
 - 点「导出 HTML」下载一份独立的新 HTML 文件
 - 点「重置」清除所有修改，恢复原始模板
