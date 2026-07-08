@@ -12,6 +12,8 @@ Use this before delivering a XiaoShui Pretty PPT deck.
 - No slide-like page requires vertical scrolling to read core content.
 - Local images/videos referenced by the HTML exist.
 - Image paths are relative to the deck folder, not absolute `/Users/...` paths.
+- Important links from the source remain clickable and use clear labels.
+- External links use `target="_blank"` and `rel="noopener noreferrer"`.
 - The deck uses one template grammar; do not mix classes from unrelated templates.
 - Browser edit mode is present by default unless the user explicitly requested `--no-edit`.
 - Font-size controls are present inside edit mode unless the user explicitly requested `--no-edit`.
@@ -27,6 +29,9 @@ Use this before delivering a XiaoShui Pretty PPT deck.
 - Each page has a clear role: hook, context, data, process, comparison, case, summary, closing.
 - Dense pages are grouped with labels, tables, cards, or visual hierarchy.
 - Speaker deck pages are not overloaded with report paragraphs.
+- Links are placed by purpose: primary action, source proof, media/demo, resource, or appendix.
+- Supplied images/screenshots are matched to the closest claim, section, case, step, or data point.
+- Data-heavy material is turned into KPI cards, charts, tables, or a small interactive calculator when that helps the story.
 
 ## P2 · Visual Quality
 
@@ -34,6 +39,8 @@ Use this before delivering a XiaoShui Pretty PPT deck.
 - Typography hierarchy is clear: title, subtitle, body, metadata.
 - Images have consistent aspect ratios in the same group.
 - Important screenshots are legible at presentation size.
+- Charts are legible at presentation size and include labels, units, or assumptions.
+- Interactive calculators expose current values and a clear recalculated result.
 - No repeated generic card grid across every page unless the template intentionally uses it.
 - Motion is restrained and does not hide content if scripts fail.
 - Browser edit mode should not make navigation labels, buttons, images, videos, canvas, or SVG graphics accidentally editable.

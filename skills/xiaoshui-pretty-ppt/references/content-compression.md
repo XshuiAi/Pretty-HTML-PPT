@@ -61,6 +61,20 @@ Convert content into a visual page when it contains:
 - case study -> problem/action/result page
 - course or learning path -> module map
 
+## Link Signals
+
+When the source includes URLs, Markdown links, Feishu links, GitHub repositories, videos, demos, citations, resource downloads, or product pages, do not leave them as raw text.
+
+Classify links before building pages:
+
+- primary action -> page button or strong text link
+- source proof -> small source chip, footnote, or appendix link
+- demo/media -> preview card or `打开 Demo` action
+- resource/download -> resource list
+- secondary reference -> appendix/source section
+
+Only promote links that help the audience act or verify. Too many buttons can make a deck feel like a link dump.
+
 ## Image-Text Matching
 
 When the source includes screenshots, photos, charts, or local image files, do not place images randomly. Do an image-text matching pass before building pages:
@@ -79,6 +93,16 @@ Preferred patterns:
 - `Data + chart`: conclusion first, chart second, caption third.
 - `Case + before/after`: two images with a short contrast sentence.
 - `Gallery + labels`: several images in one section when they support the same theme.
+
+## Data And Calculator Matching
+
+When the source includes numbers, tables, or adjustable assumptions, decide whether the audience needs to **see** the data or **try** the data:
+
+- Static chart: when the point is a fixed conclusion, trend, ranking, or comparison.
+- Interactive calculator: when the user asks "如果我输入不同数值会怎样", "拖动金额/年份/比例", "现金流测算", "预算测算", "转化率测算", or any other what-if scenario.
+- Appendix table: when raw rows are necessary but too dense for a slide.
+
+Interactive widgets should stay presentation-friendly: 2-4 inputs, one main result, one short assumption note. Keep the full formula visible in code comments or nearby JS so a future agent can update it safely.
 
 ## Active Clarification Questions
 
@@ -119,4 +143,7 @@ Before final delivery, the deck should have:
 - no full source paragraphs pasted unchanged unless the user explicitly asked
 - speaker notes for long explanations when presenter mode is enabled
 - appendix/source links for long references when useful
+- preserved clickable links for important URLs, demos, GitHub repos, media, or sources
+- matched images placed near the text, claim, case, step, or data point they support
+- charts or calculators for structured numbers when they improve the story
 - no slide that depends on hidden notes to make basic sense

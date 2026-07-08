@@ -34,8 +34,11 @@ This is not a generic webpage generator. It turns source material into a **prese
 6. Preserve the chosen template's color system, typography, navigation, interaction model, and motion rules.
 7. Include browser edit mode and presenter mode by default, unless the user explicitly asks for a clean locked deck.
 8. Put long explanation into speaker notes instead of overloading visible pages.
-9. Add Feishu source links when the user requests traceability and Feishu CLI/tool access is available.
-10. Verify the resulting deck visually and structurally before delivery.
+9. Preserve useful source links from the user's material and turn them into clickable, well-labeled page actions, proof links, source links, or appendix links.
+10. Match supplied images/screenshots to the closest claim, case, step, or data point before placing them.
+11. Convert structured numbers into static charts or lightweight interactive calculators when the user's story benefits from changing inputs.
+12. Add Feishu source links when the user requests traceability and Feishu CLI/tool access is available.
+13. Verify the resulting deck visually and structurally before delivery.
 
 ## What This Skill Is Not
 
@@ -87,8 +90,10 @@ Before asking questions, detect the user's mode:
 - **Mode F · Editable Delivery**: user asks how to keep modifying the generated HTML PPT, edit text boxes, export an edited file, or make the result easier to hand off.
 - **Mode G · Presenter Delivery**: user asks for speaker notes, presenter view, next-slide preview, rehearsal, or a talk-ready deck.
 - **Mode H · Feishu Source Link Delivery**: user asks to jump from generated PPT pages back to Feishu docs, wiki pages, or specific document modules.
+- **Mode I · Source Asset Preservation**: user provides documents with links, images, screenshots, citations, videos, or product URLs and expects them to remain usable in the deck.
+- **Mode J · Data Visual / Calculator Deck**: user provides tables, metrics, targets, forecasts, finance-like scenarios, budgets, savings plans, KPI changes, or asks for charts/sliders/what-if calculations.
 
-For Mode D, read `references/interactive-template-selector.md` and `references/ppt-template-catalog.md`, then recommend 2-3 candidates. For Mode E, read `references/workflow-and-install.md`. For Mode F, read `references/editable-delivery.md`. For Mode G, use the presenter mode rules in this file and `references/workflow-and-install.md`. For Mode H, read `references/feishu-source-links.md`.
+For Mode D, read `references/interactive-template-selector.md` and `references/ppt-template-catalog.md`, then recommend 2-3 candidates. For Mode E, read `references/workflow-and-install.md`. For Mode F, read `references/editable-delivery.md`. For Mode G, use the presenter mode rules in this file and `references/workflow-and-install.md`. For Mode H, read `references/feishu-source-links.md`. For Mode I or J, read `references/source-assets-and-data-widgets.md`.
 
 ### Step 1 · Intake And Density
 
@@ -120,6 +125,24 @@ When the user provides images together with text, do an image-text matching pass
 - Add short captions or alt text when they help explain why the image is on that page.
 
 If the user asks for Feishu source traceability or section jump links, read `references/feishu-source-links.md` before planning the deck.
+
+When the source document contains links, URLs, citations, product pages, demo pages, GitHub repositories, Feishu documents, videos, or download links, do a link-preservation pass before planning pages:
+
+- Extract links with their nearby label, heading, and paragraph context.
+- Classify each link as **primary action**, **source proof**, **supporting reference**, **media/demo**, **download**, or **appendix**.
+- Keep important links clickable in the generated HTML. Do not flatten them into plain text.
+- Use clear human labels such as `打开 GitHub`, `查看在线 Demo`, `查看原文`, `查看数据来源`, or the original source title.
+- Put primary links on the relevant page as a button or compact text link; put proof/reference links in footnotes, source chips, or appendix/source sections.
+- Add `target="_blank"` and `rel="noopener noreferrer"` for external links.
+- Do not invent links. If a link is broken or ambiguous, keep it in a source list and mention it as needing confirmation.
+
+When the source includes structured numbers, tables, or scenario inputs, decide whether it should become:
+
+- **Static chart**: bar, line, pie/donut, KPI strip, progress bar, matrix, or annotated table.
+- **Interactive calculator**: sliders, number inputs, toggles, or segmented controls that update results in the page.
+- **Data appendix**: full table or assumptions when the raw data is too large for a slide.
+
+Use lightweight HTML/CSS/SVG/Canvas and plain JavaScript for charts and calculators by default. Avoid external chart libraries unless the user asks for a richer charting stack or the deck already includes one.
 
 ### Step 2 · Pick A Template
 
@@ -158,6 +181,8 @@ Before editing `index.html`, write a short build plan in your working notes:
 - page map: page number -> slide role -> source content -> asset slot
 - notes map: page number -> what belongs in speaker notes
 - source-link map: page number -> Feishu/source link if needed
+- link map: page number -> visible link/button/source chip -> URL -> reason
+- data map: page number -> chart/calculator/table -> input fields -> formula/assumptions
 
 Use the density rules in `references/intake-and-density.md`:
 
@@ -225,11 +250,14 @@ Follow these rules:
 - Use the template's existing navigation, page markers, interactions, and motion system.
 - Convert long prose into presentation pages: cover, agenda, chapter, key point, data, process, comparison, example, summary, closing.
 - Use `references/content-compression.md`: visible pages carry the argument; speaker notes carry long explanation; appendix/source links carry supporting detail.
+- Use `references/source-assets-and-data-widgets.md` when the material contains links, images, structured data, tables, formulas, metrics, or what-if scenarios.
 - If the user requests Feishu jump links, use `references/feishu-source-links.md` and add quiet `查看飞书原文` links only when the user has provided links or tool access confirms them.
+- Preserve meaningful source links as clickable HTML. Important links should become visible actions or source chips on the relevant page; secondary links can live in an appendix/source section.
 - Images and videos should live next to `index.html` under a local `assets/` or `images/` folder unless the template already defines another path.
 - Do not reuse borrowed web images unless the user owns them, provides them, or explicitly approves the source.
 - When text and images are supplied together, preserve meaningful pairs: image + matching sentence/claim/case should appear on the same page whenever it improves comprehension.
 - Do not insert images merely because they were supplied. Every main-page image should support the page's argument, example, data, or scene.
+- When data supports the story, convert it into a chart, KPI strip, annotated table, or interactive calculator. For sliders/calculators, show the assumption labels, current values, and recalculated result clearly. Add a short `示例测算 / assumptions` note when numbers are illustrative.
 - Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, drag/drop or select one or more local images, insert them as draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, delete them when selected, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
 - For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
@@ -317,6 +345,7 @@ Keep each template distinct. Do not let all styles collapse into the same pastel
 | `references/intake-and-density.md` | intake questions, document-to-deck compression, density rules | before planning a deck |
 | `references/interactive-template-selector.md` | opening questions and 2-3 template recommendation flow | when the user invokes the skill or asks which template to use |
 | `references/content-compression.md` | rules for visible slides, speaker notes, appendix/source links, and omitted content | before converting long docs/articles/Feishu docs |
+| `references/source-assets-and-data-widgets.md` | link preservation, image-text matching, chart choice, and interactive calculator rules | when sources include links, images, tables, metrics, or what-if inputs |
 | `references/feishu-source-links.md` | conditional Feishu doc/wiki/source-link handling | when the user wants PPT pages to jump back to Feishu material |
 | `references/ppt-template-catalog.md` | 12-template catalog and scenario mapping | before choosing a template |
 | `references/workflow-and-install.md` | install, update, publish, and validation instructions | install/use/update questions |

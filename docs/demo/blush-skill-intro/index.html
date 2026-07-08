@@ -219,6 +219,46 @@
       margin-top: 20px;
     }
 
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .hero-link,
+    .source-link,
+    .source-chips a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform .18s var(--ease), background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease);
+    }
+
+    .hero-link {
+      min-height: 44px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .hero-link.primary {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .hero-link:hover,
+    .source-link:hover,
+    .source-chips a:hover {
+      transform: translateY(-2px);
+    }
+
     .tag {
       padding: 7px 10px;
       border: 1px solid var(--line);
@@ -343,7 +383,8 @@
     .workflow-grid,
     .feature-grid,
     .template-grid,
-    .roadmap-grid {
+    .roadmap-grid,
+    .source-grid {
       display: grid;
       gap: 16px;
     }
@@ -353,11 +394,13 @@
     .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .template-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .roadmap-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .source-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
     .card,
     .step,
     .module,
-    .code-card {
+    .code-card,
+    .source-card {
       position: relative;
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -383,6 +426,7 @@
     .step[data-detail],
     .feature-card[data-detail],
     .roadmap-card[data-detail],
+    .source-card[data-detail],
     .module[data-detail] {
       cursor: pointer;
       transition: transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s var(--ease);
@@ -392,11 +436,13 @@
     .step[data-detail]:hover,
     .feature-card[data-detail]:hover,
     .roadmap-card[data-detail]:hover,
+    .source-card[data-detail]:hover,
     .module[data-detail]:hover,
     .card.is-expanded,
     .step.is-expanded,
     .feature-card.is-expanded,
     .roadmap-card.is-expanded,
+    .source-card.is-expanded,
     .module.is-expanded {
       transform: translateY(-4px);
       border-color: rgba(255, 79, 154, .48);
@@ -408,6 +454,7 @@
     .demo-enhanced .module[data-tilt],
     .demo-enhanced .feature-card[data-tilt],
     .demo-enhanced .roadmap-card[data-tilt],
+    .demo-enhanced .source-card[data-tilt],
     .demo-enhanced .code-card[data-tilt] {
       transform: perspective(900px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg)) translateY(var(--lift, 0px));
       transition: transform .18s var(--ease), box-shadow .22s var(--ease), border-color .22s var(--ease);
@@ -418,6 +465,7 @@
     .demo-enhanced .module[data-tilt]:hover,
     .demo-enhanced .feature-card[data-tilt]:hover,
     .demo-enhanced .roadmap-card[data-tilt]:hover,
+    .demo-enhanced .source-card[data-tilt]:hover,
     .demo-enhanced .code-card[data-tilt]:hover {
       --lift: -5px;
     }
@@ -541,9 +589,96 @@
 
     .card p,
     .step p,
-    .module p {
+    .module p,
+    .source-card p {
       margin: 0;
       color: var(--muted);
+    }
+
+    .source-card {
+      min-height: 330px;
+      padding: 24px;
+      background: var(--surface);
+      box-shadow: 0 18px 54px rgba(120, 42, 78, .08);
+    }
+
+    .source-card:nth-child(1) { background: #fff0f6; }
+    .source-card:nth-child(2) { background: #f7f1ff; }
+    .source-card:nth-child(3) { background: #eef6ff; }
+
+    .source-label {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 42px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--pink-soft);
+      color: var(--pink-dark);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .source-card h3 {
+      font-size: clamp(23px, 3vw, 34px);
+    }
+
+    .source-link {
+      margin-top: 24px;
+      padding: 11px 14px;
+      border: 1px solid var(--pink);
+      background: var(--pink);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .image-match-demo {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 28px;
+    }
+
+    .image-match-demo span {
+      display: grid;
+      place-items: center;
+      min-height: 74px;
+      border: 1px solid rgba(18, 17, 22, .22);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .7);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .image-match-demo i {
+      height: 2px;
+      background: var(--pink);
+      transform-origin: left center;
+      animation: match-line 1.7s var(--ease) infinite alternate;
+    }
+
+    @keyframes match-line {
+      from { transform: scaleX(.52); opacity: .55; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
+
+    .source-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .source-chips a {
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .66);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
     }
 
     .step {
@@ -907,6 +1042,103 @@
       color: var(--muted);
     }
 
+    .data-lab {
+      display: grid;
+      grid-template-columns: minmax(320px, .8fr) minmax(320px, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .data-result,
+    .data-controls {
+      min-height: 430px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .data-result {
+      background:
+        radial-gradient(circle at 18% 14%, rgba(255, 79, 154, .2), transparent 24%),
+        linear-gradient(135deg, #fffaf7, #ffe9f2);
+    }
+
+    .data-result h3 {
+      font-size: clamp(26px, 4vw, 48px);
+    }
+
+    .data-result strong {
+      display: block;
+      margin: 28px 0 14px;
+      font-size: clamp(52px, 7vw, 92px);
+      line-height: .9;
+    }
+
+    .data-result p,
+    .data-result small {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .data-result small {
+      display: block;
+      margin-top: 16px;
+      font-size: 12px;
+    }
+
+    .chart-bars {
+      display: grid;
+      gap: 9px;
+      margin-top: 28px;
+    }
+
+    .chart-bars span {
+      display: block;
+      width: var(--bar);
+      min-width: 18%;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 12px 30px rgba(255, 79, 154, .16);
+      transition: width .28s var(--ease);
+    }
+
+    .chart-bars span:nth-child(2) { background: #d92d75; }
+    .chart-bars span:nth-child(3) { background: var(--ink); }
+
+    .data-controls {
+      display: grid;
+      gap: 18px;
+      align-content: center;
+    }
+
+    .data-controls label {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid rgba(234, 219, 212, .9);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .62);
+    }
+
+    .data-controls label span {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .data-controls label b { color: var(--ink); }
+
+    .data-controls input[type="range"] {
+      width: 100%;
+      accent-color: var(--pink);
+    }
+
     .closing {
       position: relative;
       min-height: calc(100svh - 58px);
@@ -947,7 +1179,9 @@
       .workflow-grid,
       .feature-grid,
       .template-grid,
-      .roadmap-grid { grid-template-columns: 1fr; }
+      .roadmap-grid,
+      .source-grid,
+      .data-lab { grid-template-columns: 1fr; }
       .slide { min-height: auto; padding: 72px 0; }
       .arrow-line { display: none; }
       .demo-dots { left: 12px; right: 82px; bottom: 12px; overflow-x: auto; }
@@ -1001,10 +1235,12 @@
       <div class="brand">xiaoshui-Pretty PPT</div>
       <a href="#why">Why</a>
       <a href="#flow">Input</a>
+      <a href="#sources">Links</a>
       <a href="#templates">Templates</a>
       <a href="#use">Use</a>
       <a href="#presenter">Live</a>
       <a href="#media">Media</a>
+      <a href="#data">Data</a>
       <a href="#next">Cases</a>
     </nav>
   </div>
@@ -1014,7 +1250,11 @@
       <div class="hero-copy">
         <span class="eyebrow">Blush Editorial / 暖粉编辑志</span>
         <h1 data-slide-title>把文档变成会动、能改、能分享的 HTML 网页 PPT</h1>
-        <p class="lead" data-slide-summary>xiaoshui-Pretty PPT 是一个面向 AI Agent 的演示型 Skill，用 12 套真实模板把文档、文章、图片、截图、数据和作品集整理成可打开、可编辑、可发布的网页 PPT。</p>
+        <p class="lead" data-slide-summary>xiaoshui-Pretty PPT 是一个面向 AI Agent 的演示型 Skill，用 12 套真实模板把文档、文章、图片、链接、截图、数据和作品集整理成可打开、可编辑、可发布的网页 PPT。</p>
+        <div class="hero-actions">
+          <a class="hero-link primary" href="https://github.com/XshuiAi/xiaoshui-pretty-ppt" target="_blank" rel="noopener noreferrer">打开 GitHub</a>
+          <a class="hero-link" href="https://xshuiai.github.io/xiaoshui-pretty-ppt/" target="_blank" rel="noopener noreferrer">在线 Demo</a>
+        </div>
       </div>
       <aside class="hero-panel" aria-label="Skill highlights">
         <span class="tag hot">Presentation Skill</span>
@@ -1086,6 +1326,44 @@
       <aside class="speaker-notes">这里可以把它讲成一条流水线：不是一次性图片，而是一个能继续迭代的 presentation workflow。</aside>
     </section>
 
+    <section class="shell slide" id="sources" data-slide>
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Source assets</span>
+          <h2 data-slide-title>文档里的链接、图片和来源，不应该在生成 PPT 时丢掉。</h2>
+        </div>
+        <p data-slide-summary>Skill 会先抽取链接和素材，再判断它们应该变成按钮、来源标记、图片证据还是附录资料。</p>
+      </div>
+      <div class="source-grid">
+        <article class="source-card link-card" data-detail="主链接会放到最需要用户点击的位置，比如封面、安装页、案例页或资源页。">
+          <span class="source-label">Primary link</span>
+          <h3>GitHub / Demo / 产品入口</h3>
+          <p>像这个 Skill 的 GitHub 仓库和在线 Demo，会变成可点击按钮，而不是一串裸 URL。</p>
+          <a class="source-link" href="https://github.com/XshuiAi/xiaoshui-pretty-ppt" target="_blank" rel="noopener noreferrer">查看 GitHub 仓库</a>
+        </article>
+        <article class="source-card image-card" data-detail="图片会先和文本做匹配：它支持哪一句话、哪一个案例、哪一个步骤，再决定放在哪页。">
+          <span class="source-label">Image matching</span>
+          <h3>图片按语义匹配</h3>
+          <p>人物照、产品截图、数据图、旧 PPT 截图，会被放到能解释它们的页面里。</p>
+          <div class="image-match-demo" aria-label="图片匹配示意">
+            <span>截图</span>
+            <i></i>
+            <span>对应观点</span>
+          </div>
+        </article>
+        <article class="source-card proof-card" data-detail="不适合做成按钮的链接会收进来源区，保留出处，但不打断主要演示节奏。">
+          <span class="source-label">Source proof</span>
+          <h3>来源和引用保留</h3>
+          <p>飞书原文、视频、资料、引用文章，可以放成来源 chip 或附录链接。</p>
+          <div class="source-chips">
+            <a href="https://xshuiai.github.io/xiaoshui-pretty-ppt/" target="_blank" rel="noopener noreferrer">在线 Demo</a>
+            <a href="https://github.com/XshuiAi/xiaoshui-pretty-ppt" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+        </article>
+      </div>
+      <aside class="speaker-notes">这一页讲新能力：用户给文档时，里面的链接、图片、引用和素材不会被吞掉，而是变成页面里的可点击入口和视觉证据。</aside>
+    </section>
+
     <section class="shell slide" id="templates" data-slide>
       <div class="section-head">
         <div>
@@ -1146,7 +1424,9 @@
 1. 先判断内容更适合哪一套模板；
 2. 把长内容拆成封面、钩子、核心观点、案例、流程、总结；
 3. 图片、截图、表格和旧 PPT 素材要转成页面里的视觉证据；
-4. 保留可编辑模式、演讲者模式和网页发布能力。</pre>
+4. 保留文档里的重要链接，并让它们可以点击跳转；
+5. 如果有数据，转成图表或可交互测算组件；
+6. 保留可编辑模式、演讲者模式和网页发布能力。</pre>
         </article>
       </div>
       <aside class="speaker-notes">这里可以直接复制给观众。重点是让用户不用懂模板细节，只需要讲明内容、场景、密度和是否要编辑。</aside>
@@ -1208,6 +1488,49 @@
         </div>
       </div>
       <aside class="speaker-notes">这一页用来解释最新插图能力：不是复杂设计软件，只保留最重要的拖动、吸附、尺寸和导出保留。</aside>
+    </section>
+
+    <section class="shell slide" id="data" data-slide>
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Data widget</span>
+          <h2 data-slide-title>数据不只能做成表格，也可以变成可调参数的演示组件。</h2>
+        </div>
+        <p data-slide-summary>适合现金流测算、预算规划、增长率假设、KPI 变化和产品方案对比。拖动参数，结果会实时变化。</p>
+      </div>
+      <div class="data-lab" data-savings-widget>
+        <article class="data-result">
+          <span class="source-label">Example calculator</span>
+          <h3>现金流测算示例</h3>
+          <strong data-savings-result>--</strong>
+          <p data-savings-summary>拖动右侧参数，查看不同投入和年份下的估算结果。</p>
+          <div class="chart-bars" aria-label="测算条形图">
+            <span style="--bar:28%" data-bar="principal"></span>
+            <span style="--bar:42%" data-bar="growth"></span>
+            <span style="--bar:64%" data-bar="total"></span>
+          </div>
+          <small>示例测算，不构成投资或财务建议。</small>
+        </article>
+        <article class="data-controls">
+          <label>
+            <span>初始金额 <b data-value="initial">20,000</b></span>
+            <input type="range" min="0" max="200000" step="5000" value="20000" data-input="initial">
+          </label>
+          <label>
+            <span>每月投入 <b data-value="monthly">3,000</b></span>
+            <input type="range" min="0" max="20000" step="500" value="3000" data-input="monthly">
+          </label>
+          <label>
+            <span>年化假设 <b data-value="rate">5%</b></span>
+            <input type="range" min="0" max="12" step=".5" value="5" data-input="rate">
+          </label>
+          <label>
+            <span>持续年份 <b data-value="years">8 年</b></span>
+            <input type="range" min="1" max="30" step="1" value="8" data-input="years">
+          </label>
+        </article>
+      </div>
+      <aside class="speaker-notes">这里演示数据互动：如果用户给的是预算、增长、现金流、KPI 或产品数据，可以做成图表，也可以做成拖动参数的测算页。</aside>
     </section>
 
     <section class="shell slide" id="next" data-slide>
@@ -1441,12 +1764,12 @@
 
       const revealItems = [
         ...slides,
-        ...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card, .layout-controls button, .layout-preview")
+        ...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card, .source-card, .data-result, .data-controls, .layout-controls button, .layout-preview")
       ];
       revealItems.forEach((item) => item.classList.add("demo-reveal"));
       slides[0]?.classList.add("is-visible");
 
-      const motionCards = [...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card")];
+      const motionCards = [...document.querySelectorAll(".card, .step, .module, .code-card, .feature-card, .roadmap-card, .source-card")];
       motionCards.forEach((card) => {
         card.dataset.tilt = "true";
         card.addEventListener("pointermove", (event) => {
@@ -1568,6 +1891,52 @@
           layoutNote.textContent = layoutCopy[choice].note;
         });
       });
+
+      const savingsWidget = document.querySelector("[data-savings-widget]");
+      if (savingsWidget) {
+        const formatter = new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 0 });
+        const money = (value) => "¥" + formatter.format(Math.round(value));
+        const input = (name) => savingsWidget.querySelector(`[data-input="${name}"]`);
+        const value = (name) => savingsWidget.querySelector(`[data-value="${name}"]`);
+        const result = savingsWidget.querySelector("[data-savings-result]");
+        const summary = savingsWidget.querySelector("[data-savings-summary]");
+        const bars = {
+          principal: savingsWidget.querySelector('[data-bar="principal"]'),
+          growth: savingsWidget.querySelector('[data-bar="growth"]'),
+          total: savingsWidget.querySelector('[data-bar="total"]')
+        };
+
+        function updateSavings() {
+          const initial = Number(input("initial").value);
+          const monthly = Number(input("monthly").value);
+          const rate = Number(input("rate").value) / 100;
+          const years = Number(input("years").value);
+          const months = years * 12;
+          const monthlyRate = rate / 12;
+          let total = initial;
+          for (let index = 0; index < months; index += 1) {
+            total = total * (1 + monthlyRate) + monthly;
+          }
+          const principal = initial + monthly * months;
+          const growth = Math.max(0, total - principal);
+          const max = Math.max(total, principal, 1);
+
+          value("initial").textContent = formatter.format(initial);
+          value("monthly").textContent = formatter.format(monthly);
+          value("rate").textContent = (rate * 100).toFixed(rate * 100 % 1 ? 1 : 0) + "%";
+          value("years").textContent = years + " 年";
+          result.textContent = money(total);
+          summary.textContent = `${years} 年后估算约 ${money(total)}，其中本金 ${money(principal)}，假设增长 ${money(growth)}。`;
+          bars.principal.style.setProperty("--bar", Math.max(18, principal / max * 82) + "%");
+          bars.growth.style.setProperty("--bar", Math.max(18, growth / max * 82) + "%");
+          bars.total.style.setProperty("--bar", Math.max(18, total / max * 96) + "%");
+        }
+
+        savingsWidget.querySelectorAll("[data-input]").forEach((control) => {
+          control.addEventListener("input", updateSavings);
+        });
+        updateSavings();
+      }
 
       updateUI(0);
     })();
