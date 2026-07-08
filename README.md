@@ -6,7 +6,7 @@
 
 适合 Claude Code、Codex、WorkBuddy 等 **Coding Agent**。你把材料交给它，它会判断场景、选择模板、拆分页面、提炼重点，生成一份能翻页、能编辑、能演示、能发布的网页作品。
 
-根据场景与人群分类，内置 12 套设计风格。你只需要专注于内容和想法，把它变成一份真正可以讲出来的作品。
+根据场景与人群分类，内置 12 套设计风格，并支持编辑模式、演讲者模式、图片插入、字号调整和演讲计时。你只需要专注于内容和想法，把它变成一份真正可以讲出来的作品。
 
 [在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [查看模板](#模板图库)
 
@@ -28,7 +28,7 @@
 
 输出是一份静态 HTML 网页 PPT：可以本地打开，可以部署到 GitHub Pages / Cloudflare Workers / 任意静态托管，也可以继续交给 AI Agent 修改。
 
-## 为什么不是普通 PPT
+## 和普通 PPT 有什么不同
 
 | 普通 PPT / 图片式 AI PPT | xiaoshui-Pretty PPT |
 |---|---|
@@ -40,7 +40,7 @@
 
 ## 核心能力
 
-- **模板选择**：根据场景推荐模板，而不是让用户自己翻完整模板库。
+- **模板选择**：根据场景推荐 1-3 个合适模板，减少用户自己翻完整模板库的成本。
 - **内容压缩**：把长文档拆成封面、观点、流程、案例、数据、总结和讲稿备注。
 - **浏览器编辑**：按 `E` 进入编辑模式，直接改文字、调字号、替换图片/视频，导出新的 HTML。
 - **演讲者模式**：按 `P` 打开讲稿备注、下一页预览和计时器。
@@ -89,9 +89,11 @@
 
 ## 安装
 
-这个 Skill 是给 **Coding Agent** 使用的，适合 Claude Code、Codex、Workbody、Cursor 等能读写本地文件的 Agent 工作流。
+这个 Skill 是给 **Coding Agent** 使用的，适合 Claude Code、Codex、WorkBuddy、Cursor 等能读写本地文件的 Agent 工作流。
 
-推荐使用 `skills` CLI：
+### 1. 安装 xiaoshui-Pretty PPT Skill
+
+把下面这段命令复制给你的 Agent，或在终端里运行：
 
 ```bash
 npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
@@ -100,10 +102,33 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
   --global
 ```
 
-如果你的 Agent 使用其他技能目录，也可以 clone 仓库后把 `skills/xiaoshui-pretty-ppt` 放到对应目录。
+如果你的 Agent 不使用 `skills` CLI，也可以把这个仓库链接发给 Agent，让它按自己的技能目录安装：
 
-```bash
-git clone https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
+```text
+请安装这个 skill：
+https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
+```
+
+### 2. 搭配飞书文档使用
+
+如果你的内容在飞书里，建议先让 Agent 安装飞书 CLI。复制下面这句话给 Agent：
+
+```text
+帮我安装飞书 CLI：
+https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-guide.md
+```
+
+安装好以后，你可以直接把飞书文档链接和需求一起发给 Agent：
+
+```text
+请读取这个飞书文档，并使用 $xiaoshui-pretty-ppt 做成一份 HTML 网页 PPT：
+【这里粘贴你的飞书文档链接】
+
+要求：
+1. 先判断内容适合哪一套模板；
+2. 把长文档拆成封面、观点、案例、流程和总结；
+3. 保留编辑模式、演讲者模式、图片插入和演讲计时；
+4. 最后告诉我本地 HTML 路径和如何打开。
 ```
 
 ## 怎么使用
@@ -135,10 +160,10 @@ git clone https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
 ## 常见问题
 
 **它只能处理飞书文档吗？**  
-不是。飞书文档只是来源之一。文章、Markdown、本地图片、截图、数据表、旧 PPT 和普通文本都可以作为输入。
+飞书文档只是来源之一。文章、Markdown、本地图片、截图、数据表、旧 PPT 和普通文本都可以作为输入。
 
 **它只能在 Codex 里用吗？**  
-不是。它本质上是给 Coding Agent 使用的 Skill。Claude Code、Codex、Workbody、Cursor 等能读写本地文件的 Agent 都可以参考或接入。
+它本质上是给 Coding Agent 使用的 Skill。Claude Code、Codex、WorkBuddy、Cursor 等能读写本地文件的 Agent 都可以参考或接入。
 
 **编辑后别人会自动看到吗？**  
 不会。浏览器里按 `E` 的修改只在当前浏览器本地生效。要让别人看到，需要导出 HTML 后提交到仓库或重新部署。

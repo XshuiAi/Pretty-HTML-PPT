@@ -1,3 +1,10 @@
 .DS_Store
 *.log
 node_modules/
+
+# Local-only materials. These are useful for XiaoShui's internal review,
+# offline demos, source screenshots, and project memory, but should not be
+# published to the public GitHub repository.
+local-showcase/
+local-private/
+local-archive/
