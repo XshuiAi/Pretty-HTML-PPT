@@ -2,21 +2,204 @@
 
 **xiaoshui-Pretty PPT**，让 PPT 也可以像网页一样呈现。
 
-你可能已经有文章、飞书文档、截图、数据、链接，甚至一份旧 PPT。现在，这些材料可以变成一份通过链接分享、带有交互动效、支持编辑、插入图片和演讲计时的 HTML 网页 PPT。
+适合 Claude Code、Codex、WorkBuddy、Cursor 等 **Coding Agent** 使用。你把文章、飞书文档、截图、数据、链接或旧 PPT 交给它，它会判断场景、选择模板、拆分页面、提炼重点，生成一份能翻页、能编辑、能演示、能发布的 HTML 网页 PPT。
 
-适合 Claude Code、Codex、WorkBuddy 等 **Coding Agent**。你把材料交给它，它会判断场景、选择模板、拆分页面、提炼重点，生成一份能翻页、能编辑、能演示、能发布的网页作品。
+[在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [模板图库](#gallery)
 
-根据场景与人群分类，内置 12 套设计风格，并支持编辑模式、演讲者模式、图片插入、链接跳转、字号调整、演讲计时和轻量数据图表/测算组件。你只需要专注于内容和想法，把它变成一份真正可以讲出来的作品。
+根据人群和场景分类，内置 12 套风格，适合自媒体创作者、商务产品团队、行政职场政务、教育师生和作品集展示，并支持编辑模式、演讲者模式、图片插入、链接跳转、字号调整、演讲计时和轻量数据图表/测算组件。
 
-[在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [查看模板](#模板图库)
+## 安装
 
-## 适合谁
+把下面这段话复制给你的 Coding Agent：
 
-- **自媒体 / 视频创作者**：文章、脚本、教程、工具清单，做成适合录屏和分享的网页 PPT。
-- **商务 / 产品团队**：产品介绍、方案、数据结论、合作提案，做成能讲也能发链接的演示稿。
-- **行政 / 政务 / 职场汇报者**：总结、复盘、正式材料，做成结构清楚、风格稳的汇报页。
-- **学生 / 老师 / 研究者**：讲义、答辩、研究综述，做成有章节和讲稿备注的演示页。
-- **个人作品集 / IP 展示者**：项目经历、作品截图、课程产品，做成更有记忆点的展示页。
+```text
+请安装这个 skill：
+https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
+```
+
+也可以直接用 `skills` CLI 安装：
+
+```bash
+npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
+  --skill xiaoshui-pretty-ppt \
+  --agent codex \
+  --global
+```
+
+安装后可以这样使用：
+
+```text
+使用 $xiaoshui-pretty-ppt，把这份文档和素材做成一份 HTML 网页 PPT。
+请先判断受众、场景和内容密度，再选择最合适的模板。
+保留文档里的重要链接和图片语义关系，并保留编辑模式、演讲者模式和网页发布能力。
+```
+
+## Gallery
+
+12 套模板。每套展示 3 张横屏画面：封面 / 中段 / 后段，用来判断配色、版式和内容承载方式。点击模板名可以打开对应模板文件夹。
+
+### [Pastel Blockfolio](skills/xiaoshui-pretty-ppt/assets/templates/pastel-blockfolio)
+
+<p>
+  <img src="assets/gallery/pastel-blockfolio-01-cover.png" alt="Pastel Blockfolio cover" width="32%">
+  <img src="assets/gallery/pastel-blockfolio-02-mid.png" alt="Pastel Blockfolio mid deck" width="32%">
+  <img src="assets/gallery/pastel-blockfolio-03-later.png" alt="Pastel Blockfolio later deck" width="32%">
+</p>
+
+> 适合教程、案例复盘、流程拆解和自媒体选题说明。
+
+### [Blush Editorial](skills/xiaoshui-pretty-ppt/assets/templates/blush-editorial)
+
+<p>
+  <img src="assets/gallery/blush-editorial-01-cover.png" alt="Blush Editorial cover" width="32%">
+  <img src="assets/gallery/blush-editorial-02-mid.png" alt="Blush Editorial mid deck" width="32%">
+  <img src="assets/gallery/blush-editorial-03-later.png" alt="Blush Editorial later deck" width="32%">
+</p>
+
+> 适合品牌内容页、推荐清单、工具目录和编辑感长页面。
+
+### [Mono Curve Slides](skills/xiaoshui-pretty-ppt/assets/templates/mono-curve-slides)
+
+<p>
+  <img src="assets/gallery/mono-curve-slides-01-cover.png" alt="Mono Curve Slides cover" width="32%">
+  <img src="assets/gallery/mono-curve-slides-02-mid.png" alt="Mono Curve Slides mid deck" width="32%">
+  <img src="assets/gallery/mono-curve-slides-03-later.png" alt="Mono Curve Slides later deck" width="32%">
+</p>
+
+> 适合动态幻灯片、课程说明、产品更新和轻量演示页。
+
+### [One Dot Cinnabar](skills/xiaoshui-pretty-ppt/assets/templates/one-dot-cinnabar)
+
+<p>
+  <img src="assets/gallery/one-dot-cinnabar-01-cover.png" alt="One Dot Cinnabar cover" width="32%">
+  <img src="assets/gallery/one-dot-cinnabar-02-mid.png" alt="One Dot Cinnabar mid deck" width="32%">
+  <img src="assets/gallery/one-dot-cinnabar-03-later.png" alt="One Dot Cinnabar later deck" width="32%">
+</p>
+
+> 适合年终总结、工作汇报、项目复盘和正式演讲。
+
+### [Ivory Research Deck](skills/xiaoshui-pretty-ppt/assets/templates/ivory-research-deck)
+
+<p>
+  <img src="assets/gallery/ivory-research-deck-01-cover.png" alt="Ivory Research Deck cover" width="32%">
+  <img src="assets/gallery/ivory-research-deck-02-mid.png" alt="Ivory Research Deck mid deck" width="32%">
+  <img src="assets/gallery/ivory-research-deck-03-later.png" alt="Ivory Research Deck later deck" width="32%">
+</p>
+
+> 适合学术汇报、研究总结、职场简报和产品调研。
+
+### [Cobalt Executive Deck](skills/xiaoshui-pretty-ppt/assets/templates/cobalt-executive-deck)
+
+<p>
+  <img src="assets/gallery/cobalt-executive-deck-01-cover.png" alt="Cobalt Executive Deck cover" width="32%">
+  <img src="assets/gallery/cobalt-executive-deck-02-mid.png" alt="Cobalt Executive Deck mid deck" width="32%">
+  <img src="assets/gallery/cobalt-executive-deck-03-later.png" alt="Cobalt Executive Deck later deck" width="32%">
+</p>
+
+> 适合商务汇报、公司介绍、产品组合和合作提案。
+
+### [Coral Startup Deck](skills/xiaoshui-pretty-ppt/assets/templates/coral-startup-deck)
+
+<p>
+  <img src="assets/gallery/coral-startup-deck-01-cover.png" alt="Coral Startup Deck cover" width="32%">
+  <img src="assets/gallery/coral-startup-deck-02-mid.png" alt="Coral Startup Deck mid deck" width="32%">
+  <img src="assets/gallery/coral-startup-deck-03-later.png" alt="Coral Startup Deck later deck" width="32%">
+</p>
+
+> 适合公司介绍、项目汇报、团队路演和工作计划。
+
+### [Ribbon Tab Brochure](skills/xiaoshui-pretty-ppt/assets/templates/ribbon-tab-brochure)
+
+<p>
+  <img src="assets/gallery/ribbon-tab-brochure-01-cover.png" alt="Ribbon Tab Brochure cover" width="32%">
+  <img src="assets/gallery/ribbon-tab-brochure-02-mid.png" alt="Ribbon Tab Brochure mid deck" width="32%">
+  <img src="assets/gallery/ribbon-tab-brochure-03-later.png" alt="Ribbon Tab Brochure later deck" width="32%">
+</p>
+
+> 适合项目资料册、产品说明、运营复盘和对外提案。
+
+### [Sapphire Defense Deck](skills/xiaoshui-pretty-ppt/assets/templates/sapphire-defense-deck)
+
+<p>
+  <img src="assets/gallery/sapphire-defense-deck-01-cover.png" alt="Sapphire Defense Deck cover" width="32%">
+  <img src="assets/gallery/sapphire-defense-deck-02-mid.png" alt="Sapphire Defense Deck mid deck" width="32%">
+  <img src="assets/gallery/sapphire-defense-deck-03-later.png" alt="Sapphire Defense Deck later deck" width="32%">
+</p>
+
+> 适合论文答辩、研究汇报、正式项目复盘和方法说明。
+
+### [Vermilion Civic Deck](skills/xiaoshui-pretty-ppt/assets/templates/vermilion-civic-deck)
+
+<p>
+  <img src="assets/gallery/vermilion-civic-deck-01-cover.png" alt="Vermilion Civic Deck cover" width="32%">
+  <img src="assets/gallery/vermilion-civic-deck-02-mid.png" alt="Vermilion Civic Deck mid deck" width="32%">
+  <img src="assets/gallery/vermilion-civic-deck-03-later.png" alt="Vermilion Civic Deck later deck" width="32%">
+</p>
+
+> 适合政务、行政、党建和公共服务类正式汇报。
+
+### [Blue Growth Deck](skills/xiaoshui-pretty-ppt/assets/templates/blue-growth-deck)
+
+<p>
+  <img src="assets/gallery/blue-growth-deck-01-cover.png" alt="Blue Growth Deck cover" width="32%">
+  <img src="assets/gallery/blue-growth-deck-02-mid.png" alt="Blue Growth Deck mid deck" width="32%">
+  <img src="assets/gallery/blue-growth-deck-03-later.png" alt="Blue Growth Deck later deck" width="32%">
+</p>
+
+> 适合 AI 产品、运营增长、GEO 复盘和轻商务互动演示。
+
+### [Garden Pop Landing](skills/xiaoshui-pretty-ppt/assets/templates/garden-pop-landing)
+
+<p>
+  <img src="assets/gallery/garden-pop-landing-01-cover.png" alt="Garden Pop Landing cover" width="32%">
+  <img src="assets/gallery/garden-pop-landing-02-mid.png" alt="Garden Pop Landing mid deck" width="32%">
+  <img src="assets/gallery/garden-pop-landing-03-later.png" alt="Garden Pop Landing later deck" width="32%">
+</p>
+
+> 适合课程产品、儿童友好科普、自媒体教程和创作者发布。
+
+## 怎么使用
+
+### 搭配飞书文档
+
+如果你的内容在飞书里，建议先让 Agent 安装飞书 CLI。复制下面这句话给 Agent：
+
+```text
+帮我安装飞书 CLI：
+https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-guide.md
+```
+
+安装好以后，把飞书文档链接和需求一起发给 Agent：
+
+```text
+请读取这个飞书文档，并使用 $xiaoshui-pretty-ppt 做成一份 HTML 网页 PPT：
+【这里粘贴你的飞书文档链接】
+
+要求：
+1. 先判断内容适合哪一套模板；
+2. 把长文档拆成封面、观点、案例、流程和总结；
+3. 保留原文里重要链接，让它们在页面中可以点击跳转；
+4. 把图片和截图按语义匹配到对应页面，不要随机堆图；
+5. 如果有数据表或测算场景，转成图表或可交互的轻量测算组件；
+6. 保留编辑模式、演讲者模式、图片插入和演讲计时；
+7. 最后告诉我本地 HTML 路径和如何打开。
+```
+
+### 指定一种风格
+
+```text
+使用 $xiaoshui-pretty-ppt 的 Blush Editorial / 暖粉编辑志，
+把这篇文章和几张截图做成一份适合公开分享的网页演示。
+文字不要太满，长解释放进讲稿备注。
+```
+
+### 做正式汇报
+
+```text
+使用 $xiaoshui-pretty-ppt，把这份产品介绍、数据表和截图整理成商务汇报型 HTML 网页 PPT。
+请优先考虑 Cobalt Executive Deck 或 Ivory Research Deck。
+需要有封面、问题、方案、数据、案例和总结页。数据部分请做成清晰图表；如果适合试算，可以加一个可调参数的测算组件。
+```
 
 ## 它能处理什么
 
@@ -64,105 +247,6 @@
 - 按 `P` 进入演讲者模式，看讲稿备注、下一页和同一个计时器。
 - 按 `E` 进入编辑模式，直接改文字和字号。
 
-## 模板图库
-
-当前内置 12 套模板，分成两类：一类更适合公开传播和个人展示，一类更适合正式汇报和产品演讲。
-
-### 创作者展示型
-
-| 模板 | 适合场景 | 预览 |
-|---|---|---|
-| Pastel Blockfolio / 粉彩拼贴志 | 教程、案例、流程复盘、自媒体选题说明 | ![Pastel Blockfolio](assets/previews/template-01-pastel-blockfolio.png) |
-| Blush Editorial / 暖粉编辑志 | 品牌内容页、推荐清单、工具目录、编辑感长页面 | ![Blush Editorial](assets/previews/template-02-blush-editorial.png) |
-| Mono Curve Slides / 墨线白稿 | 动态幻灯片、课程说明、产品更新、轻量演示页 | ![Mono Curve Slides](assets/previews/template-03-mono-curve-slides.png) |
-| Ribbon Tab Brochure / 彩签页报 | 项目资料册、产品说明、运营复盘、对外提案 | ![Ribbon Tab Brochure](assets/previews/template-08-ribbon-tab-brochure.png) |
-| Blue Growth Deck / 蓝色增长稿 | AI 产品、运营增长、GEO 复盘、轻商务互动演示 | ![Blue Growth Deck](assets/previews/template-11-blue-growth-deck.png) |
-| Garden Pop Landing / 花园跳色长页 | 课程产品、儿童友好科普、自媒体教程、创作者发布 | ![Garden Pop Landing](assets/previews/template-12-garden-pop-landing.png) |
-
-### 正式汇报型
-
-| 模板 | 适合场景 | 预览 |
-|---|---|---|
-| One Dot Cinnabar / 一点丹红 | 年终总结、工作汇报、项目复盘、正式演讲 | ![One Dot Cinnabar](assets/previews/template-04-one-dot-cinnabar.png) |
-| Ivory Research Deck / 象牙研稿 | 学术汇报、研究总结、职场简报、产品调研 | ![Ivory Research Deck](assets/previews/template-05-ivory-research-deck.png) |
-| Cobalt Executive Deck / 钴蓝商策 | 商务汇报、产品介绍、公司介绍、合作提案 | ![Cobalt Executive Deck](assets/previews/template-06-cobalt-executive-deck.png) |
-| Coral Startup Deck / 珊瑚企简 | 公司介绍、项目汇报、团队路演、工作计划 | ![Coral Startup Deck](assets/previews/template-07-coral-startup-deck.png) |
-| Sapphire Defense Deck / 宝蓝答辩稿 | 论文答辩、研究汇报、正式项目复盘 | ![Sapphire Defense Deck](assets/previews/template-09-sapphire-defense-deck.png) |
-| Vermilion Civic Deck / 红色汇报稿 | 政务、行政、党建和公共服务类正式汇报 | ![Vermilion Civic Deck](assets/previews/template-10-vermilion-civic-deck.png) |
-
-## 安装
-
-这个 Skill 是给 **Coding Agent** 使用的，适合 Claude Code、Codex、WorkBuddy、Cursor 等能读写本地文件的 Agent 工作流。
-
-### 1. 安装 xiaoshui-Pretty PPT Skill
-
-把下面这段命令复制给你的 Agent，或在终端里运行：
-
-```bash
-npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
-  --skill xiaoshui-pretty-ppt \
-  --agent codex \
-  --global
-```
-
-如果你的 Agent 不使用 `skills` CLI，也可以把这个仓库链接发给 Agent，让它按自己的技能目录安装：
-
-```text
-请安装这个 skill：
-https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
-```
-
-### 2. 搭配飞书文档使用
-
-如果你的内容在飞书里，建议先让 Agent 安装飞书 CLI。复制下面这句话给 Agent：
-
-```text
-帮我安装飞书 CLI：
-https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-guide.md
-```
-
-安装好以后，你可以直接把飞书文档链接和需求一起发给 Agent：
-
-```text
-请读取这个飞书文档，并使用 $xiaoshui-pretty-ppt 做成一份 HTML 网页 PPT：
-【这里粘贴你的飞书文档链接】
-
-要求：
-1. 先判断内容适合哪一套模板；
-2. 把长文档拆成封面、观点、案例、流程和总结；
-3. 保留原文里重要链接，让它们在页面中可以点击跳转；
-4. 把图片和截图按语义匹配到对应页面，不要随机堆图；
-5. 如果有数据表或测算场景，转成图表或可交互的轻量测算组件；
-6. 保留编辑模式、演讲者模式、图片插入和演讲计时；
-7. 最后告诉我本地 HTML 路径和如何打开。
-```
-
-## 怎么使用
-
-### 让 Agent 自动选模板
-
-```text
-使用 $xiaoshui-pretty-ppt，把这份文档做成一份适合对外分享的 HTML 网页 PPT。
-请先判断受众、场景和内容密度，再选择最合适的模板。
-需要保留文档里的重要链接和图片语义关系，并保留可编辑模式、演讲者模式和网页发布能力。
-```
-
-### 指定一种风格
-
-```text
-使用 $xiaoshui-pretty-ppt 的 Blush Editorial / 暖粉编辑志，
-把这篇文章和几张截图做成一份适合公开分享的网页演示。
-文字不要太满，长解释放进讲稿备注。
-```
-
-### 做正式汇报
-
-```text
-使用 $xiaoshui-pretty-ppt，把这份产品介绍、数据表和截图整理成商务汇报型 HTML 网页 PPT。
-请优先考虑 Cobalt Executive Deck 或 Ivory Research Deck。
-需要有封面、问题、方案、数据、案例和总结页。数据部分请做成清晰图表；如果适合试算，可以加一个可调参数的测算组件。
-```
-
 ## 常见问题
 
 **它只能处理飞书文档吗？**  
@@ -182,4 +266,4 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 
 ## 维护说明
 
-公开 README 只保留对外展示、安装和使用说明。内部设计原则、路线图和开发结构放在 `docs/internal/`。
+公开 README 保留对外展示、安装和使用说明。内部设计原则、路线图和开发结构放在 `docs/internal/`。

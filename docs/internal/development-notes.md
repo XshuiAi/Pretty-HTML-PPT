@@ -54,3 +54,32 @@ Keep public-facing materials in `README.md`, `assets/previews/`, `docs/demo/`, a
 python3 skills/xiaoshui-pretty-ppt/scripts/validate_deck.py docs/demo/blush-skill-intro
 python3 skills/xiaoshui-pretty-ppt/scripts/validate_template_library.py
 ```
+
+## Change Recording Rule
+
+Every major change must leave a record in both the public repo and the local project memory.
+
+Major changes include:
+
+- README structure or gallery redesign
+- template library additions, deletions, or visual refreshes
+- public demo redesign or new public demo features
+- skill capability contract changes
+- edit mode, presenter mode, image insertion, chart/calculator, or runtime behavior changes
+- install, update, publish, or Feishu workflow changes
+
+Required records:
+
+- public: `CHANGELOG.md`
+- internal repo note: `docs/internal/development-notes.md` when the maintenance rule or project structure changes
+- local private note: `local-private/project-memory/version-log.md`
+
+Each record should include date, change summary, affected files or surfaces, validation method, whether GitHub was pushed, whether the local installed skill was synced, and whether Feishu docs need updates.
+
+## 2026-07-09 README Gallery Redesign
+
+- Rewrote README opening and moved install instructions to the top.
+- Removed standalone `适合谁` section and compressed audience/scenario information into one paragraph.
+- Rebuilt the gallery as 12 template groups with three horizontal screenshots per template.
+- Added gallery screenshots under `assets/gallery/`.
+- Public changelog entry added in `CHANGELOG.md`.
