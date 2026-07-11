@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILL_SRC="$ROOT/skills/xiaoshui-pretty-ppt"
-AGENTS_DST="${HOME}/.agents/skills/xiaoshui-pretty-ppt"
+SKILL_SRC="$ROOT/skills/pretty-html-ppt"
+AGENTS_DST="${HOME}/.agents/skills/pretty-html-ppt"
 
 if [[ ! -f "$SKILL_SRC/SKILL.md" ]]; then
   echo "Missing skill source: $SKILL_SRC" >&2
@@ -20,4 +20,4 @@ python3 -m py_compile \
   "$AGENTS_DST/scripts/validate_deck.py" \
   "$AGENTS_DST/scripts/validate_template_library.py"
 
-echo "Synced XiaoShui Pretty PPT skill to: $AGENTS_DST"
+echo "Synced Pretty HTML PPT skill to: $AGENTS_DST"

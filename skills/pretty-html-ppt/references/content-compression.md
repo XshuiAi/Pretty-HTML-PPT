@@ -1,6 +1,6 @@
 # Content Compression Rules
 
-Use this reference before turning a long document, article, Feishu doc, report, or transcript into a XiaoShui Pretty PPT deck.
+Use this reference before turning a long document, article, Feishu doc, report, or transcript into a Pretty HTML PPT deck.
 
 ## Core Principle
 

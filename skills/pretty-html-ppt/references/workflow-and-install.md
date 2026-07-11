@@ -1,11 +1,11 @@
 # Workflow And Install Guide
 
-This file explains how XiaoShui Pretty PPT is installed, updated, and validated.
+This file explains how Pretty HTML PPT is installed, updated, and validated.
 
 ## Repository Pieces
 
 ```text
-skills/xiaoshui-pretty-ppt/
+skills/pretty-html-ppt/
 ├── SKILL.md
 ├── references/
 ├── scripts/
@@ -24,8 +24,8 @@ skills/xiaoshui-pretty-ppt/
 Recommended:
 
 ```bash
-npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
-  --skill xiaoshui-pretty-ppt \
+npx -y skills@latest add XshuiAi/Pretty-HTML-PPT \
+  --skill pretty-html-ppt \
   --agent codex \
   --global
 ```
@@ -33,8 +33,8 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 Use `--copy` if symlinks are not desired:
 
 ```bash
-npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
-  --skill xiaoshui-pretty-ppt \
+npx -y skills@latest add XshuiAi/Pretty-HTML-PPT \
+  --skill pretty-html-ppt \
   --agent codex \
   --global \
   --copy \
@@ -45,7 +45,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 ```bash
 mkdir -p ~/.codex/skills
-cp -R skills/xiaoshui-pretty-ppt ~/.codex/skills/xiaoshui-pretty-ppt
+cp -R skills/pretty-html-ppt ~/.codex/skills/pretty-html-ppt
 ```
 
 Then restart Codex if the skill list does not refresh.
@@ -54,13 +54,13 @@ Then restart Codex if the skill list does not refresh.
 
 ```bash
 npx -y skills@latest list --global --agent codex --json
-test -f ~/.agents/skills/xiaoshui-pretty-ppt/SKILL.md
+test -f ~/.agents/skills/pretty-html-ppt/SKILL.md
 ```
 
 If installed manually to `~/.codex/skills`, check:
 
 ```bash
-test -f ~/.codex/skills/xiaoshui-pretty-ppt/SKILL.md
+test -f ~/.codex/skills/pretty-html-ppt/SKILL.md
 ```
 
 ## Update Published Skill
@@ -70,15 +70,15 @@ After editing the repository:
 ```bash
 git status --short
 git add .
-git commit -m "Improve XiaoShui Pretty PPT workflow"
+git commit -m "Improve Pretty HTML PPT workflow"
 git push
 ```
 
 Then reinstall/update locally:
 
 ```bash
-npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
-  --skill xiaoshui-pretty-ppt \
+npx -y skills@latest add XshuiAi/Pretty-HTML-PPT \
+  --skill pretty-html-ppt \
   --agent codex \
   --global \
   --copy \
@@ -88,8 +88,8 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 ## Validate A Template Copy
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
-python3 skills/xiaoshui-pretty-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
+python3 skills/pretty-html-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo
 open /tmp/shui-cobalt-demo/index.html
 ```
 
@@ -104,7 +104,7 @@ presenter_mode: true
 Validate every template after changing the library:
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/validate_template_library.py
+python3 skills/pretty-html-ppt/scripts/validate_template_library.py
 ```
 
 ## Create A Default Dual-Mode Deck
@@ -112,21 +112,21 @@ python3 skills/xiaoshui-pretty-ppt/scripts/validate_template_library.py
 Browser edit mode and presenter mode are injected **by default** into every generated deck — no extra flag needed. The output includes a floating edit toolbar (edit, save, export, reset, insert image) plus presenter view (speaker notes, next-slide preview, timer).
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
 open /tmp/shui-cobalt-demo/index.html
 ```
 
 To generate a clean locked deck without the editing toolbar, use `--no-edit`:
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
 open /tmp/shui-cobalt-demo/index.html
 ```
 
 For an existing deck:
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/inject_edit_mode.py /tmp/shui-cobalt-demo/index.html
+python3 skills/pretty-html-ppt/scripts/inject_edit_mode.py /tmp/shui-cobalt-demo/index.html
 ```
 
 Keyboard and toolbar behavior:
@@ -146,20 +146,20 @@ Keyboard and toolbar behavior:
 Presenter mode is now enabled by default. Use the normal copy command for talks, workshops, public demos, product walkthroughs, or course recordings.
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force
+python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force
 open /tmp/shui-blush-demo/index.html
 ```
 
 To generate a clean deck without presenter mode, use `--no-presenter`:
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
+python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
 ```
 
 For an existing deck:
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/inject_presenter_mode.py /tmp/shui-blush-demo/index.html
+python3 skills/pretty-html-ppt/scripts/inject_presenter_mode.py /tmp/shui-blush-demo/index.html
 ```
 
 Presenter mode content rules:
@@ -180,34 +180,34 @@ User-facing explanation:
 Use automatic selection:
 
 ```text
-使用 $xiaoshui-pretty-ppt，把这份文档做成一个适合分享的 HTML 网页 PPT。
+使用 $pretty-html-ppt，把这份文档做成一个适合分享的 HTML 网页 PPT。
 请先判断内容密度和模板方向，再开始生成。
 ```
 
 Specify a module:
 
 ```text
-使用 $xiaoshui-pretty-ppt，做一个偏行政汇报的网页 PPT。
+使用 $pretty-html-ppt，做一个偏行政汇报的网页 PPT。
 内容密度可以高一点，但不要堆满文字。
 ```
 
 Specify a template:
 
 ```text
-使用 $xiaoshui-pretty-ppt 的 Garden Pop Landing / 花园跳色长页，
+使用 $pretty-html-ppt 的 Garden Pop Landing / 花园跳色长页，
 把这个课程介绍做成更适合自媒体发布的 PPT。
 ```
 
 Editable handoff:
 
 ```text
-使用 $xiaoshui-pretty-ppt，把这份飞书文档做成可直接演示的 HTML 网页 PPT。
+使用 $pretty-html-ppt，把这份飞书文档做成可直接演示的 HTML 网页 PPT。
 可编辑模式默认开启，这样我录视频时可以展示直接修改页面文字和导出 HTML。
 ```
 
 Presenter-ready handoff:
 
 ```text
-使用 $xiaoshui-pretty-ppt，把这份文章做成适合公开分享的 HTML 网页 PPT。
+使用 $pretty-html-ppt，把这份文章做成适合公开分享的 HTML 网页 PPT。
 演讲者模式默认开启，请把长解释放进讲稿备注，页面上只保留适合观众看的重点。
 ```

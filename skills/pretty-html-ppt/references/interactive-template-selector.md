@@ -1,6 +1,6 @@
 # Interactive Template Selector
 
-Use this reference when the user invokes `$xiaoshui-pretty-ppt` without a complete brief, asks what the skill can do, or wants a template recommendation before sending content.
+Use this reference when the user invokes `$pretty-html-ppt` without a complete brief, asks what the skill can do, or wants a template recommendation before sending content.
 
 ## Opening Behavior
 

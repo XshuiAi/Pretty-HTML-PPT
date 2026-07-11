@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Basic static validation for a XiaoShui Pretty PPT deck folder."""
+"""Basic static validation for a Pretty HTML PPT deck folder."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def is_external(value: str) -> bool:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate a XiaoShui Pretty PPT output folder.")
+    parser = argparse.ArgumentParser(description="Validate a Pretty HTML PPT output folder.")
     parser.add_argument("deck_dir", help="Deck folder containing index.html")
     parser.add_argument(
         "--allow-no-edit",
@@ -51,7 +51,7 @@ def main() -> int:
 
     html = index.read_text(encoding="utf-8", errors="replace")
 
-    has_edit_mode = "XIAOSHUI_PPT_EDIT_MODE_START" in html and "xs-edit-toolbar" in html
+    has_edit_mode = "PRETTY_HTML_PPT_EDIT_MODE_START" in html and "xs-edit-toolbar" in html
     has_font_size_controls = (
         "data-xs-font-size" in html
         and "data-xs-font-plus" in html

@@ -2,7 +2,7 @@
 
 ## 2026-07-09 · README gallery redesign
 
-- Shortened the README opening while keeping the line: `xiaoshui-Pretty PPT，让 PPT 也可以像网页一样呈现。`
+- Shortened the README opening while keeping the line: `Pretty HTML PPT，让 PPT 也可以像网页一样呈现。`
 - Moved install instructions to the top of the README.
 - Removed the standalone `适合谁` section and replaced it with one compact audience/scenario sentence.
 - Rebuilt the template gallery around 12 template groups, with three horizontal screenshots per template: cover, mid-deck, and later page.

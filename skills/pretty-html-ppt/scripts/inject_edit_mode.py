@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inject XiaoShui Pretty PPT browser edit mode into an HTML deck.
+"""Inject Pretty HTML PPT browser edit mode into an HTML deck.
 
 Enhanced edition — supports text editing on all visible elements,
 image / video replacement, and insert-new-media via the toolbar.
@@ -11,12 +11,12 @@ import argparse
 from pathlib import Path
 
 
-START = "<!-- XIAOSHUI_PPT_EDIT_MODE_START -->"
-END = "<!-- XIAOSHUI_PPT_EDIT_MODE_END -->"
+START = "<!-- PRETTY_HTML_PPT_EDIT_MODE_START -->"
+END = "<!-- PRETTY_HTML_PPT_EDIT_MODE_END -->"
 
 SNIPPET = r'''
-<!-- XIAOSHUI_PPT_EDIT_MODE_START -->
-<style id="xiaoshui-edit-style">
+<!-- PRETTY_HTML_PPT_EDIT_MODE_START -->
+<style id="pretty-html-ppt-edit-style">
   .xs-edit-toolbar {
     position: fixed;
     z-index: 2147483647;
@@ -382,9 +382,9 @@ SNIPPET = r'''
     .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide { display: none !important; }
   }
 </style>
-<script id="xiaoshui-edit-script">
+<script id="pretty-html-ppt-edit-script">
 (() => {
-  const STORE_KEY = "xiaoshui-ppt-edits:" + location.pathname;
+  const STORE_KEY = "pretty-html-ppt-edits:" + location.pathname;
 
   /* ── Selectors ── */
   const textSelector = [
@@ -1305,7 +1305,7 @@ SNIPPET = r'''
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = (document.title || "xiaoshui-pretty-ppt").replace(/[\\/:*?"<>|]+/g, "-") + "-edited.html";
+    a.download = (document.title || "pretty-html-ppt").replace(/[\\/:*?"<>|]+/g, "-") + "-edited.html";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -1418,7 +1418,7 @@ SNIPPET = r'''
   document.querySelectorAll(".xs-inserted-frame").forEach(attachFrameEvents);
 })();
 </script>
-<!-- XIAOSHUI_PPT_EDIT_MODE_END -->
+<!-- PRETTY_HTML_PPT_EDIT_MODE_END -->
 '''
 
 
@@ -1446,7 +1446,7 @@ def inject_edit_mode(index_path: Path) -> bool:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Inject browser edit mode into a XiaoShui Pretty PPT deck."
+        description="Inject browser edit mode into a Pretty HTML PPT deck."
     )
     parser.add_argument("html", help="Path to index.html or another HTML file")
     args = parser.parse_args()

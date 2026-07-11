@@ -1,5 +1,0 @@
-interface:
-  display_name: "XiaoShui Pretty PPT"
-  short_description: "用多套固定视觉模板生成可演示的 HTML 网页 PPT。"
-  brand_color: "#3B82F6"
-  default_prompt: "Use $xiaoshui-pretty-ppt to turn my content into a polished standalone HTML web PPT deck. Select the best matching template unless I name one explicitly."

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy and validate every XiaoShui Pretty PPT template."""
+"""Copy and validate every Pretty HTML PPT template."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate all XiaoShui Pretty PPT templates.")
+    parser = argparse.ArgumentParser(description="Validate all Pretty HTML PPT templates.")
     parser.add_argument(
         "--keep",
         action="store_true",
@@ -24,7 +24,7 @@ def main() -> int:
     copy_script = skill_root / "scripts" / "copy_template.py"
     validate_script = skill_root / "scripts" / "validate_deck.py"
 
-    tmp = Path(tempfile.mkdtemp(prefix="xiaoshui-template-check-"))
+    tmp = Path(tempfile.mkdtemp(prefix="pretty-html-ppt-template-check-"))
     failures: list[str] = []
 
     try:

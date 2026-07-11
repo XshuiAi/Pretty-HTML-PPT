@@ -37,7 +37,7 @@ Preferred markup:
 For a public skill/demo page, the GitHub repo and online demo should appear as clear actions near the cover or usage page:
 
 ```html
-<a class="hero-link" href="https://github.com/XshuiAi/xiaoshui-pretty-ppt" target="_blank" rel="noopener noreferrer">打开 GitHub</a>
+<a class="hero-link" href="https://github.com/XshuiAi/Pretty-HTML-PPT" target="_blank" rel="noopener noreferrer">打开 GitHub</a>
 ```
 
 ## Image And Text Matching

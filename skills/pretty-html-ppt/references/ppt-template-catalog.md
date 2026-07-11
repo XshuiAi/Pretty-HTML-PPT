@@ -1,4 +1,4 @@
-# XiaoShui Pretty PPT Template Catalog
+# Pretty HTML PPT Template Catalog
 
 Use this catalog before selecting a template. The library is intentionally split into two presentation modules.
 
@@ -48,7 +48,7 @@ These templates are more practical and suitable for administrative work, governm
 
 ## Output Standard
 
-A finished XiaoShui Pretty PPT deck should have:
+A finished Pretty HTML PPT deck should have:
 
 - a clear cover page
 - a visible section or agenda structure

@@ -1,10 +1,10 @@
-# xiaoshui-Pretty PPT
+# Pretty HTML PPT
 
-**xiaoshui-Pretty PPT**，让 PPT 也可以像网页一样呈现。
+**Pretty HTML PPT**，让 PPT 也可以像网页一样呈现。
 
 适合 Claude Code、Codex、WorkBuddy、Cursor 等 **Coding Agent** 使用。你把文章、飞书文档、截图、数据、链接或旧 PPT 交给它，它会判断场景、选择模板、拆分页面、提炼重点，生成一份能翻页、能编辑、能演示、能发布的 HTML 网页 PPT。
 
-[在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [模板图库](#gallery)
+[在线 Demo](https://xshuiai.github.io/Pretty-HTML-PPT/docs/demo/blush-skill-intro/) · [安装 Skill](#安装) · [模板图库](#gallery)
 
 根据人群和场景分类，内置 12 套风格，适合自媒体创作者、商务产品团队、行政职场政务、教育师生和作品集展示，并支持编辑模式、演讲者模式、图片插入、链接跳转、字号调整、演讲计时和轻量数据图表/测算组件。
 
@@ -14,14 +14,14 @@
 
 ```text
 请安装这个 skill：
-https://github.com/XshuiAi/xiaoshui-pretty-ppt.git
+https://github.com/XshuiAi/Pretty-HTML-PPT.git
 ```
 
 也可以直接用 `skills` CLI 安装：
 
 ```bash
-npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
-  --skill xiaoshui-pretty-ppt \
+npx -y skills@latest add XshuiAi/Pretty-HTML-PPT \
+  --skill pretty-html-ppt \
   --agent codex \
   --global
 ```
@@ -29,7 +29,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 安装后可以这样使用：
 
 ```text
-使用 $xiaoshui-pretty-ppt，把这份文档和素材做成一份 HTML 网页 PPT。
+使用 $pretty-html-ppt，把这份文档和素材做成一份 HTML 网页 PPT。
 请先判断受众、场景和内容密度，再选择最合适的模板。
 保留文档里的重要链接和图片语义关系，并保留编辑模式、演讲者模式和网页发布能力。
 ```
@@ -38,7 +38,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 12 套模板。每套展示 3 张横屏画面：封面 / 中段 / 后段，用来判断配色、版式和内容承载方式。点击模板名可以打开对应模板文件夹。
 
-### [Pastel Blockfolio](skills/xiaoshui-pretty-ppt/assets/templates/pastel-blockfolio)
+### [Pastel Blockfolio](skills/pretty-html-ppt/assets/templates/pastel-blockfolio)
 
 <p>
   <img src="assets/gallery/pastel-blockfolio-01-cover.png" alt="Pastel Blockfolio cover" width="32%">
@@ -48,7 +48,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合教程、案例复盘、流程拆解和自媒体选题说明。
 
-### [Blush Editorial](skills/xiaoshui-pretty-ppt/assets/templates/blush-editorial)
+### [Blush Editorial](skills/pretty-html-ppt/assets/templates/blush-editorial)
 
 <p>
   <img src="assets/gallery/blush-editorial-01-cover.png" alt="Blush Editorial cover" width="32%">
@@ -58,7 +58,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合品牌内容页、推荐清单、工具目录和编辑感长页面。
 
-### [Mono Curve Slides](skills/xiaoshui-pretty-ppt/assets/templates/mono-curve-slides)
+### [Mono Curve Slides](skills/pretty-html-ppt/assets/templates/mono-curve-slides)
 
 <p>
   <img src="assets/gallery/mono-curve-slides-01-cover.png" alt="Mono Curve Slides cover" width="32%">
@@ -68,7 +68,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合动态幻灯片、课程说明、产品更新和轻量演示页。
 
-### [One Dot Cinnabar](skills/xiaoshui-pretty-ppt/assets/templates/one-dot-cinnabar)
+### [One Dot Cinnabar](skills/pretty-html-ppt/assets/templates/one-dot-cinnabar)
 
 <p>
   <img src="assets/gallery/one-dot-cinnabar-01-cover.png" alt="One Dot Cinnabar cover" width="32%">
@@ -78,7 +78,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合年终总结、工作汇报、项目复盘和正式演讲。
 
-### [Ivory Research Deck](skills/xiaoshui-pretty-ppt/assets/templates/ivory-research-deck)
+### [Ivory Research Deck](skills/pretty-html-ppt/assets/templates/ivory-research-deck)
 
 <p>
   <img src="assets/gallery/ivory-research-deck-01-cover.png" alt="Ivory Research Deck cover" width="32%">
@@ -88,7 +88,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合学术汇报、研究总结、职场简报和产品调研。
 
-### [Cobalt Executive Deck](skills/xiaoshui-pretty-ppt/assets/templates/cobalt-executive-deck)
+### [Cobalt Executive Deck](skills/pretty-html-ppt/assets/templates/cobalt-executive-deck)
 
 <p>
   <img src="assets/gallery/cobalt-executive-deck-01-cover.png" alt="Cobalt Executive Deck cover" width="32%">
@@ -98,7 +98,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合商务汇报、公司介绍、产品组合和合作提案。
 
-### [Coral Startup Deck](skills/xiaoshui-pretty-ppt/assets/templates/coral-startup-deck)
+### [Coral Startup Deck](skills/pretty-html-ppt/assets/templates/coral-startup-deck)
 
 <p>
   <img src="assets/gallery/coral-startup-deck-01-cover.png" alt="Coral Startup Deck cover" width="32%">
@@ -108,7 +108,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合公司介绍、项目汇报、团队路演和工作计划。
 
-### [Ribbon Tab Brochure](skills/xiaoshui-pretty-ppt/assets/templates/ribbon-tab-brochure)
+### [Ribbon Tab Brochure](skills/pretty-html-ppt/assets/templates/ribbon-tab-brochure)
 
 <p>
   <img src="assets/gallery/ribbon-tab-brochure-01-cover.png" alt="Ribbon Tab Brochure cover" width="32%">
@@ -118,7 +118,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合项目资料册、产品说明、运营复盘和对外提案。
 
-### [Sapphire Defense Deck](skills/xiaoshui-pretty-ppt/assets/templates/sapphire-defense-deck)
+### [Sapphire Defense Deck](skills/pretty-html-ppt/assets/templates/sapphire-defense-deck)
 
 <p>
   <img src="assets/gallery/sapphire-defense-deck-01-cover.png" alt="Sapphire Defense Deck cover" width="32%">
@@ -128,7 +128,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合论文答辩、研究汇报、正式项目复盘和方法说明。
 
-### [Vermilion Civic Deck](skills/xiaoshui-pretty-ppt/assets/templates/vermilion-civic-deck)
+### [Vermilion Civic Deck](skills/pretty-html-ppt/assets/templates/vermilion-civic-deck)
 
 <p>
   <img src="assets/gallery/vermilion-civic-deck-01-cover.png" alt="Vermilion Civic Deck cover" width="32%">
@@ -138,7 +138,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合政务、行政、党建和公共服务类正式汇报。
 
-### [Blue Growth Deck](skills/xiaoshui-pretty-ppt/assets/templates/blue-growth-deck)
+### [Blue Growth Deck](skills/pretty-html-ppt/assets/templates/blue-growth-deck)
 
 <p>
   <img src="assets/gallery/blue-growth-deck-01-cover.png" alt="Blue Growth Deck cover" width="32%">
@@ -148,7 +148,7 @@ npx -y skills@latest add XshuiAi/xiaoshui-pretty-ppt \
 
 > 适合 AI 产品、运营增长、GEO 复盘和轻商务互动演示。
 
-### [Garden Pop Landing](skills/xiaoshui-pretty-ppt/assets/templates/garden-pop-landing)
+### [Garden Pop Landing](skills/pretty-html-ppt/assets/templates/garden-pop-landing)
 
 <p>
   <img src="assets/gallery/garden-pop-landing-01-cover.png" alt="Garden Pop Landing cover" width="32%">
@@ -172,7 +172,7 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 安装好以后，把飞书文档链接和需求一起发给 Agent：
 
 ```text
-请读取这个飞书文档，并使用 $xiaoshui-pretty-ppt 做成一份 HTML 网页 PPT：
+请读取这个飞书文档，并使用 $pretty-html-ppt 做成一份 HTML 网页 PPT：
 【这里粘贴你的飞书文档链接】
 
 要求：
@@ -188,7 +188,7 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 ### 指定一种风格
 
 ```text
-使用 $xiaoshui-pretty-ppt 的 Blush Editorial / 暖粉编辑志，
+使用 $pretty-html-ppt 的 Blush Editorial / 暖粉编辑志，
 把这篇文章和几张截图做成一份适合公开分享的网页演示。
 文字不要太满，长解释放进讲稿备注。
 ```
@@ -196,7 +196,7 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 ### 做正式汇报
 
 ```text
-使用 $xiaoshui-pretty-ppt，把这份产品介绍、数据表和截图整理成商务汇报型 HTML 网页 PPT。
+使用 $pretty-html-ppt，把这份产品介绍、数据表和截图整理成商务汇报型 HTML 网页 PPT。
 请优先考虑 Cobalt Executive Deck 或 Ivory Research Deck。
 需要有封面、问题、方案、数据、案例和总结页。数据部分请做成清晰图表；如果适合试算，可以加一个可调参数的测算组件。
 ```
@@ -213,7 +213,7 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 
 ## 和普通 PPT 有什么不同
 
-| 普通 PPT / 图片式 AI PPT | xiaoshui-Pretty PPT |
+| 普通 PPT / 图片式 AI PPT | Pretty HTML PPT |
 |---|---|
 | 发文件，别人要下载 | 发网页链接，打开就能看 |
 | 中文容易变成截图，改字麻烦 | 文字是真 HTML，生成后还能改 |
@@ -237,7 +237,7 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 
 先看这份粉白时尚风的动态介绍页：
 
-[打开 xiaoshui-Pretty PPT 在线 Demo](https://xshuiai.github.io/xiaoshui-pretty-ppt/docs/demo/blush-skill-intro/)
+[打开 Pretty HTML PPT 在线 Demo](https://xshuiai.github.io/Pretty-HTML-PPT/docs/demo/blush-skill-intro/)
 
 打开后可以试：
 

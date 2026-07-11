@@ -3,7 +3,7 @@
 ## Repository Structure
 
 ```text
-xiaoshui-pretty-ppt/
+pretty-html-ppt/
 ├── README.md
 ├── assets/
 │   └── previews/                    # README preview images
@@ -16,7 +16,7 @@ xiaoshui-pretty-ppt/
 │   ├── sync-local-skill.sh
 │   └── update-from-github.sh
 └── skills/
-    └── xiaoshui-pretty-ppt/
+    └── pretty-html-ppt/
         ├── SKILL.md
         ├── agents/openai.yaml
         ├── references/
@@ -36,7 +36,7 @@ From the repository root:
 Sync target:
 
 ```text
-~/.agents/skills/xiaoshui-pretty-ppt
+~/.agents/skills/pretty-html-ppt
 ```
 
 ## Local-Only Folders
@@ -46,13 +46,13 @@ Sync target:
 - `local-showcase/`: local demo cases, especially older Shui Pretty HTML examples that should remain available on this machine but not be pushed publicly.
 - `local-private/`: project memory, iteration notes, Feishu material drafts, and internal decisions.
 
-Keep public-facing materials in `README.md`, `assets/previews/`, `docs/demo/`, and `skills/xiaoshui-pretty-ppt/`.
+Keep public-facing materials in `README.md`, `assets/previews/`, `docs/demo/`, and `skills/pretty-html-ppt/`.
 
 ## Validation
 
 ```bash
-python3 skills/xiaoshui-pretty-ppt/scripts/validate_deck.py docs/demo/blush-skill-intro
-python3 skills/xiaoshui-pretty-ppt/scripts/validate_template_library.py
+python3 skills/pretty-html-ppt/scripts/validate_deck.py docs/demo/blush-skill-intro
+python3 skills/pretty-html-ppt/scripts/validate_template_library.py
 ```
 
 ## Change Recording Rule

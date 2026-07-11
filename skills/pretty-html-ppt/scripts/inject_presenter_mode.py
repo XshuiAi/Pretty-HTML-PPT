@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inject XiaoShui Pretty PPT presenter mode runtime into an HTML deck."""
+"""Inject Pretty HTML PPT presenter mode runtime into an HTML deck."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def inject_presenter_mode(index_path: Path) -> bool:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Inject presenter mode into a XiaoShui Pretty PPT deck.")
+    parser = argparse.ArgumentParser(description="Inject presenter mode into a Pretty HTML PPT deck.")
     parser.add_argument("html", help="Path to index.html or another HTML file")
     args = parser.parse_args()
     inject_presenter_mode(Path(args.html))

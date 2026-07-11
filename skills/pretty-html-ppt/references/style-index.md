@@ -1,6 +1,6 @@
 # Style Index
 
-This file is kept for compatibility. For XiaoShui Pretty PPT, prefer reading `ppt-template-catalog.md` first because it groups templates by presentation scenario.
+This file is kept for compatibility. For Pretty HTML PPT, prefer reading `ppt-template-catalog.md` first because it groups templates by presentation scenario.
 
 ## Pastel Blockfolio
 
