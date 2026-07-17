@@ -76,6 +76,12 @@ Required records:
 
 Each record should include date, change summary, affected files or surfaces, validation method, whether GitHub was pushed, whether the local installed skill was synced, and whether Feishu docs need updates.
 
+## 2026-07-18 Author Introduction
+
+- Added a compact public author section to `README.md`.
+- Public identity used: `Siri小水 · AI 博主 / AI Builder`.
+- Added the GitHub profile link; Xiaohongshu and Douyin links remain pending confirmation of the exact public URLs.
+
 ## 2026-07-09 README Gallery Redesign
 
 - Rewrote README opening and moved install instructions to the top.

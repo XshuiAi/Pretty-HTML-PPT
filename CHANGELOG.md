@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-18 · Add author introduction
+
+- Added a short author section to the README: `Siri小水 · AI 博主 / AI Builder`.
+- Added a link to the public GitHub profile.
+- Social profile links will be added only after the public Xiaohongshu and Douyin URLs are confirmed.
+
 ## 2026-07-09 · README gallery redesign
 
 - Shortened the README opening while keeping the line: `Pretty HTML PPT，让 PPT 也可以像网页一样呈现。`
