@@ -2,9 +2,10 @@
 
 ## 2026-07-18 · Add author introduction
 
-- Added a short author section to the README: `Siri小水 · AI 博主 / AI Builder`.
+- Added a short author section to the README: `Sherry小水 · AI 自媒体博主 / AI Builder`.
 - Added a link to the public GitHub profile.
-- Social profile links will be added only after the public Xiaohongshu and Douyin URLs are confirmed.
+- Added a public Douyin profile link.
+- Xiaohongshu will be added only after the exact public URL is confirmed.
 
 ## 2026-07-09 · README gallery redesign
 

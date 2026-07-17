@@ -266,11 +266,12 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 
 ## 关于作者
 
-Siri小水 · AI 博主 / AI Builder
+Sherry小水 · AI 自媒体博主 / AI Builder
 
 我主要分享 AI 工具、Coding Agent 和内容工作流，也会把实际使用中的方法做成可以直接体验的工具和 Skill。
 
 - [GitHub](https://github.com/XshuiAi)
+- [抖音](https://v.douyin.com/vjP_a012O1Q/)
 
 ## 维护说明
 
