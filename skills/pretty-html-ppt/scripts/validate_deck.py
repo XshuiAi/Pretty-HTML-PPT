@@ -61,6 +61,12 @@ def main() -> int:
         "SHUI_PRETTY_PPT_PRESENTER_MODE_START" in html
         and "data-shui-presenter-notes" in html
     )
+    has_talk_timer = (
+        "data-shui-talk-timer" in html
+        and "data-shui-talk-timer-start" in html
+        and "data-shui-talk-timer-pause" in html
+        and "data-shui-talk-timer-reset" in html
+    )
 
     if not args.allow_no_edit and not has_edit_mode:
         errors.append("Missing browser edit mode. Expected default E-to-edit runtime.")
@@ -68,6 +74,8 @@ def main() -> int:
         errors.append("Missing font size controls. Expected selected-text font-size runtime.")
     if not args.allow_no_presenter and not has_presenter_mode:
         errors.append("Missing presenter mode. Expected default P-to-present runtime.")
+    if not args.allow_no_presenter and not has_talk_timer:
+        errors.append("Missing talk timer. Expected start, pause, and reset controls in the presenter runtime.")
 
     if PLACEHOLDERS.search(html):
         warnings.append("Found placeholder-like text.")
@@ -101,6 +109,7 @@ def main() -> int:
     print(f"edit_mode: {str(has_edit_mode).lower()}")
     print(f"font_size_controls: {str(has_font_size_controls).lower()}")
     print(f"presenter_mode: {str(has_presenter_mode).lower()}")
+    print(f"talk_timer: {str(has_talk_timer).lower()}")
 
     for item in warnings:
         print(f"WARNING: {item}")

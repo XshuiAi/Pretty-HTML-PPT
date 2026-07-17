@@ -37,6 +37,8 @@ Avoid it for dense admin dashboards, complex data tables, terminal-like tools, o
 
 No gradients, glow, dark blue/slate dominance, decorative blobs, eye icons, meaningless arcs, or ornamental wave lines.
 
+Treat this as a closed warm palette. Later chapters, data sections, and closing pages must stay within canvas, white, ink, muted gray, pink, pale pink, and warm blush/apricot tints derived from the tokens above. Do not introduce blue, purple, green, or yellow for section variety.
+
 ## Typography
 
 - Use a modern system sans stack. Do not depend on a remote font for the page to work.
@@ -138,3 +140,4 @@ Under `@media (prefers-reduced-motion: reduce)`, disable smooth scrolling, trans
 - Confirm expansion controls update `aria-expanded`.
 - Confirm reduced-motion mode removes transforms and nonessential animation.
 - Confirm no third-party brand assets or copied page content remain in the deliverable.
+- Scan the complete deck, especially the final third, for off-palette blue, purple, green, or yellow values.

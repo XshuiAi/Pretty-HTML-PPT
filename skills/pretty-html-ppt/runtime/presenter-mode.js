@@ -6,7 +6,8 @@
     startedAt: 0,
     elapsedBeforeStart: 0,
     running: false,
-    timer: null,
+    presenterRefresh: null,
+    talkTimerTick: null,
   };
 
   const slideSelector = "[data-slide], section[id], header[id], article[id]";
@@ -62,8 +63,47 @@
     return state.elapsedBeforeStart + (state.running ? Date.now() - state.startedAt : 0);
   }
 
+  function renderTalkTimer() {
+    const text = formatTime(elapsedMs());
+    document.querySelectorAll("[data-shui-talk-timer-display], [data-shui-presenter-timer]")
+      .forEach((node) => { node.textContent = text; });
+    document.querySelectorAll("[data-shui-talk-timer]")
+      .forEach((node) => node.classList.toggle("is-running", state.running));
+    document.dispatchEvent(new CustomEvent("shui-talk-timer:update", {
+      detail: { elapsed: elapsedMs(), running: state.running, text },
+    }));
+  }
+
+  const internalDeckTimer = {
+    start() {
+      if (state.running) return;
+      state.running = true;
+      state.startedAt = Date.now();
+      clearInterval(state.talkTimerTick);
+      state.talkTimerTick = setInterval(renderTalkTimer, 250);
+      renderTalkTimer();
+    },
+    pause() {
+      if (!state.running) return;
+      state.elapsedBeforeStart = elapsedMs();
+      state.running = false;
+      clearInterval(state.talkTimerTick);
+      state.talkTimerTick = null;
+      renderTalkTimer();
+    },
+    reset() {
+      state.elapsedBeforeStart = 0;
+      state.startedAt = state.running ? Date.now() : 0;
+      renderTalkTimer();
+    },
+    elapsed: elapsedMs,
+    isRunning: () => state.running,
+    format: formatTime,
+    render: renderTalkTimer,
+  };
+
   function deckTimer() {
-    return window.ShuiDeckTimer || null;
+    return window.ShuiDeckTimer || internalDeckTimer;
   }
 
   function timerText() {
@@ -270,19 +310,125 @@
         cursor: pointer;
       }
       .shui-presenter-timer-controls button:hover { background: rgba(255, 255, 255, .16); }
+      .shui-talk-timer-dock {
+        position: fixed;
+        right: 18px;
+        bottom: 82px;
+        z-index: 2147483500;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        color: var(--ink, #111827);
+        font: 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      .shui-talk-timer-trigger,
+      .shui-talk-timer-controls button {
+        appearance: none;
+        border: 1px solid var(--line, rgba(17, 24, 39, .18));
+        background: var(--surface, rgba(255, 255, 255, .96));
+        color: var(--ink, #111827);
+        cursor: pointer;
+      }
+      .shui-talk-timer-trigger {
+        min-width: 58px;
+        padding: 9px 12px;
+        border-radius: 999px;
+        box-shadow: 0 10px 30px rgba(17, 24, 39, .12);
+        font-weight: 800;
+      }
+      .shui-talk-timer-panel {
+        display: none;
+        width: 218px;
+        padding: 14px;
+        border: 1px solid var(--line, rgba(17, 24, 39, .18));
+        border-radius: 8px;
+        background: var(--surface, rgba(255, 255, 255, .98));
+        box-shadow: 0 18px 50px rgba(17, 24, 39, .14);
+      }
+      .shui-talk-timer-dock.is-open .shui-talk-timer-panel { display: block; }
+      .shui-talk-timer-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted, #6b7280);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .shui-talk-timer-time {
+        display: block;
+        margin-top: 7px;
+        font-size: 34px;
+        font-weight: 850;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+      .shui-talk-timer-controls {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .shui-talk-timer-controls button {
+        min-height: 30px;
+        padding: 6px 7px;
+        border-radius: 4px;
+        font: 750 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      .shui-talk-timer-controls [data-shui-talk-timer-start] {
+        border-color: var(--pink, var(--accent, #111827));
+        background: var(--pink, var(--accent, #111827));
+        color: #fff;
+      }
+      .shui-talk-timer-dock.is-running [data-shui-talk-timer-start] { opacity: .56; }
+      .shui-presenter-is-open .shui-talk-timer-dock { display: none; }
       @media (max-width: 860px) {
         .shui-presenter-grid { grid-template-columns: 1fr; }
         .shui-presenter-sidebar { grid-template-rows: auto auto auto; }
         .shui-presenter-notes { max-height: 220px; }
+        .shui-talk-timer-dock { right: 12px; bottom: 72px; }
       }
       @media print {
-        .shui-presenter-overlay { display: none !important; }
+        .shui-presenter-overlay,
+        .shui-talk-timer-dock { display: none !important; }
       }
     `;
     document.head.appendChild(style);
   }
 
+  function ensureTimerDom() {
+    if (document.querySelector("[data-shui-talk-timer]")) return;
+    const dock = document.createElement("div");
+    dock.className = "shui-talk-timer-dock";
+    dock.setAttribute("data-shui-talk-timer", "true");
+    dock.setAttribute("data-no-edit", "true");
+    dock.innerHTML = `
+      <button class="shui-talk-timer-trigger" type="button" data-shui-talk-timer-toggle aria-expanded="false">计时</button>
+      <div class="shui-talk-timer-panel" role="group" aria-label="演讲计时">
+        <div class="shui-talk-timer-heading"><span>演讲计时</span><span>Talk Timer</span></div>
+        <strong class="shui-talk-timer-time" data-shui-talk-timer-display>00:00</strong>
+        <div class="shui-talk-timer-controls">
+          <button type="button" data-shui-talk-timer-start>开始</button>
+          <button type="button" data-shui-talk-timer-pause>暂停</button>
+          <button type="button" data-shui-talk-timer-reset>重置</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(dock);
+    dock.querySelector("[data-shui-talk-timer-toggle]").addEventListener("click", (event) => {
+      const open = !dock.classList.contains("is-open");
+      dock.classList.toggle("is-open", open);
+      event.currentTarget.setAttribute("aria-expanded", String(open));
+    });
+    dock.querySelector("[data-shui-talk-timer-start]").addEventListener("click", startTimer);
+    dock.querySelector("[data-shui-talk-timer-pause]").addEventListener("click", pauseTimer);
+    dock.querySelector("[data-shui-talk-timer-reset]").addEventListener("click", resetTimer);
+    renderTalkTimer();
+  }
+
   function ensureDom() {
+    ensureTimerDom();
     if (document.querySelector(".shui-presenter-overlay")) return;
 
     const overlay = document.createElement("div");
@@ -383,16 +529,16 @@
     document.querySelector(".shui-presenter-overlay").classList.add("is-open");
     root.classList.add("shui-presenter-is-open");
     update();
-    clearInterval(state.timer);
-    state.timer = setInterval(update, 1000);
+    clearInterval(state.presenterRefresh);
+    state.presenterRefresh = setInterval(update, 1000);
   }
 
   function close() {
     state.open = false;
     document.querySelector(".shui-presenter-overlay")?.classList.remove("is-open");
     root.classList.remove("shui-presenter-is-open");
-    clearInterval(state.timer);
-    state.timer = null;
+    clearInterval(state.presenterRefresh);
+    state.presenterRefresh = null;
   }
 
   function toggle() {
@@ -452,5 +598,6 @@
   });
 
   ensureStyles();
+  if (!window.ShuiDeckTimer) window.ShuiDeckTimer = internalDeckTimer;
   ensureDom();
 })();

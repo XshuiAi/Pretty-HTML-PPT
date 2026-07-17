@@ -109,7 +109,7 @@ python3 skills/pretty-html-ppt/scripts/validate_template_library.py
 
 ## Create A Default Dual-Mode Deck
 
-Browser edit mode and presenter mode are injected **by default** into every generated deck — no extra flag needed. The output includes a floating edit toolbar (edit, save, export, reset, insert image) plus presenter view (speaker notes, next-slide preview, timer).
+Browser edit mode and presenter mode are injected **by default** into every generated deck — no extra flag needed. The output includes a floating edit toolbar (edit, save, export, reset, insert image), a compact normal-view talk timer, and presenter view (speaker notes, next-slide preview, synchronized timer).
 
 ```bash
 python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
@@ -172,7 +172,7 @@ Presenter mode content rules:
 User-facing explanation:
 
 ```text
-这份 HTML PPT 已开启演讲者模式。打开页面后按 P，可以看到当前页摘要、下一页标题、讲稿备注和计时器；按方向键切换页面，按 Esc 退出。长解释我放在讲稿备注里，不会挤在页面上。
+这份 HTML PPT 已开启演讲计时和演讲者模式。普通页面右下角可以开始、暂停或重置计时；按 P 后会看到同一个计时、当前页摘要、下一页标题和讲稿备注。按方向键切换页面，按 Esc 退出。
 ```
 
 ## Prompt Examples

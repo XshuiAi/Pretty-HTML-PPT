@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-18 · Unify talk timer and template palette rules
+
+- Moved the compact start/pause/reset talk timer into the shared presenter runtime so all 12 generated templates receive it by default.
+- Synchronized the normal-view timer with presenter mode.
+- Removed the duplicated one-off timer implementation from the Blush Editorial public demo.
+- Corrected blue, purple, and yellow palette drift in later Blush demo sections.
+- Strengthened skill guidance and validation so generated decks retain the selected template palette through closing pages.
+- Kept the existing edit-mode keyboard shortcut unchanged while a replacement shortcut is being reviewed.
+
+Validation:
+
+- `validate_deck.py`: edit mode, font controls, presenter mode, and talk timer all present.
+- `validate_template_library.py`: 12 templates checked, all valid.
+- Browser test: timer start/pause/reset works, normal and presenter views stay synchronized, and the 390px layout has no horizontal overflow.
+- GitHub push: no; this version remains local pending review.
+- Local installed skill: synced.
+
 ## 2026-07-18 · Add author introduction
 
 - Added a short author section to the README: `Sherry小水 · AI 自媒体博主 / AI Builder`.

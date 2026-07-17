@@ -18,6 +18,8 @@ Use this before delivering a Pretty HTML PPT deck.
 - Browser edit mode is present by default unless the user explicitly requested `--no-edit`.
 - Font-size controls are present inside edit mode unless the user explicitly requested `--no-edit`.
 - Presenter mode is present by default unless the user explicitly requested `--no-presenter`.
+- A compact talk timer is present in normal view, with start, pause, and reset controls.
+- The normal-view timer and presenter-mode timer show the same elapsed time.
 - The edit toolbar appears and does not cover primary slide content.
 - Presenter notes remain hidden in normal audience view.
 
@@ -35,7 +37,8 @@ Use this before delivering a Pretty HTML PPT deck.
 
 ## P2 · Visual Quality
 
-- The color system matches the chosen template.
+- The color system matches the chosen template. Every visible color must come from the template tokens or a documented tint; do not add a new hue merely to distinguish a section.
+- Check late pages, summary pages, and closing pages separately for palette drift.
 - Typography hierarchy is clear: title, subtitle, body, metadata.
 - Images have consistent aspect ratios in the same group.
 - Important screenshots are legible at presentation size.
@@ -52,7 +55,7 @@ Use this before delivering a Pretty HTML PPT deck.
 - Report the selected template.
 - Mention the density level used.
 - Mention whether edit mode is enabled. If enabled, explain `E`, `字号 / A- / A+`, `保存`, `导出 HTML`, and `重置`.
-- Mention whether presenter mode is enabled. If enabled, explain `P`, speaker notes, next-slide preview, and privacy during screen sharing.
+- Mention whether presenter mode is enabled. If enabled, explain the normal-view timer, `P`, synchronized presenter timer, speaker notes, next-slide preview, and privacy during screen sharing.
 - Mention any missing assets or assumptions.
 - If publishing, package the final static folder only.
 

@@ -195,7 +195,7 @@ Use the density rules in `references/intake-and-density.md`:
 
 Start from the template instead of hand-building a new PPT shell.
 
-Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, adjust font size, replace images/videos, export HTML) and presenter view (press `P`, speaker notes, next-slide preview, timer).
+Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, adjust font size, replace images/videos, export HTML), a normal-view talk timer, and presenter view (press `P`, speaker notes, next-slide preview, synchronized timer).
 
 ```bash
 python3 scripts/copy_template.py <style-slug> /absolute/output/dir
@@ -246,7 +246,7 @@ Replace the template content with the user's actual content.
 Follow these rules:
 
 - Keep one visual template per deck. Do not mix CSS grammars from multiple templates.
-- Preserve the template's color system unless the user explicitly asks for a new style.
+- Preserve the template's color system unless the user explicitly asks for a new style. Treat the selected template reference as a closed palette: reuse its named tokens and approved tints; do not introduce a new hue for variety, section differentiation, or a closing page.
 - Use the template's existing navigation, page markers, interactions, and motion system.
 - Convert long prose into presentation pages: cover, agenda, chapter, key point, data, process, comparison, example, summary, closing.
 - Use `references/content-compression.md`: visible pages carry the argument; speaker notes carry long explanation; appendix/source links carry supporting detail.
@@ -258,7 +258,7 @@ Follow these rules:
 - When text and images are supplied together, preserve meaningful pairs: image + matching sentence/claim/case should appear on the same page whenever it improves comprehension.
 - Do not insert images merely because they were supplied. Every main-page image should support the page's argument, example, data, or scene.
 - When data supports the story, convert it into a chart, KPI strip, annotated table, or interactive calculator. For sliders/calculators, show the assumption labels, current values, and recalculated result clearly. Add a short `示例测算 / assumptions` note when numbers are illustrative.
-- Every generated deck includes the browser edit toolbar and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, drag/drop or select one or more local images, insert them as draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, delete them when selected, and press `P` for speaker notes, next-slide preview, and timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode.
+- Every generated deck includes the browser edit toolbar, a compact normal-view talk timer, and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, drag/drop or select one or more local images, insert them as draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, delete them when selected, and press `P` for speaker notes, next-slide preview, and the same synchronized timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode and talk timer.
 - For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
 Presenter mode conventions:
@@ -268,7 +268,7 @@ Presenter mode conventions:
 - Use arrow keys or PageUp/PageDown while presenter mode is open.
 - Add concise notes to each major slide using `<aside class="speaker-notes">...</aside>`.
 - Keep speaker notes out of the visible slide body. Long explanations belong in notes, not on the slide.
-- The runtime automatically shows current title, current summary, next slide title, notes, slide count, and timer.
+- The runtime automatically shows current title, current summary, next slide title, notes, slide count, and timer. The compact timer in normal view and the presenter timer share one state and provide start, pause, and reset.
 - Speaker notes are hidden in the normal audience view. They become visible only when presenter mode is open in that browser window.
 - The presenter notes panel is editable; edits sync back into the current slide's hidden `.speaker-notes` block.
 - Privacy depends on screen sharing: if the presenter-mode window is shared, the audience can see notes. For private notes, share a normal deck window and keep presenter mode on an unshared screen/window.
@@ -283,6 +283,8 @@ Before delivery, read `references/quality-checklist.md` and check:
 - The deck opens in a browser.
 - Desktop and mobile layouts do not have severe overflow.
 - Text does not overlap navigation controls.
+- The normal-view talk timer is available, and its time stays synchronized with presenter mode.
+- Every visible color belongs to the selected template palette or an explicitly documented tint of it; inspect late and closing pages for accidental palette drift.
 - The chosen style still looks distinct and did not collapse into a generic card page.
 
 Useful commands:
