@@ -4,8 +4,7 @@
 
 - Added a short author section to the README: `Sherry小水 · AI 自媒体博主 / AI Builder`.
 - Added a link to the public GitHub profile.
-- Added a public Douyin profile link.
-- Xiaohongshu will be added only after the exact public URL is confirmed.
+- Added the confirmed public Douyin and Xiaohongshu profile links.
 
 ## 2026-07-09 · README gallery redesign
 

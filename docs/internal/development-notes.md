@@ -80,7 +80,7 @@ Each record should include date, change summary, affected files or surfaces, val
 
 - Added a compact public author section to `README.md`.
 - Public identity used: `Sherry小水 · AI 自媒体博主 / AI Builder`.
-- Added GitHub and Douyin profile links; Xiaohongshu remains pending confirmation of the exact public URL.
+- Added GitHub, Douyin, and Xiaohongshu profile links.
 
 ## 2026-07-09 README Gallery Redesign
 
