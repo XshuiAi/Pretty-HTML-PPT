@@ -1396,11 +1396,11 @@ SNIPPET = r'''
       deleteFrame(currentImageFrame);
       return;
     }
-    if (key === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
-      if (tag !== "input" && tag !== "textarea") {
-        setToolbarExpanded(true);
-        toggleEdit();
-      }
+    /* E enters edit mode; Esc exits. E never toggles while editing. */
+    if (!editing && !typing && key === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      event.preventDefault();
+      setToolbarExpanded(true);
+      enterEdit();
     }
     if (key === "s" && (event.metaKey || event.ctrlKey)) {
       if (editing) { event.preventDefault(); saveAll(); }

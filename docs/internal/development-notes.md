@@ -82,14 +82,15 @@ Each record should include date, change summary, affected files or surfaces, val
 - Public identity used: `Sherry小水 · AI 自媒体博主 / AI Builder`.
 - Added GitHub, Douyin, and Xiaohongshu profile links.
 
-## 2026-07-18 Shared Timer And Palette Guardrails
+## 2026-07-18 Edit, Timer, And Palette Guardrails
 
 - The normal-view talk timer now belongs to `runtime/presenter-mode.js`, not to one Demo.
 - All generated templates receive one compact start/pause/reset timer and a synchronized presenter timer by default.
 - `validate_deck.py` now fails when the shared timer controls are missing.
 - Blush Editorial guidance now treats its warm palette as closed and explicitly checks late pages for off-palette colors.
-- The existing plain-`E` edit shortcut is intentionally unchanged in this local version; replacement options are awaiting user confirmation.
-- GitHub was not updated. The local installed skill was synced after validation.
+- `E` is now a one-way edit entry shortcut. While editing, typed `E` is never intercepted; `Esc` exits edit mode.
+- Public changelog wording stays concise. Detailed causes, decisions, and validation remain in the local private version log.
+- The local installed skill was synced after validation, and this version is approved for public release.
 
 ## 2026-07-09 README Gallery Redesign
 

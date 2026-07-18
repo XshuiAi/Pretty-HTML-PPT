@@ -195,7 +195,7 @@ Use the density rules in `references/intake-and-density.md`:
 
 Start from the template instead of hand-building a new PPT shell.
 
-Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E`, edit text, adjust font size, replace images/videos, export HTML), a normal-view talk timer, and presenter view (press `P`, speaker notes, next-slide preview, synchronized timer).
+Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E` once to enter, press `Esc` to exit, edit text, adjust font size, replace images/videos, export HTML), a normal-view talk timer, and presenter view (press `P`, speaker notes, next-slide preview, synchronized timer). While edit mode is active, `E` is normal text input and never toggles the mode.
 
 ```bash
 python3 scripts/copy_template.py <style-slug> /absolute/output/dir
@@ -314,7 +314,7 @@ Return:
 - local deck path
 - selected template name
 - what content was transformed
-- confirmed that the edit toolbar is present (press `E` to edit text, use `字号 / A- / A+` to adjust font size, click images/videos to replace, click `➕ 插入图片` to drag/drop or select local images, then snap, resize, or delete inserted image frames)
+- confirmed that the edit toolbar is present (press `E` once to enter, type `E` normally while editing, press `Esc` to exit, use `字号 / A- / A+` to adjust font size, click images/videos to replace, click `➕ 插入图片` to drag/drop or select local images, then snap, resize, or delete inserted image frames)
 - confirmed that presenter mode is present (press `P` for notes, next-slide preview, and timer)
 - any assets that still need the user's replacement
 - any verification command results
@@ -336,7 +336,7 @@ When a new PPT result should become a reusable template:
    python3 scripts/validate_template_library.py
    ```
 6. Open the copied `index.html` and verify it visually.
-7. Confirm the generated deck includes both default runtimes: `E` edit mode and `P` presenter mode.
+7. Confirm the generated deck includes both default runtimes: `E` enters edit mode, `Esc` exits it, and `P` opens presenter mode.
 
 Keep each template distinct. Do not let all styles collapse into the same pastel/card look.
 

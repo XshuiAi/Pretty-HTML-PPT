@@ -1167,7 +1167,7 @@
         <strong class="metric">12</strong>
         <p>套模板，覆盖自媒体、个人展示、作品集、行政政务、职场汇报和产品演讲。</p>
         <div class="mini-tags">
-          <span class="tag">E 编辑</span>
+          <span class="tag">E 进入编辑 · Esc 退出</span>
           <span class="tag">P 演讲者模式</span>
           <span class="tag">HTML 发布</span>
         </div>
@@ -1206,7 +1206,7 @@
           <span class="eyebrow">Workflow</span>
           <h2 data-slide-title>从文档和素材到网页 PPT，中间只保留必要判断。</h2>
         </div>
-        <p data-slide-summary>先判断受众、场景、内容密度和素材状态，再选模板、拆页面、生成 HTML，最后按 E 修改或按 P 演讲。</p>
+        <p data-slide-summary>先判断受众、场景、内容密度和素材状态，再选模板、拆页面、生成 HTML，最后按 E 进入编辑或按 P 演讲。</p>
       </div>
       <div class="workflow-grid">
         <article class="step" data-index="Input" data-detail="可以接文章、Markdown、飞书文档、会议纪要、本地图片、截图、视频封面、旧 PPT 和数据表。">
@@ -1224,9 +1224,9 @@
           <h3>套用真实模板</h3>
           <p>从 12 套模板复制开始，保留配色、版式、导航和动效。</p>
         </article>
-        <article class="step" data-index="Deliver" data-detail="默认注入 E 编辑、P 演讲者模式和字号调节，除非用户明确要求纯净版。">
+        <article class="step" data-index="Deliver" data-detail="默认注入 E 进入编辑、Esc 退出编辑、P 演讲者模式和字号调节，除非用户明确要求纯净版。">
           <h3>打开、编辑、发布</h3>
-          <p>本地浏览器打开；需要时按 E 改文字，按 P 进入演讲者模式。</p>
+          <p>本地浏览器打开；按 E 进入编辑，输入 E 不受影响，按 Esc 退出；按 P 进入演讲者模式。</p>
         </article>
       </div>
       <aside class="speaker-notes">这里可以把它讲成一条流水线：不是一次性图片，而是一个能继续迭代的 presentation workflow。</aside>
@@ -1344,7 +1344,7 @@
           <span class="eyebrow">Live presentation</span>
           <h2 data-slide-title>它不是静态页面，而是一套可以拿去讲的演示作品。</h2>
         </div>
-        <p data-slide-summary>按 P 打开讲稿备注、下一页预览和计时器；按 E 进入编辑模式，直接修改文字、字号和素材。</p>
+        <p data-slide-summary>按 P 打开讲稿备注、下一页预览和计时器；按 E 进入编辑，编辑时 E 正常输入，按 Esc 退出。</p>
       </div>
       <div class="feature-grid">
         <article class="feature-card" data-detail="演讲者模式的备注只在当前浏览器窗口打开 P 时显示；共享普通窗口时观众看不到。">
@@ -3133,11 +3133,11 @@
       deleteFrame(currentImageFrame);
       return;
     }
-    if (key === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
-      if (tag !== "input" && tag !== "textarea") {
-        setToolbarExpanded(true);
-        toggleEdit();
-      }
+    /* E enters edit mode; Esc exits. E never toggles while editing. */
+    if (!editing && !typing && key === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      event.preventDefault();
+      setToolbarExpanded(true);
+      enterEdit();
     }
     if (key === "s" && (event.metaKey || event.ctrlKey)) {
       if (editing) { event.preventDefault(); saveAll(); }

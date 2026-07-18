@@ -16,7 +16,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 
 | Feature | How | Details |
 |---------|-----|---------|
-| **All text** | Press `E`, click any text | Titles, subtitles, paragraphs, labels, captions, list items, table cells, badges — every visible text element is editable. |
+| **All text** | Press `E` once, click any text | Titles, subtitles, paragraphs, labels, captions, list items, table cells, badges — every visible text element is editable. Press `Esc` to leave edit mode. |
 | **Font size** | Press `E`, click text, use `字号`, `A-`, `A+`, or `默认` | Adjusts the selected text element's font size. Changes are saved locally and included in exported HTML. |
 | **Replace images** | Press `E`, click `替换图片` badge on any image | Paste a new URL or upload a local image file. Supports data-URL conversion for offline-safe exports. |
 | **Replace videos** | Press `E`, click `替换视频` badge on any video | Paste a new video URL. |
@@ -26,7 +26,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 
 | Button | Action |
 |--------|--------|
-| `编辑` / `退出编辑` | Toggle edit mode (or press `E`) |
+| `编辑` / `退出编辑` | Enter or exit edit mode. Keyboard: `E` enters; `Esc` exits. |
 | `字号` / `A-` / `A+` / `默认` | Adjust or reset the selected text element's font size |
 | `保存` | Save all edits to browser localStorage (or `Cmd+S` / `Ctrl+S`) |
 | `导出 HTML` | Download a standalone edited HTML file with all changes baked in |
@@ -37,7 +37,7 @@ python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
 
 | Key | Action |
 |-----|--------|
-| `E` | Toggle edit mode on/off (when not focused on an input) |
+| `E` | Enter edit mode only. While editing, `E` remains normal text input. |
 | `Cmd+S` / `Ctrl+S` | Save all changes (when edit mode is active) |
 | `Delete` / `Backspace` | Delete the currently selected inserted image |
 | `Esc` | Exit edit mode |
@@ -63,7 +63,7 @@ Use `--no-edit` when:
 ```text
 这份 HTML PPT 已开启可编辑模式。右上角工具栏说明：
 
-- 按 E 进入编辑模式 → 直接点任何文字就能改
+- 按 E 进入编辑模式 → 直接点任何文字就能改；编辑时 E 可以正常输入，按 Esc 退出
 - 点选文字后用 字号 / A- / A+ / 默认 → 调整或恢复字体大小
 - 编辑模式下点图片/视频上的「替换图片」「替换视频」→ 可以换 URL 或上传本地文件
 - 点工具栏「➕ 插入图片」→ 直接拖入图片或点击选择本地图片，可一次插入多张

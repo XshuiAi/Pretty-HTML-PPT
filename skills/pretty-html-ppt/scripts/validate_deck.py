@@ -57,6 +57,7 @@ def main() -> int:
         and "data-xs-font-plus" in html
         and "data-xs-font-minus" in html
     )
+    has_safe_edit_shortcut = "E enters edit mode; Esc exits. E never toggles while editing." in html
     has_presenter_mode = (
         "SHUI_PRETTY_PPT_PRESENTER_MODE_START" in html
         and "data-shui-presenter-notes" in html
@@ -72,6 +73,8 @@ def main() -> int:
         errors.append("Missing browser edit mode. Expected default E-to-edit runtime.")
     if not args.allow_no_edit and not has_font_size_controls:
         errors.append("Missing font size controls. Expected selected-text font-size runtime.")
+    if not args.allow_no_edit and not has_safe_edit_shortcut:
+        errors.append("Unsafe edit shortcut. Expected E to enter only and Esc to exit.")
     if not args.allow_no_presenter and not has_presenter_mode:
         errors.append("Missing presenter mode. Expected default P-to-present runtime.")
     if not args.allow_no_presenter and not has_talk_timer:
@@ -108,6 +111,7 @@ def main() -> int:
     print(f"slide_like_blocks: {slide_like}")
     print(f"edit_mode: {str(has_edit_mode).lower()}")
     print(f"font_size_controls: {str(has_font_size_controls).lower()}")
+    print(f"safe_edit_shortcut: {str(has_safe_edit_shortcut).lower()}")
     print(f"presenter_mode: {str(has_presenter_mode).lower()}")
     print(f"talk_timer: {str(has_talk_timer).lower()}")
 

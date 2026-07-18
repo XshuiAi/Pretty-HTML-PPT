@@ -17,6 +17,7 @@ Use this before delivering a Pretty HTML PPT deck.
 - The deck uses one template grammar; do not mix classes from unrelated templates.
 - Browser edit mode is present by default unless the user explicitly requested `--no-edit`.
 - Font-size controls are present inside edit mode unless the user explicitly requested `--no-edit`.
+- `E` enters edit mode only; while editing it remains normal text input, and `Esc` exits.
 - Presenter mode is present by default unless the user explicitly requested `--no-presenter`.
 - A compact talk timer is present in normal view, with start, pause, and reset controls.
 - The normal-view timer and presenter-mode timer show the same elapsed time.
@@ -54,7 +55,7 @@ Use this before delivering a Pretty HTML PPT deck.
 - Report the local path.
 - Report the selected template.
 - Mention the density level used.
-- Mention whether edit mode is enabled. If enabled, explain `E`, `字号 / A- / A+`, `保存`, `导出 HTML`, and `重置`.
+- Mention whether edit mode is enabled. If enabled, explain `E` enters, `Esc` exits, editing does not intercept typed `E`, and describe `字号 / A- / A+`, `保存`, `导出 HTML`, and `重置`.
 - Mention whether presenter mode is enabled. If enabled, explain the normal-view timer, `P`, synchronized presenter timer, speaker notes, next-slide preview, and privacy during screen sharing.
 - Mention any missing assets or assumptions.
 - If publishing, package the final static folder only.
