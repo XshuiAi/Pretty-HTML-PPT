@@ -264,16 +264,12 @@ https://open.feishu.cn/document/no_class/mcp-archive/feishu-cli-installation-gui
 **公开 HTML Demo 会不会暴露代码？**  
 任何公开网页都能看到前端代码。公开 Demo 适合放脱敏内容和展示效果；完整模板源码和内部路线可以放在私有仓库或本地维护。
 
-## 关于作者
-
-Sherry小水 · AI 自媒体博主 / AI Builder
-
-我主要分享 AI 工具、Coding Agent 和内容工作流，也会把实际使用中的方法做成可以直接体验的工具和 Skill。
-
-- [GitHub](https://github.com/XshuiAi)
-- [抖音](https://v.douyin.com/9_PhmenzPd4/)
-- [小红书](https://xhslink.com/m/11P8CyKlR2D)
-
 ## 维护说明
 
 公开 README 保留对外展示、安装和使用说明。内部设计原则、路线图和开发结构放在 `docs/internal/`。
+
+## 关于作者
+
+**Sherry小水** · AI 博主 / AI Builder
+
+[GitHub](https://github.com/XshuiAi) · [抖音](https://v.douyin.com/9_PhmenzPd4/) · [小红书](https://xhslink.com/m/11P8CyKlR2D)
