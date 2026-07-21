@@ -87,6 +87,8 @@ npx -y skills@latest add XshuiAi/Pretty-HTML-PPT \
 
 ## Validate A Template Copy
 
+Use a dedicated output directory. Do not pass `.`, `..`, a home directory, a workspace/repository root, the installed skill directory, or a directory that contains the template source. `--force` only replaces an output directory carrying the `.pretty-html-ppt-output` marker created by the copy script; review and move/remove older unmarked outputs manually.
+
 ```bash
 python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
 python3 skills/pretty-html-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo
@@ -120,6 +122,7 @@ To generate a clean locked deck without the editing toolbar, use `--no-edit`:
 
 ```bash
 python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
+python3 skills/pretty-html-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo --allow-no-edit
 open /tmp/shui-cobalt-demo/index.html
 ```
 
@@ -154,6 +157,7 @@ To generate a clean deck without presenter mode, use `--no-presenter`:
 
 ```bash
 python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
+python3 skills/pretty-html-ppt/scripts/validate_deck.py /tmp/shui-blush-demo --allow-no-presenter
 ```
 
 For an existing deck:
