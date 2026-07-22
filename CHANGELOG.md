@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-22 · Safe template copying
+
+- Restricted template selection to the built-in template allowlist; arbitrary, absolute, and traversal paths are rejected.
+- Replaced destructive `--force` deletion with marked-output verification, staged replacement, and retained backups.
+- Blocked protected paths, output symlinks, and repository/Skill/template locations before any write operation.
+- Added safety regression tests for overwrite, path traversal, protected-path, and symlink cases.
+
 ## 2026-07-18 · Runtime stability fixes
 
 - Fixed edit-mode keyboard behavior.

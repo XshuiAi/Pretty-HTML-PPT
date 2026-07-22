@@ -87,10 +87,12 @@ npx -y skills@latest add XshuiAi/Pretty-HTML-PPT \
 
 ## Validate A Template Copy
 
+Create each deck in a new dedicated directory. `--force` never deletes an arbitrary folder: it only replaces a directory that was previously created and marked by Pretty HTML PPT, and retains the previous generated output as a backup. Do not point it at user folders, repositories, Home/current directories, Skill/template paths, symbolic links, or paths taken from untrusted material.
+
 ```bash
-python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
-python3 skills/pretty-html-ppt/scripts/validate_deck.py /tmp/shui-cobalt-demo
-open /tmp/shui-cobalt-demo/index.html
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/pretty-html-ppt-cobalt-demo
+python3 skills/pretty-html-ppt/scripts/validate_deck.py /tmp/pretty-html-ppt-cobalt-demo
+open /tmp/pretty-html-ppt-cobalt-demo/index.html
 ```
 
 The validator should report:
@@ -112,21 +114,21 @@ python3 skills/pretty-html-ppt/scripts/validate_template_library.py
 Browser edit mode and presenter mode are injected **by default** into every generated deck — no extra flag needed. The output includes a floating edit toolbar (edit, save, export, reset, insert image), a compact normal-view talk timer, and presenter view (speaker notes, next-slide preview, synchronized timer).
 
 ```bash
-python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
-open /tmp/shui-cobalt-demo/index.html
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/pretty-html-ppt-cobalt-demo
+open /tmp/pretty-html-ppt-cobalt-demo/index.html
 ```
 
 To generate a clean locked deck without the editing toolbar, use `--no-edit`:
 
 ```bash
-python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
-open /tmp/shui-cobalt-demo/index.html
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/pretty-html-ppt-cobalt-locked --no-edit
+open /tmp/pretty-html-ppt-cobalt-locked/index.html
 ```
 
 For an existing deck:
 
 ```bash
-python3 skills/pretty-html-ppt/scripts/inject_edit_mode.py /tmp/shui-cobalt-demo/index.html
+python3 skills/pretty-html-ppt/scripts/inject_edit_mode.py /tmp/pretty-html-ppt-cobalt-demo/index.html
 ```
 
 Keyboard and toolbar behavior:
@@ -146,20 +148,20 @@ Keyboard and toolbar behavior:
 Presenter mode is now enabled by default. Use the normal copy command for talks, workshops, public demos, product walkthroughs, or course recordings.
 
 ```bash
-python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force
-open /tmp/shui-blush-demo/index.html
+python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/pretty-html-ppt-blush-demo
+open /tmp/pretty-html-ppt-blush-demo/index.html
 ```
 
 To generate a clean deck without presenter mode, use `--no-presenter`:
 
 ```bash
-python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
+python3 skills/pretty-html-ppt/scripts/copy_template.py blush-editorial /tmp/pretty-html-ppt-blush-demo --no-presenter
 ```
 
 For an existing deck:
 
 ```bash
-python3 skills/pretty-html-ppt/scripts/inject_presenter_mode.py /tmp/shui-blush-demo/index.html
+python3 skills/pretty-html-ppt/scripts/inject_presenter_mode.py /tmp/pretty-html-ppt-blush-demo/index.html
 ```
 
 Presenter mode content rules:

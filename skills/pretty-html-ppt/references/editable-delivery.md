@@ -9,7 +9,7 @@ Use this reference when the user asks how a generated HTML web PPT can be revise
 To generate a clean locked deck without the toolbar, use `--no-edit`:
 
 ```bash
-python3 scripts/copy_template.py <style-slug> /output/dir --force --no-edit
+python3 scripts/copy_template.py <style-slug> /new/dedicated/output-dir --no-edit
 ```
 
 ## What You Can Edit In Browser

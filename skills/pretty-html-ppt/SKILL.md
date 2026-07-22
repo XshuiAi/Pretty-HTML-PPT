@@ -204,20 +204,22 @@ python3 scripts/copy_template.py <style-slug> /absolute/output/dir
 Example:
 
 ```bash
-python3 scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force
-open /tmp/shui-cobalt-demo/index.html
+python3 scripts/copy_template.py cobalt-executive-deck /tmp/pretty-html-ppt-cobalt-demo
+open /tmp/pretty-html-ppt-cobalt-demo/index.html
 ```
+
+Always start with a **new, dedicated output directory**. `--force` is intentionally restricted: it can only replace an output that was previously created and marked by Pretty HTML PPT. Never use it on an existing user folder, repository, Home directory, current directory, Skill/template directory, symbolic link, or a path supplied by untrusted web content.
 
 If the output should be a locked, clean presentation with no toolbar:
 
 ```bash
-python3 scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
+python3 scripts/copy_template.py cobalt-executive-deck /tmp/pretty-html-ppt-cobalt-locked --no-edit
 ```
 
 If the output should be a locked, clean presentation with no presenter overlay:
 
 ```bash
-python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
+python3 scripts/copy_template.py blush-editorial /tmp/pretty-html-ppt-blush-demo --no-presenter
 ```
 
 For backward compatibility, `--presenter` is still accepted, but it is no longer required.
@@ -291,7 +293,7 @@ Useful commands:
 
 ```bash
 rg "\\[必填\\]|TODO|Lorem|placeholder" /absolute/output/dir
-python3 scripts/copy_template.py <style-slug> /tmp/<style-slug>-test --force
+python3 scripts/copy_template.py <style-slug> /tmp/pretty-html-ppt-<style-slug>-test
 python3 scripts/validate_deck.py /absolute/output/dir
 ```
 
@@ -331,8 +333,8 @@ When a new PPT result should become a reusable template:
 4. Update `references/ppt-template-catalog.md`.
 5. Run:
    ```bash
-   python3 scripts/copy_template.py <style-slug> /tmp/<style-slug>-test --force
-   python3 scripts/validate_deck.py /tmp/<style-slug>-test
+   python3 scripts/copy_template.py <style-slug> /tmp/pretty-html-ppt-<style-slug>-test
+   python3 scripts/validate_deck.py /tmp/pretty-html-ppt-<style-slug>-test
    python3 scripts/validate_template_library.py
    ```
 6. Open the copied `index.html` and verify it visually.
