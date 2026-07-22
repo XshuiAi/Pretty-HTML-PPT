@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-07-21 · Safe template output replacement
+
+- Prevented `copy_template.py --force` from deleting broad, linked, unmanaged, repository, or source-related directories.
+- Restricted template selection to exact slugs inside the bundled template library.
+- Staged template generation before replacement so copy or injection failures preserve the previous output.
+- Added managed-output markers, safety documentation, and regression tests for destructive path cases.
+
+Validation:
+
+- Ran the template-copy unit test suite.
+- Copied and validated all 12 bundled templates.
+- Validated the skill metadata and structure.
+
 ## 2026-07-18 · Runtime stability fixes
 
 - Fixed edit-mode keyboard behavior.

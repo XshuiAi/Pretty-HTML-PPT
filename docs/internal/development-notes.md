@@ -15,6 +15,8 @@ pretty-html-ppt/
 ├── scripts/
 │   ├── sync-local-skill.sh
 │   └── update-from-github.sh
+├── tests/
+│   └── test_copy_template.py          # destructive-path regression tests
 └── skills/
     └── pretty-html-ppt/
         ├── SKILL.md
@@ -51,6 +53,7 @@ Keep public-facing materials in `README.md`, `assets/previews/`, `docs/demo/`, a
 ## Validation
 
 ```bash
+python3 -m unittest discover -s tests -v
 python3 skills/pretty-html-ppt/scripts/validate_deck.py docs/demo/blush-skill-intro
 python3 skills/pretty-html-ppt/scripts/validate_template_library.py
 ```
@@ -75,6 +78,14 @@ Required records:
 - local private note: `local-private/project-memory/version-log.md`
 
 Each record should include date, change summary, affected files or surfaces, validation method, whether GitHub was pushed, whether the local installed skill was synced, and whether Feishu docs need updates.
+
+## 2026-07-21 Safe Template Output Replacement
+
+- Restricted template selection to exact bundled slugs and rejected linked or source-escaping templates.
+- Protected broad directories, workspace/repository roots, the installed skill, and unmanaged outputs from `--force` replacement.
+- Added staged generation with rollback behavior so failed copies or runtime injection leave the previous output intact.
+- Added `tests/test_copy_template.py` for current-directory, unmanaged-output, path-traversal, symlink, source relationship, and rollback regressions.
+- Public changelog updated. Local installed skill was not synchronized from this PR branch. Feishu documentation does not need an update.
 
 ## 2026-07-18 Author Introduction
 

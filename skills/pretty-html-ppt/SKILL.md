@@ -197,6 +197,8 @@ Start from the template instead of hand-building a new PPT shell.
 
 Browser edit mode and presenter mode are **injected by default** — every generated deck gets the edit toolbar (press `E` once to enter, press `Esc` to exit, edit text, adjust font size, replace images/videos, export HTML), a normal-view talk timer, and presenter view (press `P`, speaker notes, next-slide preview, synchronized timer). While edit mode is active, `E` is normal text input and never toggles the mode.
 
+Always choose a dedicated deck output directory. Never use `.`, `..`, a home directory, a workspace/repository root, the installed skill directory, or any directory that contains the template source. The copy script rejects broad, linked, unmanaged, and source-related targets.
+
 ```bash
 python3 scripts/copy_template.py <style-slug> /absolute/output/dir
 ```
@@ -208,16 +210,20 @@ python3 scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --f
 open /tmp/shui-cobalt-demo/index.html
 ```
 
+`--force` only replaces a directory previously generated and marked by this script. If a legacy output directory has no `.pretty-html-ppt-output` marker, choose a new output directory or move/remove the legacy directory manually after reviewing its contents.
+
 If the output should be a locked, clean presentation with no toolbar:
 
 ```bash
 python3 scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --no-edit
+python3 scripts/validate_deck.py /tmp/shui-cobalt-demo --allow-no-edit
 ```
 
 If the output should be a locked, clean presentation with no presenter overlay:
 
 ```bash
 python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
+python3 scripts/validate_deck.py /tmp/shui-blush-demo --allow-no-presenter
 ```
 
 For backward compatibility, `--presenter` is still accepted, but it is no longer required.
