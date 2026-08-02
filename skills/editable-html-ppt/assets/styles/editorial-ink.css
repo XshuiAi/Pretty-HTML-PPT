@@ -1,0 +1,46 @@
+/* Original visual system: electronic magazine × e-ink. */
+html[data-deck-style="editorial-ink"] {
+  --paper:#f3f0e8;
+  --ink:#101722;
+  --muted:#59616c;
+  --line:#c9c6bd;
+  --accent:#b54232;
+  --stage:#c9c5bc;
+  --serif:"Noto Serif CJK SC","Songti SC","STSong",serif;
+  --sans:"PingFang SC","Noto Sans CJK SC","Helvetica Neue",sans-serif;
+}
+html[data-deck-style="editorial-ink"] body {
+  background:var(--stage);
+  letter-spacing:.005em;
+}
+html[data-deck-style="editorial-ink"] .slide {
+  background-color:var(--paper);
+  background-image:linear-gradient(120deg,rgba(16,23,34,.025) 1px,transparent 1px),linear-gradient(30deg,rgba(16,23,34,.018) 1px,transparent 1px);
+  background-size:14px 14px,19px 19px;
+}
+html[data-deck-style="editorial-ink"] .slide::before {
+  width:min(40vw,590px);
+  right:-13vw;
+  top:-22vw;
+  border:1px solid rgba(16,23,34,.24);
+  box-shadow:0 0 0 42px rgba(16,23,34,.025),0 0 0 84px rgba(16,23,34,.016);
+}
+html[data-deck-style="editorial-ink"] .meta,
+html[data-deck-style="editorial-ink"] .eyebrow,
+html[data-deck-style="editorial-ink"] .cover-footer,
+html[data-deck-style="editorial-ink"] .closing footer {
+  font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+html[data-deck-style="editorial-ink"] .meta { letter-spacing:.16em; }
+html[data-deck-style="editorial-ink"] h1,
+html[data-deck-style="editorial-ink"] h2,
+html[data-deck-style="editorial-ink"] .formula strong,
+html[data-deck-style="editorial-ink"] .quote,
+html[data-deck-style="editorial-ink"] .two-column h3,
+html[data-deck-style="editorial-ink"] .action-list h3 { font-weight:650; }
+html[data-deck-style="editorial-ink"] .grid,
+html[data-deck-style="editorial-ink"] .two-column { border-color:rgba(16,23,34,.23); background:rgba(16,23,34,.23); }
+html[data-deck-style="editorial-ink"] .grid article,
+html[data-deck-style="editorial-ink"] .two-column article { background:rgba(243,240,232,.94); }
+html[data-deck-style="editorial-ink"] .statement .body { border-left-color:var(--accent); }
+html[data-deck-style="editorial-ink"] .formula .term { background:rgba(243,240,232,.8); }

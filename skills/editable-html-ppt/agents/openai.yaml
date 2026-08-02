@@ -1,0 +1,4 @@
+interface:
+  display_name: "可编辑 HTML PPT"
+  short_description: "以线稿、电子杂志或瑞士风格生成、编辑、演示并交付 HTML 幻灯片"
+  default_prompt: "使用 $editable-html-ppt 将内容生成或升级为含可编辑文字、图层和独立结构线的 HTML 幻灯片；请先选择 base、editorial-ink 或 swiss-grid 视觉系统。"

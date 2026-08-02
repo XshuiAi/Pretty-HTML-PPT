@@ -1,0 +1,58 @@
+/* Original visual system: Swiss Internationalism with a single IKB accent. */
+html[data-deck-style="swiss-grid"] {
+  --paper:#fafaf8;
+  --ink:#0a0a0a;
+  --muted:#626262;
+  --line:#d4d4d2;
+  --accent:#002fa7;
+  --stage:#e7e7e4;
+  --serif:"Helvetica Neue","Inter","Arial","PingFang SC","Noto Sans CJK SC",sans-serif;
+  --sans:"Helvetica Neue","Inter","Arial","PingFang SC","Noto Sans CJK SC",sans-serif;
+}
+html[data-deck-style="swiss-grid"] body { background:var(--stage); }
+html[data-deck-style="swiss-grid"] .slide {
+  background-color:var(--paper);
+  background-image:radial-gradient(circle at 1px 1px,rgba(10,10,10,.13) 1px,transparent 1.15px);
+  background-size:12px 12px;
+}
+html[data-deck-style="swiss-grid"] .slide::before {
+  width:35vw;
+  height:100%;
+  aspect-ratio:auto;
+  right:0;
+  top:0;
+  border:0;
+  border-left:1px solid rgba(10,10,10,.11);
+  border-radius:0;
+  box-shadow:none;
+  background:linear-gradient(90deg,transparent 0 77%,rgba(0,47,167,.055) 77% 100%);
+}
+html[data-deck-style="swiss-grid"] h1,
+html[data-deck-style="swiss-grid"] h2,
+html[data-deck-style="swiss-grid"] h3,
+html[data-deck-style="swiss-grid"] .formula strong,
+html[data-deck-style="swiss-grid"] .quote,
+html[data-deck-style="swiss-grid"] .two-column h3,
+html[data-deck-style="swiss-grid"] .action-list h3 {
+  font-family:var(--sans);
+  font-weight:300;
+  letter-spacing:-.065em;
+}
+html[data-deck-style="swiss-grid"] h1 { font-weight:250; line-height:.87; }
+html[data-deck-style="swiss-grid"] .meta { border-bottom:2px solid var(--ink); color:var(--ink); }
+html[data-deck-style="swiss-grid"] .meta b { color:var(--accent); font-family:var(--sans); font-weight:800; }
+html[data-deck-style="swiss-grid"] .eyebrow { color:var(--ink); font-family:var(--sans); letter-spacing:.08em; }
+html[data-deck-style="swiss-grid"] .grid,
+html[data-deck-style="swiss-grid"] .two-column { border-color:var(--ink); background:var(--ink); }
+html[data-deck-style="swiss-grid"] .grid article,
+html[data-deck-style="swiss-grid"] .two-column article { background:rgba(250,250,248,.94); }
+html[data-deck-style="swiss-grid"] .formula .term { border:2px solid var(--ink); border-radius:0; background:rgba(250,250,248,.9); }
+html[data-deck-style="swiss-grid"] .formula .operator,
+html[data-deck-style="swiss-grid"] .grid .number,
+html[data-deck-style="swiss-grid"] .index-list li::before,
+html[data-deck-style="swiss-grid"] .action-list .index-no { color:var(--accent); }
+html[data-deck-style="swiss-grid"] .statement .body { border-left:12px solid var(--accent); padding-left:20px; }
+html[data-deck-style="swiss-grid"] .cover-footer { border-top:8px solid var(--accent); }
+html[data-deck-style="swiss-grid"] .closing footer { border-top:2px solid var(--ink); }
+html[data-deck-style="swiss-grid"] .action-list { border-top:2px solid var(--ink); }
+html[data-deck-style="swiss-grid"] .action-list article { border-bottom-color:var(--ink); }
