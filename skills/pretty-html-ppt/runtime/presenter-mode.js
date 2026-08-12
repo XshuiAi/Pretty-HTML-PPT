@@ -538,7 +538,6 @@
       '</style></head><body><main class="app"><header><div><strong>演讲者窗口</strong><div class="hint">把主窗口投到大屏，这个窗口留在自己的屏幕</div></div><div class="actions">',
       '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'prev\')">上一页</button>',
       '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'next\')">下一页</button>',
-      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'fullscreen\')">主窗口全屏</button>',
       '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'close\')">结束</button>',
       '</div></header><section class="section"><p class="label">下一页</p><p class="next" data-presenter-next></p></section>',
       '<section class="notes-wrap"><p class="label">本页演讲稿</p><div class="notes" data-presenter-notes contenteditable="true" spellcheck="false"></div></section>',
@@ -593,11 +592,21 @@
   }
 
   function startFullscreenPresentation() {
+    const requestFullscreen = document.documentElement.requestFullscreen;
+    if (typeof requestFullscreen !== "function") {
+      state.fullscreen = false;
+      if (!state.detached) {
+        document.querySelector(".shui-presenter-overlay")?.classList.remove("is-detached");
+        root.classList.add("shui-presenter-is-open");
+      }
+      window.alert("当前浏览器不支持网页全屏，请使用浏览器自带的全屏功能。");
+      return false;
+    }
     state.fullscreen = true;
     document.querySelector(".shui-presenter-overlay")?.classList.add("is-detached");
     root.classList.remove("shui-presenter-is-open");
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen?.().catch(() => {
+      Promise.resolve(requestFullscreen.call(document.documentElement)).catch(() => {
         state.fullscreen = false;
         if (!state.detached) {
           document.querySelector(".shui-presenter-overlay")?.classList.remove("is-detached");
@@ -605,6 +614,7 @@
         }
       });
     }
+    return true;
   }
 
   function update() {
@@ -732,7 +742,6 @@
         start: () => { startTimer(); update(); },
         pause: () => { pauseTimer(); update(); },
         reset: () => { resetTimer(); update(); },
-        fullscreen: startFullscreenPresentation,
         close,
       };
       actions[action]?.();

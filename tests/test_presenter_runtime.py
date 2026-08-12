@@ -46,10 +46,14 @@ class PresenterRuntimeInjectionTests(unittest.TestCase):
             "requestFullscreen",
             "__shuiPrettyPresenter",
             "把主窗口投到大屏",
+            'typeof requestFullscreen !== "function"',
+            "当前浏览器不支持网页全屏",
         )
         for token in required:
             with self.subTest(token=token):
                 self.assertIn(token, html)
+
+        self.assertNotIn(">主窗口全屏</button>", html)
 
 
 if __name__ == "__main__":
