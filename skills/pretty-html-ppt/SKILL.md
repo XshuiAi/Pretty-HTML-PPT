@@ -271,6 +271,8 @@ Presenter mode conventions:
 
 - Press `P` to open or close presenter mode.
 - Press `Esc` to close it.
+- Use `独立窗口` to keep notes, next-page preview, navigation, and timer controls on the presenter's private screen while the main deck window remains clean for projection.
+- Use `全屏放映` to place the main deck window into browser fullscreen. No additional letter shortcut is assigned.
 - Use arrow keys or PageUp/PageDown while presenter mode is open.
 - Add concise notes to each major slide using `<aside class="speaker-notes">...</aside>`.
 - Keep speaker notes out of the visible slide body. Long explanations belong in notes, not on the slide.
@@ -278,6 +280,7 @@ Presenter mode conventions:
 - Speaker notes are hidden in the normal audience view. They become visible only when presenter mode is open in that browser window.
 - The presenter notes panel is editable; edits sync back into the current slide's hidden `.speaker-notes` block.
 - Privacy depends on screen sharing: if the presenter-mode window is shared, the audience can see notes. For private notes, share a normal deck window and keep presenter mode on an unshared screen/window.
+- When using the detached presenter window, share only the main deck window. Closing the detached window ends the presenter session so controls do not unexpectedly reappear over the audience view.
 
 ### Step 6 · Verify
 

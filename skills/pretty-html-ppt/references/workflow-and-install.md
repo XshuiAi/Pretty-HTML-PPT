@@ -172,11 +172,13 @@ Presenter mode content rules:
 - Keep visible slides concise; use notes for what the speaker should say.
 - Add clear headings, because presenter mode reads `h1`, `h2`, or `h3` as the current slide title.
 - Add a short visible paragraph or `[data-slide-summary]` when a slide needs a specific presenter summary.
+- Click `独立窗口` to move notes, next-page preview, timer, and navigation into a private presenter window. Share only the main deck window with the audience.
+- Click `全屏放映` to make the main deck fill the browser screen. This feature does not add another letter shortcut.
 
 User-facing explanation:
 
 ```text
-这份 HTML PPT 已开启演讲计时和演讲者模式。普通页面右下角可以开始、暂停或重置计时；按 P 后会看到同一个计时、当前页摘要、下一页标题和讲稿备注。按方向键切换页面，按 Esc 退出。
+这份 HTML PPT 已开启演讲计时和演讲者模式。普通页面右下角可以开始、暂停或重置计时；按 P 后会看到同一个计时、当前页摘要、下一页标题和讲稿备注。点击「独立窗口」后，只分享主页面，演讲稿和控制按钮留在自己的屏幕；需要时可点击「全屏放映」。按方向键切换页面，按 Esc 退出。
 ```
 
 ## Prompt Examples

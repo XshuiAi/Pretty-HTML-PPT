@@ -96,6 +96,15 @@ Each record should include date, change summary, affected files or surfaces, val
 - Added `tests/test_copy_template.py` for current-directory, unmanaged-output, path-traversal, symlink, source relationship, and rollback regressions.
 - Public changelog updated. Local installed skill was not synchronized from this PR branch. Feishu documentation does not need an update.
 
+## 2026-08-13 Presenter Enhancement Branch
+
+- Branch scope: detached presenter window and main-window fullscreen only.
+- Existing `P`, `Esc`, arrow navigation, notes editing, next-page preview, and synchronized timer remain the contract.
+- No new letter shortcut was introduced. The two new actions use visible buttons.
+- Detached mode hides presenter controls from the projected main window; users must share only that main window to keep notes private.
+- Adapted from the presenter concepts in Anna-YC's PR #4 and implemented against the existing shared runtime.
+- GitHub status: not pushed at the time of this note. Installed local Skill: not synchronized. Feishu docs: no update required yet.
+
 ## 2026-07-18 Author Introduction
 
 - Added a compact public author section to `README.md`.
