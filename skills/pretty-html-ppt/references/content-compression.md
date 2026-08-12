@@ -135,6 +135,18 @@ For documents longer than roughly 1,500 Chinese characters, create a page map be
 
 Only ask for confirmation when the topic is high stakes, the source is very long, or the template choice materially changes the story.
 
+## Source-To-Deck Evidence Pass
+
+Before writing HTML for a substantial source, make one compact evidence pass:
+
+1. List the main claim, supporting facts, examples, limits, and links.
+2. Give every planned page one job: establish context, make a claim, prove it, explain a process, compare options, or close with action.
+3. Map each claim page to at least one source fact, image, chart, example, or link. Do not create decorative pages that interrupt the argument.
+4. Draft concise speaker notes for what must be said but should not fill the visible page.
+5. Check that the sequence can be spoken naturally from opening to conclusion before choosing detailed layouts.
+
+This method is adapted from the content-to-deck workflow proposed by Anna-YC in PR #4 and aligned with the existing Pretty HTML PPT density rules.
+
 ## Compression Output Contract
 
 Before final delivery, the deck should have:

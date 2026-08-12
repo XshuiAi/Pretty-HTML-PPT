@@ -9,6 +9,7 @@ import tempfile
 from pathlib import Path
 
 from inject_edit_mode import inject_edit_mode
+from inject_pptx_export import inject_pptx_export
 from inject_presenter_mode import inject_presenter_mode
 
 
@@ -119,6 +120,7 @@ def build_staged_output(
     staged_target: Path,
     no_edit: bool,
     no_presenter: bool,
+    pptx_export: bool,
 ) -> None:
     shutil.copytree(source, staged_target)
     index_path = staged_target / "index.html"
@@ -128,6 +130,8 @@ def build_staged_output(
         inject_edit_mode(index_path)
     if not no_presenter:
         inject_presenter_mode(index_path)
+    if pptx_export:
+        inject_pptx_export(index_path)
     (staged_target / OUTPUT_MARKER).write_text(OUTPUT_MARKER_CONTENT, encoding="utf-8")
 
 
@@ -166,6 +170,7 @@ def copy_template(
     force: bool = False,
     no_edit: bool = False,
     no_presenter: bool = False,
+    pptx_export: bool = False,
 ) -> Path:
     skill_root = Path(__file__).resolve().parents[1]
     source = resolve_template_source(skill_root, style)
@@ -178,7 +183,7 @@ def copy_template(
     )
     staged_target = staging_root / "new"
     try:
-        build_staged_output(source, staged_target, no_edit, no_presenter)
+        build_staged_output(source, staged_target, no_edit, no_presenter, pptx_export)
         install_staged_output(staged_target, target, replace_existing)
     finally:
         backup = staging_root / "previous"
@@ -213,6 +218,11 @@ def main() -> int:
         action="store_true",
         help="Skip presenter mode with speaker notes, next-slide preview, and timer.",
     )
+    parser.add_argument(
+        "--pptx-export",
+        action="store_true",
+        help="Add optional high-fidelity and editable-text PPTX export controls.",
+    )
     args = parser.parse_args()
 
     target = copy_template(
@@ -221,6 +231,7 @@ def main() -> int:
         force=args.force,
         no_edit=args.no_edit,
         no_presenter=args.no_presenter,
+        pptx_export=args.pptx_export,
     )
     print(target)
     return 0

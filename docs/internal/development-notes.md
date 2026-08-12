@@ -96,6 +96,14 @@ Each record should include date, change summary, affected files or surfaces, val
 - Added `tests/test_copy_template.py` for current-directory, unmanaged-output, path-traversal, symlink, source relationship, and rollback regressions.
 - Public changelog updated. Local installed skill was not synchronized from this PR branch. Feishu documentation does not need an update.
 
+## 2026-08-13 Optional PPTX Export Branch
+
+- PPTX handoff is opt-in through `--pptx-export`; normal HTML output remains lightweight and interaction-first.
+- Two modes are included: high-fidelity slide images and editable primary text over a rendered background.
+- Pinned PptxGenJS, html-to-image, and JSZip browser builds are bundled with licenses from Anna-YC's PR #4.
+- The export runtime and injector were reimplemented for the current Skill, including atomic HTML replacement and file/symlink checks.
+- PowerPoint export does not replace HTML as the source of truth and does not promise browser motion or exact text wrapping.
+
 ## 2026-08-13 Presenter Enhancement Branch
 
 - Branch scope: detached presenter window and main-window fullscreen only.
@@ -103,7 +111,8 @@ Each record should include date, change summary, affected files or surfaces, val
 - No new letter shortcut was introduced. The two new actions use visible buttons.
 - Detached mode hides presenter controls from the projected main window; users must share only that main window to keep notes private.
 - Adapted from the presenter concepts in Anna-YC's PR #4 and implemented against the existing shared runtime.
-- GitHub status: not pushed at the time of this note. Installed local Skill: not synchronized. Feishu docs: no update required yet.
+
+Release and local-installation status are recorded in `CHANGELOG.md` and `local-private/project-memory/version-log.md`.
 
 ## 2026-07-18 Author Introduction
 

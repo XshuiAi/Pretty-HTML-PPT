@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-13 · Optional PPTX handoff proposal
+
+- Added opt-in `--pptx-export` support instead of increasing every generated HTML file by default.
+- Added proportional high-fidelity PPTX export and editable main-text PPTX export with speaker notes.
+- Bundled pinned third-party browser dependencies with their licenses and notices.
+- Added source-to-deck evidence guidance adapted from Anna-YC's PR #4.
+- Added atomic HTML runtime injection and regression tests for invalid file types, symbolic links, interrupted replacement, and duplicate injection.
+
+Validation:
+
+- Generated structurally valid 8-slide high-fidelity and editable-text PPTX files.
+- Confirmed the editable export contains native PowerPoint text shapes and 8 speaker-note parts.
+
 ## 2026-08-13 · Presenter window and fullscreen proposal
 
 - Added an optional detached presenter window for private notes, next-page preview, navigation, and synchronized timing.
