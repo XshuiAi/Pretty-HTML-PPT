@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-08-13 · Optional PPTX handoff proposal
+
+- Added opt-in `--pptx-export` support instead of increasing every generated HTML file by default.
+- Added proportional high-fidelity PPTX export and editable main-text PPTX export with speaker notes.
+- Bundled pinned third-party browser dependencies with their licenses and notices.
+- Added source-to-deck evidence guidance adapted from Anna-YC's PR #4.
+- Added atomic HTML runtime injection and regression tests for invalid file types, symbolic links, interrupted replacement, and duplicate injection.
+
+Validation:
+
+- Generated structurally valid 8-slide high-fidelity and editable-text PPTX files.
+- Confirmed the editable export contains native PowerPoint text shapes and 8 speaker-note parts.
+- Public `main` and the installed local skill are unchanged until the feature PR is reviewed.
+
 ## 2026-07-21 · Safe template output replacement
 
 - Prevented `copy_template.py --force` from deleting broad, linked, unmanaged, repository, or source-related directories.

@@ -179,6 +179,27 @@ User-facing explanation:
 这份 HTML PPT 已开启演讲计时和演讲者模式。普通页面右下角可以开始、暂停或重置计时；按 P 后会看到同一个计时、当前页摘要、下一页标题和讲稿备注。按方向键切换页面，按 Esc 退出。
 ```
 
+## Add Optional PPTX Handoff
+
+Do not inject PowerPoint dependencies into every HTML deck. Add them only when the user requests `.pptx` delivery:
+
+```bash
+python3 skills/pretty-html-ppt/scripts/copy_template.py cobalt-executive-deck /tmp/shui-cobalt-demo --force --pptx-export
+```
+
+The page then shows a compact `PPTX 导出` control with two choices:
+
+- `高保真 PPTX`: each page is a proportional high-resolution slide image.
+- `可编辑文本 PPTX`: main text becomes PowerPoint text boxes over a rendered visual background.
+
+For an existing HTML file:
+
+```bash
+python3 skills/pretty-html-ppt/scripts/inject_pptx_export.py /tmp/shui-cobalt-demo/index.html
+```
+
+Read `references/pptx-export.md` before delivery and verify the result in PowerPoint or WPS.
+
 ## Prompt Examples
 
 Use automatic selection:

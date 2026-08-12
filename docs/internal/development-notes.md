@@ -87,6 +87,15 @@ Each record should include date, change summary, affected files or surfaces, val
 - Added `tests/test_copy_template.py` for current-directory, unmanaged-output, path-traversal, symlink, source relationship, and rollback regressions.
 - Public changelog updated. Local installed skill was not synchronized from this PR branch. Feishu documentation does not need an update.
 
+## 2026-08-13 Optional PPTX Export Branch
+
+- PPTX handoff is opt-in through `--pptx-export`; normal HTML output remains lightweight and interaction-first.
+- Two modes are included: high-fidelity slide images and editable primary text over a rendered background.
+- Pinned PptxGenJS, html-to-image, and JSZip browser builds are bundled with licenses from Anna-YC's PR #4.
+- The export runtime and injector were reimplemented for the current Skill, including atomic HTML replacement and file/symlink checks.
+- PowerPoint export does not replace HTML as the source of truth and does not promise browser motion or exact text wrapping.
+- GitHub status: not pushed at the time of this note. Installed local Skill: not synchronized. Feishu docs: no update required yet.
+
 ## 2026-07-18 Author Introduction
 
 - Added a compact public author section to `README.md`.

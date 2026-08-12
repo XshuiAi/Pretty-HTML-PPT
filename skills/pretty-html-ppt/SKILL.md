@@ -92,8 +92,11 @@ Before asking questions, detect the user's mode:
 - **Mode H · Feishu Source Link Delivery**: user asks to jump from generated PPT pages back to Feishu docs, wiki pages, or specific document modules.
 - **Mode I · Source Asset Preservation**: user provides documents with links, images, screenshots, citations, videos, or product URLs and expects them to remain usable in the deck.
 - **Mode J · Data Visual / Calculator Deck**: user provides tables, metrics, targets, forecasts, finance-like scenarios, budgets, savings plans, KPI changes, or asks for charts/sliders/what-if calculations.
+- **Mode K · PPTX Handoff**: user explicitly needs a PowerPoint file in addition to the primary HTML deck, either as high-fidelity slide images or editable main text.
 
 For Mode D, read `references/interactive-template-selector.md` and `references/ppt-template-catalog.md`, then recommend 2-3 candidates. For Mode E, read `references/workflow-and-install.md`. For Mode F, read `references/editable-delivery.md`. For Mode G, use the presenter mode rules in this file and `references/workflow-and-install.md`. For Mode H, read `references/feishu-source-links.md`. For Mode I or J, read `references/source-assets-and-data-widgets.md`.
+
+For Mode K, read `references/pptx-export.md`. Keep PPTX export optional; HTML remains the source of truth for interactions, motion, responsive layouts, and browser editing.
 
 ### Step 1 · Intake And Density
 
@@ -224,6 +227,12 @@ If the output should be a locked, clean presentation with no presenter overlay:
 ```bash
 python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --no-presenter
 python3 scripts/validate_deck.py /tmp/shui-blush-demo --allow-no-presenter
+```
+
+If the user explicitly needs PowerPoint handoff, add the optional exporter:
+
+```bash
+python3 scripts/copy_template.py blush-editorial /tmp/shui-blush-demo --force --pptx-export
 ```
 
 For backward compatibility, `--presenter` is still accepted, but it is no longer required.
@@ -358,10 +367,13 @@ Keep each template distinct. Do not let all styles collapse into the same pastel
 | `references/ppt-template-catalog.md` | 12-template catalog and scenario mapping | before choosing a template |
 | `references/workflow-and-install.md` | install, update, publish, and validation instructions | install/use/update questions |
 | `references/editable-delivery.md` | browser edit mode, export flow, and what should still be changed through the agent | editable handoff questions |
+| `references/pptx-export.md` | optional high-fidelity and editable-text PowerPoint handoff | when the user explicitly requests `.pptx` |
 | `references/quality-checklist.md` | final QA checklist | before delivery |
 | `scripts/copy_template.py` | copy one template into an output folder | every deck build |
 | `scripts/inject_edit_mode.py` | add edit toolbar to an existing HTML deck | when editable delivery is needed |
 | `scripts/inject_presenter_mode.py` | add presenter mode to an existing HTML deck | when speaker notes or rehearsal view is needed |
+| `scripts/inject_pptx_export.py` | add self-contained optional PPTX export controls | when PowerPoint handoff is explicitly requested |
 | `runtime/presenter-mode.js` | browser runtime for notes, next-slide preview, and timer | injected by default unless `--no-presenter` is used |
+| `runtime/pptx-export.js` | high-fidelity and editable-text PowerPoint export runtime | injected only with `--pptx-export` |
 | `scripts/validate_deck.py` | basic static validation for generated deck folders | before delivery |
 | `scripts/validate_template_library.py` | copy and validate every template with default edit/presenter runtimes | after adding or changing a reusable template |

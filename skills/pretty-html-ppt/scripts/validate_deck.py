@@ -32,6 +32,11 @@ def main() -> int:
         action="store_true",
         help="Do not fail when presenter mode is absent.",
     )
+    parser.add_argument(
+        "--require-pptx-export",
+        action="store_true",
+        help="Fail unless optional high-fidelity and editable-text PPTX export is present.",
+    )
     args = parser.parse_args()
 
     deck_dir = Path(args.deck_dir).expanduser().resolve()
@@ -50,6 +55,12 @@ def main() -> int:
         return 1
 
     html = index.read_text(encoding="utf-8", errors="replace")
+    content_html = re.sub(
+        r"<(?:script|style)\b[^>]*>.*?</(?:script|style)>",
+        "",
+        html,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
 
     has_edit_mode = "PRETTY_HTML_PPT_EDIT_MODE_START" in html and "xs-edit-toolbar" in html
     has_font_size_controls = (
@@ -68,6 +79,11 @@ def main() -> int:
         and "data-shui-talk-timer-pause" in html
         and "data-shui-talk-timer-reset" in html
     )
+    has_pptx_export = (
+        "PRETTY_HTML_PPT_PPTX_EXPORT_START" in html
+        and "data-xs-pptx-fidelity" in html
+        and "data-xs-pptx-editable" in html
+    )
 
     if not args.allow_no_edit and not has_edit_mode:
         errors.append("Missing browser edit mode. Expected default E-to-edit runtime.")
@@ -79,16 +95,18 @@ def main() -> int:
         errors.append("Missing presenter mode. Expected default P-to-present runtime.")
     if not args.allow_no_presenter and not has_talk_timer:
         errors.append("Missing talk timer. Expected start, pause, and reset controls in the presenter runtime.")
+    if args.require_pptx_export and not has_pptx_export:
+        errors.append("Missing optional PPTX export runtime.")
 
-    if PLACEHOLDERS.search(html):
+    if PLACEHOLDERS.search(content_html):
         warnings.append("Found placeholder-like text.")
 
-    if "/Users/" in html:
+    if "/Users/" in content_html:
         warnings.append("Found absolute macOS filesystem path in HTML.")
 
     local_refs = []
     missing_refs = []
-    for ref in ASSET_REF.findall(html):
+    for ref in ASSET_REF.findall(content_html):
         clean = ref.split("#", 1)[0].split("?", 1)[0]
         if not clean or is_external(clean) or clean.startswith("#"):
             continue
@@ -103,7 +121,7 @@ def main() -> int:
         for ref in sorted(set(missing_refs)):
             errors.append(f"Missing local asset: {ref}")
 
-    slide_like = len(re.findall(r'class=["\'][^"\']*(?:slide|section|page)[^"\']*["\']', html))
+    slide_like = len(re.findall(r'class=["\'][^"\']*(?:slide|section|page)[^"\']*["\']', content_html))
 
     print(f"deck_dir: {deck_dir}")
     print(f"index: {index}")
@@ -114,6 +132,7 @@ def main() -> int:
     print(f"safe_edit_shortcut: {str(has_safe_edit_shortcut).lower()}")
     print(f"presenter_mode: {str(has_presenter_mode).lower()}")
     print(f"talk_timer: {str(has_talk_timer).lower()}")
+    print(f"pptx_export: {str(has_pptx_export).lower()}")
 
     for item in warnings:
         print(f"WARNING: {item}")
