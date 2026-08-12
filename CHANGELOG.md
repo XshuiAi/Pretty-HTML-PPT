@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-13 · Local Skill sync hardening
+
+- Removed recursive deletion from the local installation sync.
+- Refused symbolic-link and non-directory installation targets before copying.
+- Added the PPTX injector to the installed-script compilation check.
+
+Validation:
+
+- Ran the full unit and path-safety suite plus shell syntax validation.
+
 ## 2026-08-13 · Optional PPTX handoff proposal
 
 - Added opt-in `--pptx-export` support instead of increasing every generated HTML file by default.
