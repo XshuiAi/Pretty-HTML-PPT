@@ -34,6 +34,7 @@ SNIPPET = r'''
     color: #111827;
     font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   }
+  .xs-edit-toolbar.xs-dragging { user-select: none; cursor: grabbing; }
   .xs-edit-toolbar:not(.xs-collapsed) {
     top: 72px;
     width: min(390px, calc(100vw - 28px));
@@ -104,6 +105,17 @@ SNIPPET = r'''
     cursor: not-allowed;
     transform: none;
   }
+  .xs-toolbar-drag {
+    display: inline-grid;
+    place-items: center;
+    min-width: 26px;
+    color: #6b7280;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    font-weight: 800;
+  }
+  .xs-toolbar-drag:active { cursor: grabbing; }
 
   /* Editing highlights */
   .xs-editing [contenteditable="true"] {
@@ -119,6 +131,10 @@ SNIPPET = r'''
     outline: 2px solid rgba(37, 99, 235, 0.95) !important;
     outline-offset: 4px !important;
     background: rgba(37, 99, 235, 0.03);
+  }
+  .xs-editing .xs-object-selected {
+    outline: 2px solid rgba(255, 79, 154, 0.95) !important;
+    outline-offset: 4px !important;
   }
 
   /* Media replace badges */
@@ -229,6 +245,61 @@ SNIPPET = r'''
   .xs-editing .xs-inserted-frame.is-selected .xs-insert-resize {
     display: block;
   }
+
+  /* Inserted text boxes */
+  .xs-inserted-text-frame {
+    position: absolute;
+    z-index: 61;
+    width: min(420px, 46vw);
+    min-width: 160px;
+    min-height: 56px;
+    padding: 14px 16px;
+    border: 1px solid rgba(17, 24, 39, .12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 14px 36px rgba(17, 24, 39, .12);
+    box-sizing: border-box;
+  }
+  .xs-inserted-text-content {
+    min-height: 1.4em;
+    color: #111827;
+    font: 600 24px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    overflow-wrap: anywhere;
+  }
+  .xs-editing .xs-inserted-text-frame {
+    outline: 1.5px dashed rgba(37, 99, 235, .72);
+    outline-offset: 3px;
+  }
+  .xs-editing .xs-inserted-text-frame.is-selected {
+    outline: 2px solid rgba(255, 79, 154, .95);
+  }
+  .xs-inserted-text-controls {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 7px);
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border: 1px solid rgba(17, 24, 39, .14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 10px 28px rgba(17, 24, 39, .14);
+  }
+  .xs-editing .xs-inserted-text-frame.is-selected .xs-inserted-text-controls { display: inline-flex; }
+  .xs-inserted-text-controls button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #111827;
+    padding: 5px 8px;
+    font: 700 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    cursor: pointer;
+  }
+  .xs-inserted-text-controls button:hover { background: #f3f4f6; }
+  .xs-inserted-text-controls [data-xs-text-drag] { cursor: grab; }
+  .xs-inserted-text-controls [data-xs-text-delete] { color: #b91c1c; }
   .xs-snap-guide {
     position: absolute;
     z-index: 59;
@@ -245,14 +316,14 @@ SNIPPET = r'''
     position: fixed;
     z-index: 2147483647;
     right: 14px;
-    top: 62px;
+    bottom: 14px;
     padding: 8px 12px;
     border-radius: 6px;
     background: rgba(17, 24, 39, 0.92);
     color: #fff;
     font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(6px);
     transition: opacity .2s ease, transform .2s ease;
     pointer-events: none;
     box-shadow: 0 4px 12px rgba(0,0,0,0.18);
@@ -379,12 +450,14 @@ SNIPPET = r'''
   .xs-modal .xs-file-upload input { display: none; }
 
   @media print {
-    .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide { display: none !important; }
+    .xs-edit-toolbar, .xs-toast, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-inserted-text-controls, .xs-snap-guide { display: none !important; }
   }
 </style>
 <script id="pretty-html-ppt-edit-script">
 (() => {
   const STORE_KEY = "pretty-html-ppt-edits:" + location.pathname;
+  const STORE_VERSION = 2;
+  const HISTORY_LIMIT = 20;
 
   /* ── Selectors ── */
   const textSelector = [
@@ -399,7 +472,7 @@ SNIPPET = r'''
     "script", "style", "svg", "canvas", "video", "audio",
     "button", "nav", "input", "textarea", "select", "option",
     "[data-no-edit]", ".xs-edit-toolbar", ".xs-toast", ".xs-modal-mask",
-    ".xs-media-badge", ".xs-insert-controls", ".xs-snap-guide"
+    ".xs-media-badge", ".xs-insert-controls", ".xs-inserted-text-frame", ".xs-snap-guide"
   ].join(",");
 
   /* ── Blacklist: parent tags whose children should NOT get contenteditable ── */
@@ -412,6 +485,11 @@ SNIPPET = r'''
   let currentTextEl = null;
   let currentImageFrame = null;
   let insertedFrameCounter = 0;
+  let insertedTextCounter = 0;
+  let historyApplying = false;
+  let historyTimer = null;
+  const undoStack = [];
+  const redoStack = [];
 
   /* ── Helpers ── */
   function isTextNodeEmpty(el) {
@@ -469,10 +547,17 @@ SNIPPET = r'''
 
   /* ── Store ── */
   function readStore() {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch { return {}; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
+      if (parsed && parsed.version === STORE_VERSION && parsed.data && typeof parsed.data === "object") {
+        return parsed.data;
+      }
+      // Version 1 stored the edit map directly. Keep reading it until the next save migrates it.
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch { return {}; }
   }
   function writeStore(data) {
-    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORE_KEY, JSON.stringify({ version: STORE_VERSION, data }));
   }
 
   /* ── Toast ── */
@@ -494,9 +579,18 @@ SNIPPET = r'''
     return "m" + Date.now() + "-" + insertedFrameCounter;
   }
 
+  function nextTextFrameId() {
+    insertedTextCounter += 1;
+    return "x" + Date.now() + "-" + insertedTextCounter;
+  }
+
   /* ── Restore ── */
-  function restoreAll() {
-    const data = readStore();
+  function restoreAll(sourceData) {
+    const data = sourceData || readStore();
+    document.querySelectorAll('[data-xs-edit-id][data-xs-hidden="true"]').forEach(el => {
+      el.style.removeProperty("display");
+      delete el.dataset.xsHidden;
+    });
     getTextCandidates().forEach(el => {
       const v = data[el.dataset.xsEditId];
       if (v !== undefined) {
@@ -505,10 +599,13 @@ SNIPPET = r'''
         } else {
           if (v.html !== undefined) el.innerHTML = v.html;
           if (v.fontSize) el.style.fontSize = v.fontSize;
+          else el.style.removeProperty("font-size");
+          if (v.lineHeight) el.style.lineHeight = v.lineHeight;
+          else el.style.removeProperty("line-height");
         }
       }
     });
-    getMediaCandidates().forEach(el => {
+    [...document.querySelectorAll('img[data-xs-edit-id], video[data-xs-edit-id]')].forEach(el => {
       const v = data[el.dataset.xsEditId];
       if (v !== undefined) {
         if (el.tagName === "IMG") el.src = v;
@@ -518,28 +615,23 @@ SNIPPET = r'''
         }
       }
     });
+    const hiddenIds = Array.isArray(data.__xsHiddenIds) ? data.__xsHiddenIds : [];
+    hiddenIds.forEach(id => {
+      const el = document.querySelector('[data-xs-edit-id="' + CSS.escape(id) + '"]');
+      if (!el) return;
+      el.style.display = "none";
+      el.dataset.xsHidden = "true";
+    });
     restoreInsertedFrames(data);
+    restoreInsertedTextFrames(data);
   }
 
   /* ── Save ── */
   function saveAll() {
-    ensureIds();
-    const data = {};
-    getTextCandidates().forEach(el => {
-      data[el.dataset.xsEditId] = {
-        html: el.innerHTML,
-        fontSize: el.style.fontSize || ""
-      };
-    });
-    getMediaCandidates().forEach(el => {
-      const src = (el.tagName === "VIDEO")
-        ? ((el.querySelector("source") || el).src || "")
-        : el.src;
-      if (src) data[el.dataset.xsEditId] = src;
-    });
-    data.__xsInsertedFrames = collectInsertedFrames();
+    const data = captureStoreData();
     writeStore(data);
     toast("已保存到本机浏览器");
+    commitHistory("保存");
   }
 
   /* ── Toggle editing ── */
@@ -547,6 +639,10 @@ SNIPPET = r'''
     editing = true;
     document.body.classList.add("xs-editing");
     getTextCandidates().forEach(el => {
+      el.setAttribute("contenteditable", "true");
+      el.setAttribute("spellcheck", "false");
+    });
+    document.querySelectorAll(".xs-inserted-text-content").forEach(el => {
       el.setAttribute("contenteditable", "true");
       el.setAttribute("spellcheck", "false");
     });
@@ -560,6 +656,10 @@ SNIPPET = r'''
     editing = false;
     document.body.classList.remove("xs-editing");
     getTextCandidates().forEach(el => {
+      el.removeAttribute("contenteditable");
+      el.removeAttribute("spellcheck");
+    });
+    document.querySelectorAll(".xs-inserted-text-content").forEach(el => {
       el.removeAttribute("contenteditable");
       el.removeAttribute("spellcheck");
     });
@@ -583,6 +683,36 @@ SNIPPET = r'''
     bar.classList.toggle("xs-collapsed", !expanded);
   }
 
+  function makeToolbarDraggable(bar) {
+    const handle = bar.querySelector("[data-xs-toolbar-drag]");
+    if (!handle) return;
+    handle.addEventListener("pointerdown", event => {
+      if (bar.classList.contains("xs-collapsed")) return;
+      event.preventDefault();
+      const rect = bar.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+      bar.classList.add("xs-dragging");
+      handle.setPointerCapture?.(event.pointerId);
+      const move = moveEvent => {
+        const left = clamp(moveEvent.clientX - offsetX, 8, Math.max(8, window.innerWidth - bar.offsetWidth - 8));
+        const top = clamp(moveEvent.clientY - offsetY, 8, Math.max(8, window.innerHeight - bar.offsetHeight - 8));
+        bar.style.left = Math.round(left) + "px";
+        bar.style.top = Math.round(top) + "px";
+        bar.style.right = "auto";
+      };
+      const up = () => {
+        bar.classList.remove("xs-dragging");
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", up);
+        handle.removeEventListener("pointercancel", up);
+      };
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", up);
+      handle.addEventListener("pointercancel", up);
+    });
+  }
+
   function updateToggleBtn() {
     const btn = document.querySelector("[data-xs-edit-toggle]");
     if (btn) {
@@ -593,19 +723,29 @@ SNIPPET = r'''
 
   /* ── Font size controls ── */
   function fontTargetFromEventTarget(target) {
+    const inserted = target?.closest?.(".xs-inserted-text-content");
+    if (inserted) return inserted;
     const el = target?.closest?.(textSelector);
     return isTextCandidate(el) ? el : null;
   }
 
+  function isEditableTextTarget(el) {
+    return isTextCandidate(el) || !!el?.classList?.contains("xs-inserted-text-content");
+  }
+
   function setCurrentTextEl(el) {
-    if (!isTextCandidate(el)) return;
+    if (!isEditableTextTarget(el)) return;
+    document.querySelectorAll(".xs-object-selected").forEach(item => {
+      if (item !== el) item.classList.remove("xs-object-selected");
+    });
     currentTextEl = el;
+    el.classList.add("xs-object-selected");
     updateFontControls();
   }
 
   function getCurrentTextEl() {
-    if (isTextCandidate(document.activeElement)) return document.activeElement;
-    if (isTextCandidate(currentTextEl)) return currentTextEl;
+    if (isEditableTextTarget(document.activeElement)) return document.activeElement;
+    if (isEditableTextTarget(currentTextEl)) return currentTextEl;
     return null;
   }
 
@@ -617,12 +757,31 @@ SNIPPET = r'''
 
   function updateFontControls() {
     const input = document.querySelector("[data-xs-font-size]");
-    const buttons = document.querySelectorAll("[data-xs-font-minus], [data-xs-font-plus], [data-xs-font-reset]");
+    const lineInput = document.querySelector("[data-xs-line-height]");
+    const buttons = document.querySelectorAll("[data-xs-font-minus], [data-xs-font-plus], [data-xs-font-reset], [data-xs-line-minus], [data-xs-line-plus], [data-xs-line-reset]");
+    const deleteButton = document.querySelector("[data-xs-delete-object]");
     if (!input) return;
     const el = getCurrentTextEl();
     input.disabled = !editing || !el;
+    if (lineInput) lineInput.disabled = !editing || !el;
     buttons.forEach(btn => { btn.disabled = !editing || !el; });
+    if (deleteButton) deleteButton.disabled = !editing || (!el && !currentImageFrame);
     input.value = el ? String(getFontPx(el)) : "";
+    if (lineInput) lineInput.value = el ? String(getLineHeight(el)) : "";
+  }
+
+  function persistTextElement(el) {
+    if (el.closest(".xs-inserted-text-frame")) {
+      persistInsertedTextFrames();
+      return;
+    }
+    const store = readStore();
+    store[el.dataset.xsEditId] = {
+      html: el.innerHTML,
+      fontSize: el.style.fontSize || "",
+      lineHeight: el.style.lineHeight || ""
+    };
+    writeStore(store);
   }
 
   function applyFontSize(px) {
@@ -639,12 +798,8 @@ SNIPPET = r'''
     const value = Math.max(8, Math.min(160, Math.round(px)));
     el.style.fontSize = value + "px";
     setCurrentTextEl(el);
-    const store = readStore();
-    store[el.dataset.xsEditId] = {
-      html: el.innerHTML,
-      fontSize: el.style.fontSize || ""
-    };
-    writeStore(store);
+    persistTextElement(el);
+    commitHistory("调整字号");
     toast("字号已调整，Cmd+S 保存或导出 HTML");
   }
 
@@ -667,13 +822,44 @@ SNIPPET = r'''
     }
     el.style.fontSize = "";
     setCurrentTextEl(el);
-    const store = readStore();
-    store[el.dataset.xsEditId] = {
-      html: el.innerHTML,
-      fontSize: ""
-    };
-    writeStore(store);
+    persistTextElement(el);
+    commitHistory("恢复字号");
     toast("字号已恢复为模板默认值");
+  }
+
+  function getLineHeight(el) {
+    const computed = window.getComputedStyle(el);
+    const fontSize = Number.parseFloat(computed.fontSize) || 16;
+    const lineHeight = Number.parseFloat(computed.lineHeight);
+    return Number.isFinite(lineHeight) ? Number((lineHeight / fontSize).toFixed(2)) : 1.4;
+  }
+
+  function applyLineHeight(value) {
+    if (!editing) return toast("请先点击「编辑」进入编辑模式");
+    const el = getCurrentTextEl();
+    if (!el) return toast("请先点选一段文字，再调整行距");
+    const next = Math.max(.8, Math.min(3, Number(value.toFixed(2))));
+    el.style.lineHeight = String(next);
+    persistTextElement(el);
+    updateFontControls();
+    commitHistory("调整行距");
+    toast("行距已调整");
+  }
+
+  function changeLineHeight(delta) {
+    const el = getCurrentTextEl();
+    if (!el) return toast("请先点选一段文字，再调整行距");
+    applyLineHeight(getLineHeight(el) + delta);
+  }
+
+  function resetLineHeight() {
+    const el = getCurrentTextEl();
+    if (!el) return toast("请先点选一段文字，再恢复行距");
+    el.style.removeProperty("line-height");
+    persistTextElement(el);
+    updateFontControls();
+    commitHistory("恢复行距");
+    toast("行距已恢复为模板默认值");
   }
 
   /* ── Media badges ── */
@@ -748,6 +934,7 @@ SNIPPET = r'''
         const store = readStore();
         store[el.dataset.xsEditId] = url;
         writeStore(store);
+        commitHistory(isImg ? "替换图片" : "替换视频");
         toast("已替换，Cmd+S 保存");
       };
 
@@ -783,7 +970,7 @@ SNIPPET = r'''
 
   /* ── Inserted image positioning ── */
   function slideContainers() {
-    const slides = [...document.querySelectorAll("[data-slide], section[id], article[id]")]
+    const slides = [...document.querySelectorAll("[data-slide], main > section, main > article, section[id], article[id]")]
       .filter((slide, index, all) => all.indexOf(slide) === index);
     return slides.length ? slides : [...document.querySelectorAll("main")];
   }
@@ -807,7 +994,7 @@ SNIPPET = r'''
   }
 
   function slideContainerFor(node) {
-    return node?.closest?.("[data-slide], section[id], article[id], main")
+    return node?.closest?.("[data-slide], main > section, main > article, section[id], article[id], main")
       || activeSlideContainer()
       || document.body;
   }
@@ -891,6 +1078,106 @@ SNIPPET = r'''
     }).filter(item => item.src);
   }
 
+  function captureStoreData() {
+    ensureIds();
+    const data = {};
+    getTextCandidates().forEach(el => {
+      data[el.dataset.xsEditId] = {
+        html: el.innerHTML,
+        fontSize: el.style.fontSize || "",
+        lineHeight: el.style.lineHeight || ""
+      };
+    });
+    [...document.querySelectorAll('img[data-xs-edit-id], video[data-xs-edit-id]')].forEach(el => {
+      const src = el.tagName === "VIDEO"
+        ? ((el.querySelector("source") || el).src || "")
+        : el.src;
+      if (src) data[el.dataset.xsEditId] = src;
+    });
+    data.__xsInsertedFrames = collectInsertedFrames();
+    data.__xsInsertedTextFrames = collectInsertedTextFrames();
+    data.__xsHiddenIds = [...document.querySelectorAll('[data-xs-edit-id][data-xs-hidden="true"]')]
+      .map(el => el.dataset.xsEditId)
+      .filter(Boolean);
+    return data;
+  }
+
+  function snapshotString(data = captureStoreData()) {
+    return JSON.stringify(data);
+  }
+
+  function updateHistoryControls() {
+    const undo = document.querySelector("[data-xs-undo]");
+    const redo = document.querySelector("[data-xs-redo]");
+    if (undo) undo.disabled = undoStack.length <= 1;
+    if (redo) redo.disabled = redoStack.length === 0;
+  }
+
+  function commitHistory(label = "编辑") {
+    if (historyApplying) return;
+    clearTimeout(historyTimer);
+    const next = snapshotString();
+    if (undoStack[undoStack.length - 1] === next) return updateHistoryControls();
+    undoStack.push(next);
+    // Keep the initial state plus HISTORY_LIMIT edits so all 20 undo actions remain available.
+    if (undoStack.length > HISTORY_LIMIT + 1) undoStack.shift();
+    redoStack.length = 0;
+    updateHistoryControls();
+    document.dispatchEvent(new CustomEvent("pretty-html-ppt:history", { detail: { label } }));
+  }
+
+  function scheduleHistory(label) {
+    clearTimeout(historyTimer);
+    historyTimer = setTimeout(() => {
+      historyTimer = null;
+      commitHistory(label);
+    }, 450);
+  }
+
+  function flushScheduledHistory(label = "编辑文字") {
+    if (!historyTimer) return;
+    clearTimeout(historyTimer);
+    historyTimer = null;
+    commitHistory(label);
+  }
+
+  function applyHistorySnapshot(serialized) {
+    historyApplying = true;
+    try {
+      const data = JSON.parse(serialized);
+      document.querySelectorAll(".xs-inserted-frame, .xs-inserted-text-frame").forEach(el => el.remove());
+      currentImageFrame = null;
+      currentTextEl = null;
+      restoreAll(data);
+      writeStore(data);
+      if (editing) {
+        document.querySelectorAll(".xs-inserted-text-content").forEach(el => {
+          el.setAttribute("contenteditable", "true");
+          el.setAttribute("spellcheck", "false");
+        });
+      }
+    } finally {
+      historyApplying = false;
+      updateFontControls();
+      updateHistoryControls();
+    }
+  }
+
+  function undoEdit() {
+    if (undoStack.length <= 1) return toast("已经是最早一步");
+    redoStack.push(undoStack.pop());
+    applyHistorySnapshot(undoStack[undoStack.length - 1]);
+    toast("已撤销");
+  }
+
+  function redoEdit() {
+    if (!redoStack.length) return toast("没有可恢复的操作");
+    const next = redoStack.pop();
+    undoStack.push(next);
+    applyHistorySnapshot(next);
+    toast("已恢复");
+  }
+
   function persistInsertedFrames() {
     const store = readStore();
     store.__xsInsertedFrames = collectInsertedFrames();
@@ -907,6 +1194,160 @@ SNIPPET = r'''
       const parent = slides[item.parentIndex] || activeSlideContainer();
       createInsertedFrame(item.src, item.alt || "插入图片", parent, {
         id: item.id,
+        style: item.style || {},
+        restored: true
+      });
+    });
+  }
+
+  function collectInsertedTextFrames() {
+    const slides = slideContainers();
+    return [...document.querySelectorAll(".xs-inserted-text-frame")].map(frame => {
+      const content = frame.querySelector(".xs-inserted-text-content");
+      return {
+        id: frame.dataset.xsEditId || "",
+        parentIndex: Math.max(0, slides.indexOf(frame.parentElement)),
+        html: content?.innerHTML || "",
+        style: {
+          left: frame.style.left || "",
+          top: frame.style.top || "",
+          width: frame.style.width || "",
+          zIndex: frame.style.zIndex || "",
+          fontSize: content?.style.fontSize || "",
+          lineHeight: content?.style.lineHeight || ""
+        }
+      };
+    });
+  }
+
+  function persistInsertedTextFrames() {
+    const store = readStore();
+    store.__xsInsertedTextFrames = collectInsertedTextFrames();
+    writeStore(store);
+  }
+
+  function selectTextFrame(frame) {
+    document.querySelectorAll(".xs-inserted-text-frame.is-selected").forEach(item => {
+      if (item !== frame) item.classList.remove("is-selected");
+    });
+    document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(item => item.classList.remove("is-selected"));
+    currentImageFrame = null;
+    frame.classList.add("is-selected");
+    const content = frame.querySelector(".xs-inserted-text-content");
+    if (content) setCurrentTextEl(content);
+  }
+
+  function deleteTextFrame(frame) {
+    if (!frame?.classList?.contains("xs-inserted-text-frame")) return;
+    frame.remove();
+    currentTextEl = null;
+    persistInsertedTextFrames();
+    commitHistory("删除文本框");
+    updateFontControls();
+    toast("文本框已删除");
+  }
+
+  function attachTextFrameEvents(frame) {
+    if (frame.dataset.xsTextFrameReady === "true") return;
+    frame.dataset.xsTextFrameReady = "true";
+    const content = frame.querySelector(".xs-inserted-text-content");
+    frame.addEventListener("click", event => {
+      if (!editing) return;
+      event.stopPropagation();
+      selectTextFrame(frame);
+    });
+    content?.addEventListener("input", () => {
+      persistInsertedTextFrames();
+      scheduleHistory("编辑文本框");
+    });
+    frame.querySelector("[data-xs-text-delete]")?.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteTextFrame(frame);
+    });
+    const dragHandle = frame.querySelector("[data-xs-text-drag]");
+    dragHandle?.addEventListener("pointerdown", event => {
+      if (!editing) return;
+      event.preventDefault();
+      event.stopPropagation();
+      selectTextFrame(frame);
+      const { parentRect, rect } = frameMetrics(frame);
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+      dragHandle.setPointerCapture?.(event.pointerId);
+      const move = moveEvent => {
+        const pos = snapPosition(
+          frame,
+          moveEvent.clientX - parentRect.left - offsetX,
+          moveEvent.clientY - parentRect.top - offsetY
+        );
+        frame.style.left = Math.round(pos.left) + "px";
+        frame.style.top = Math.round(pos.top) + "px";
+      };
+      const up = () => {
+        hideSnapGuides(frame.parentElement);
+        dragHandle.removeEventListener("pointermove", move);
+        dragHandle.removeEventListener("pointerup", up);
+        dragHandle.removeEventListener("pointercancel", up);
+        persistInsertedTextFrames();
+        commitHistory("移动文本框");
+      };
+      dragHandle.addEventListener("pointermove", move);
+      dragHandle.addEventListener("pointerup", up);
+      dragHandle.addEventListener("pointercancel", up);
+    });
+  }
+
+  function createInsertedTextFrame(container, options = {}) {
+    const parent = prepareImageCanvas(container || activeSlideContainer());
+    const frame = document.createElement("div");
+    frame.className = "xs-inserted-text-frame";
+    frame.dataset.xsEditId = options.id || nextTextFrameId();
+    frame.innerHTML = [
+      '<div class="xs-inserted-text-controls" data-no-edit="true">',
+      '  <button type="button" data-xs-text-drag title="拖动文本框">移动</button>',
+      '  <button type="button" data-xs-text-delete title="删除文本框">删除</button>',
+      '</div>',
+      '<div class="xs-inserted-text-content">双击这里输入文字</div>'
+    ].join("");
+    const style = options.style || {};
+    frame.style.left = style.left || "8%";
+    frame.style.width = style.width || "min(420px, 46vw)";
+    if (style.zIndex) frame.style.zIndex = style.zIndex;
+    const content = frame.querySelector(".xs-inserted-text-content");
+    content.innerHTML = options.html || "双击这里输入文字";
+    if (style.fontSize) content.style.fontSize = style.fontSize;
+    if (style.lineHeight) content.style.lineHeight = style.lineHeight;
+    if (editing) {
+      content.setAttribute("contenteditable", "true");
+      content.setAttribute("spellcheck", "false");
+    }
+    parent.appendChild(frame);
+    if (style.top) {
+      frame.style.top = style.top;
+    } else {
+      const parentRect = parent.getBoundingClientRect();
+      const maxTop = Math.max(28, parentRect.height - frame.getBoundingClientRect().height - 28);
+      frame.style.top = Math.round(clamp(-parentRect.top + window.innerHeight * .28, 28, maxTop)) + "px";
+    }
+    attachTextFrameEvents(frame);
+    if (!options.restored) {
+      selectTextFrame(frame);
+      persistInsertedTextFrames();
+      commitHistory("插入文本框");
+      requestAnimationFrame(() => content.focus({ preventScroll: true }));
+    }
+    return frame;
+  }
+
+  function restoreInsertedTextFrames(data) {
+    const frames = Array.isArray(data.__xsInsertedTextFrames) ? data.__xsInsertedTextFrames : [];
+    const slides = slideContainers();
+    frames.forEach(item => {
+      if (item.id && document.querySelector('.xs-inserted-text-frame[data-xs-edit-id="' + CSS.escape(item.id) + '"]')) return;
+      createInsertedTextFrame(slides[item.parentIndex] || activeSlideContainer(), {
+        id: item.id,
+        html: item.html || "",
         style: item.style || {},
         restored: true
       });
@@ -948,11 +1389,13 @@ SNIPPET = r'''
     const pad = 28;
     const maxLeft = Math.max(pad, parentRect.width - rect.width - pad);
     const maxTop = Math.max(pad, parentRect.height - rect.height - pad);
+    const visibleCenterTop = clamp(-parentRect.top + window.innerHeight / 2 - rect.height / 2, pad, maxTop);
+    const visibleBottomTop = clamp(-parentRect.top + window.innerHeight - rect.height - 40, pad, maxTop);
     const positions = {
-      left: { left: pad, top: Math.max(pad, (parentRect.height - rect.height) / 2) },
-      center: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: Math.max(pad, (parentRect.height - rect.height) / 2) },
-      right: { left: maxLeft, top: Math.max(pad, (parentRect.height - rect.height) / 2) },
-      bottom: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: maxTop },
+      left: { left: pad, top: visibleCenterTop },
+      center: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: visibleCenterTop },
+      right: { left: maxLeft, top: visibleCenterTop },
+      bottom: { left: Math.max(pad, (parentRect.width - rect.width) / 2), top: visibleBottomTop },
     };
     const pos = positions[placement] || positions.right;
     frame.style.left = Math.round(pos.left) + "px";
@@ -965,9 +1408,12 @@ SNIPPET = r'''
     document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(item => {
       if (item !== frame) item.classList.remove("is-selected");
     });
+    document.querySelectorAll(".xs-inserted-text-frame.is-selected, .xs-object-selected").forEach(item => item.classList.remove("is-selected", "xs-object-selected"));
+    currentTextEl = null;
     currentImageFrame = frame;
     frame.classList.add("is-selected");
     frame.focus?.({ preventScroll: true });
+    updateFontControls();
   }
 
   function deleteFrame(frame) {
@@ -977,6 +1423,7 @@ SNIPPET = r'''
     hideSnapGuides(parent);
     if (currentImageFrame === frame) currentImageFrame = null;
     persistInsertedFrames();
+    commitHistory("删除图片");
     toast("图片已删除");
   }
 
@@ -1039,6 +1486,7 @@ SNIPPET = r'''
         frame.removeEventListener("pointerup", up);
         frame.removeEventListener("pointercancel", up);
         persistInsertedFrames();
+        commitHistory("移动图片");
         toast("图片位置已更新，导出 HTML 后会保留");
       };
       frame.addEventListener("pointermove", move);
@@ -1062,6 +1510,7 @@ SNIPPET = r'''
         const ratio = Number(button.dataset.xsSize || .34);
         frame.style.width = widthThatFitsParent(frame, parentRect.width * ratio) + "px";
         placeFrame(frame, "right");
+        commitHistory("调整图片尺寸");
       });
     });
 
@@ -1090,6 +1539,7 @@ SNIPPET = r'''
         resize.removeEventListener("pointerup", up);
         resize.removeEventListener("pointercancel", up);
         persistInsertedFrames();
+        commitHistory("调整图片尺寸");
         toast("图片尺寸已更新，导出 HTML 后会保留");
       };
       resize.addEventListener("pointermove", move);
@@ -1123,6 +1573,7 @@ SNIPPET = r'''
       fitFrameToParent(frame);
       if (!options.restored) placeFrame(frame, "right");
       persistInsertedFrames();
+      if (!options.restored) commitHistory("插入图片");
     }, { once: true });
     img.src = url;
     parent.appendChild(frame);
@@ -1278,6 +1729,22 @@ SNIPPET = r'''
     toast("已清除本机修改，刷新后恢复模板内容");
   }
 
+  function deleteSelectedObject() {
+    if (currentImageFrame?.isConnected) return deleteFrame(currentImageFrame);
+    const textFrame = currentTextEl?.closest?.(".xs-inserted-text-frame");
+    if (textFrame) return deleteTextFrame(textFrame);
+    const el = getCurrentTextEl();
+    if (!el?.dataset?.xsEditId) return toast("请先点选要删除的文字或对象");
+    el.style.display = "none";
+    el.dataset.xsHidden = "true";
+    currentTextEl = null;
+    const store = captureStoreData();
+    writeStore(store);
+    commitHistory("删除对象");
+    updateFontControls();
+    toast("对象已隐藏，可用撤销恢复");
+  }
+
   /* ── Export ── */
   function exportHtml() {
     saveAll();
@@ -1286,13 +1753,18 @@ SNIPPET = r'''
       el.removeAttribute("contenteditable");
       el.removeAttribute("spellcheck");
     });
-    clone.querySelectorAll(".xs-edit-toolbar, .xs-toast, .xs-media-wrapper, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-snap-guide")
+    clone.querySelectorAll(".xs-edit-toolbar, .xs-toast, .xs-media-wrapper, .xs-media-badge, .xs-modal-mask, .xs-insert-controls, .xs-insert-resize, .xs-inserted-text-controls, .xs-snap-guide")
       .forEach(el => el.remove());
     clone.querySelectorAll(".xs-inserted-frame").forEach(frame => {
       frame.classList.remove("is-selected");
       frame.removeAttribute("tabindex");
       delete frame.dataset.xsFrameReady;
     });
+    clone.querySelectorAll(".xs-inserted-text-frame").forEach(frame => {
+      frame.classList.remove("is-selected");
+      delete frame.dataset.xsTextFrameReady;
+    });
+    clone.querySelectorAll(".xs-object-selected").forEach(el => el.classList.remove("xs-object-selected"));
     // Unwrap media wrappers in clone
     clone.querySelectorAll(".xs-media-wrapper").forEach(w => {
       const p = w.parentElement;
@@ -1321,6 +1793,9 @@ SNIPPET = r'''
     bar.setAttribute("data-no-edit", "true");
     bar.innerHTML = [
       '<button type="button" data-xs-edit-toggle>编辑</button>',
+      '<span class="xs-toolbar-drag" data-xs-toolbar-drag title="拖动工具栏">⋮⋮</span>',
+      '<button type="button" data-xs-undo title="撤销最近一步" disabled>↶</button>',
+      '<button type="button" data-xs-redo title="恢复最近撤销" disabled>↷</button>',
       '<span class="xs-sep"></span>',
       '<span class="xs-font-control" title="先点选文字，再调整字号">',
       '  <label for="xsFontSizeInput">字号</label>',
@@ -1329,12 +1804,21 @@ SNIPPET = r'''
       '  <button type="button" data-xs-font-plus title="增大字号">A+</button>',
       '  <button type="button" data-xs-font-reset title="恢复模板默认字号">默认</button>',
       '</span>',
+      '<span class="xs-font-control" title="先点选文字，再调整行距">',
+      '  <label for="xsLineHeightInput">行距</label>',
+      '  <button type="button" data-xs-line-minus title="减小行距">−</button>',
+      '  <input id="xsLineHeightInput" type="number" min="0.8" max="3" step="0.1" data-xs-line-height disabled>',
+      '  <button type="button" data-xs-line-plus title="增大行距">+</button>',
+      '  <button type="button" data-xs-line-reset title="恢复模板默认行距">默认</button>',
+      '</span>',
       '<span class="xs-sep"></span>',
       '<button type="button" data-xs-edit-save>保存</button>',
       '<button type="button" data-xs-edit-export>导出 HTML</button>',
       '<button type="button" data-xs-edit-reset>重置</button>',
       '<span class="xs-sep"></span>',
-      '<button type="button" data-xs-edit-insert-img title="插入一张图片到当前页面">➕ 插入图片</button>',
+      '<button type="button" data-xs-edit-insert-text title="在当前页面插入独立文本框">＋文本</button>',
+      '<button type="button" data-xs-edit-insert-img title="插入一张图片到当前页面">＋图片</button>',
+      '<button type="button" data-xs-delete-object title="删除当前选中对象" disabled>删除</button>',
       '<button type="button" data-xs-edit-collapse title="收起工具栏">收起</button>'
     ].join("");
     document.body.appendChild(bar);
@@ -1352,6 +1836,12 @@ SNIPPET = r'''
     bar.querySelector("[data-xs-font-minus]").addEventListener("click", () => changeFontSize(-2));
     bar.querySelector("[data-xs-font-plus]").addEventListener("click", () => changeFontSize(2));
     bar.querySelector("[data-xs-font-reset]").addEventListener("click", resetFontSize);
+    bar.querySelector("[data-xs-undo]").addEventListener("click", undoEdit);
+    bar.querySelector("[data-xs-redo]").addEventListener("click", redoEdit);
+    bar.querySelector("[data-xs-line-minus]").addEventListener("click", () => changeLineHeight(-.1));
+    bar.querySelector("[data-xs-line-plus]").addEventListener("click", () => changeLineHeight(.1));
+    bar.querySelector("[data-xs-line-reset]").addEventListener("click", resetLineHeight);
+    bar.querySelector("[data-xs-delete-object]").addEventListener("click", deleteSelectedObject);
     bar.querySelector("[data-xs-font-size]").addEventListener("change", (event) => {
       const value = Number.parseFloat(event.target.value);
       if (Number.isFinite(value)) applyFontSize(value);
@@ -1362,6 +1852,14 @@ SNIPPET = r'''
         if (Number.isFinite(value)) applyFontSize(value);
       }
     });
+    bar.querySelector("[data-xs-line-height]").addEventListener("change", event => {
+      const value = Number.parseFloat(event.target.value);
+      if (Number.isFinite(value)) applyLineHeight(value);
+    });
+    bar.querySelector("[data-xs-edit-insert-text]").addEventListener("click", () => {
+      if (!editing) return toast("请先点击「编辑」进入编辑模式");
+      createInsertedTextFrame(activeSlideContainer());
+    });
     bar.querySelector("[data-xs-edit-insert-img]").addEventListener("click", () => {
       if (!editing) { toast("请先点击「编辑」进入编辑模式"); return; }
       openInsertModal();
@@ -1370,11 +1868,24 @@ SNIPPET = r'''
       if (editing) exitEdit();
       setToolbarExpanded(false);
     });
+    makeToolbarDraggable(bar);
+    updateHistoryControls();
   }
 
   document.addEventListener("focusin", (event) => {
     const el = fontTargetFromEventTarget(event.target);
     if (el) setCurrentTextEl(el);
+  });
+
+  document.addEventListener("input", event => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (!editing || !el) return;
+    scheduleHistory("编辑文字");
+  });
+
+  document.addEventListener("focusout", event => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (editing && el) flushScheduledHistory("编辑文字");
   });
 
   document.addEventListener("click", (event) => {
@@ -1383,6 +1894,7 @@ SNIPPET = r'''
     if (editing && !event.target.closest(".xs-inserted-frame")) {
       document.querySelectorAll(".xs-inserted-frame.is-selected").forEach(frame => frame.classList.remove("is-selected"));
       currentImageFrame = null;
+      updateFontControls();
     }
   });
 
@@ -1391,9 +1903,24 @@ SNIPPET = r'''
     const key = event.key.toLowerCase();
     const tag = document.activeElement?.tagName?.toLowerCase();
     const typing = tag === "input" || tag === "textarea" || tag === "select" || document.activeElement?.isContentEditable;
+    if (editing && !typing && (event.metaKey || event.ctrlKey) && key === "z") {
+      event.preventDefault();
+      event.shiftKey ? redoEdit() : undoEdit();
+      return;
+    }
+    if (editing && !typing && (event.metaKey || event.ctrlKey) && key === "y") {
+      event.preventDefault();
+      redoEdit();
+      return;
+    }
     if (editing && currentImageFrame && !typing && (key === "delete" || key === "backspace")) {
       event.preventDefault();
       deleteFrame(currentImageFrame);
+      return;
+    }
+    if (editing && !typing && (key === "delete" || key === "backspace") && getCurrentTextEl()) {
+      event.preventDefault();
+      deleteSelectedObject();
       return;
     }
     /* E enters edit mode; Esc exits. E never toggles while editing. */
@@ -1416,6 +1943,9 @@ SNIPPET = r'''
   restoreAll();
   buildToolbar();
   document.querySelectorAll(".xs-inserted-frame").forEach(attachFrameEvents);
+  document.querySelectorAll(".xs-inserted-text-frame").forEach(attachTextFrameEvents);
+  undoStack.push(snapshotString());
+  updateHistoryControls();
 })();
 </script>
 <!-- PRETTY_HTML_PPT_EDIT_MODE_END -->

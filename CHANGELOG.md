@@ -10,7 +10,18 @@
 Validation:
 
 - Added presenter runtime injection tests and browser interaction coverage.
-- Public `main` and the installed local skill are unchanged until the feature PR is reviewed.
+
+## 2026-08-13 · Editable runtime core enhancement
+
+- Added 20-step undo/redo, independent movable text boxes, line-height controls, selected-object deletion, and a draggable compact toolbar.
+- Upgraded saved browser edits to a versioned format while retaining read compatibility with the previous format.
+- Kept the existing Pretty HTML PPT skill and 12-template library; no separate skill or additional template system was added.
+- Adapted selected ideas from Anna-YC's PR #4 and recorded attribution in the implementation PR.
+
+Validation:
+
+- Ran editor injection unit tests and JavaScript syntax checks.
+- Ran a headless browser flow covering edit entry, text insertion, line-height changes, save/reload persistence, delete, undo, and redo.
 
 ## 2026-07-21 · Safe template output replacement
 

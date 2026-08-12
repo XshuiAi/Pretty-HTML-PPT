@@ -79,6 +79,15 @@ Required records:
 
 Each record should include date, change summary, affected files or surfaces, validation method, whether GitHub was pushed, whether the local installed skill was synced, and whether Feishu docs need updates.
 
+## 2026-08-13 Selective Absorption From PR #4
+
+- Kept one `pretty-html-ppt` Skill and the existing 12-template system instead of merging the proposed standalone `editable-html-ppt` Skill.
+- First internal PR scope: 20-step undo/redo, independent text boxes, object deletion, line-height controls, draggable compact toolbar, and versioned save migration.
+- Later independent PR scopes: detached/fullscreen presenter enhancements and optional PPTX export.
+- Excluded from the current roadmap: the three proposed visual systems, visual-layer editing, and structural-border editing.
+- The contributor was thanked on PR #4. Adapted work must retain attribution in PR descriptions and version records.
+- Public GitHub `main` and the installed local Skill remain unchanged until review and validation are complete. Feishu documentation does not need an update yet.
+
 ## 2026-07-21 Safe Template Output Replacement
 
 - Restricted template selection to exact bundled slugs and rejected linked or source-escaping templates.
