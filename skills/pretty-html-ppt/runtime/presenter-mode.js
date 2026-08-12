@@ -6,11 +6,16 @@
     startedAt: 0,
     elapsedBeforeStart: 0,
     running: false,
+    fullscreen: false,
+    detached: false,
     presenterRefresh: null,
     talkTimerTick: null,
   };
+  let presenterWindow = null;
 
-  const slideSelector = "[data-slide], section[id], header[id], article[id]";
+  const slideSelector = document.querySelector("[data-slide]")
+    ? "[data-slide]"
+    : "section[id], header[id], article[id]";
   const slides = [...document.querySelectorAll(slideSelector)]
     .filter((slide) => !slide.closest(".shui-presenter-overlay"))
     .filter((slide) => {
@@ -164,6 +169,7 @@
         font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
       .shui-presenter-overlay.is-open { display: grid; }
+      .shui-presenter-overlay.is-detached { display: none !important; }
       .shui-presenter-topbar {
         display: flex;
         align-items: center;
@@ -443,6 +449,8 @@
         <div class="shui-presenter-actions">
           <button type="button" data-shui-presenter-prev>Prev</button>
           <button type="button" data-shui-presenter-next>Next</button>
+          <button type="button" data-shui-presenter-popout>独立窗口</button>
+          <button type="button" data-shui-presenter-fullscreen>全屏放映</button>
           <button type="button" data-shui-presenter-close>Close</button>
         </div>
       </div>
@@ -485,6 +493,8 @@
     overlay.querySelector("[data-shui-presenter-close]").addEventListener("click", close);
     overlay.querySelector("[data-shui-presenter-prev]").addEventListener("click", () => move(-1));
     overlay.querySelector("[data-shui-presenter-next]").addEventListener("click", () => move(1));
+    overlay.querySelector("[data-shui-presenter-popout]").addEventListener("click", openPresenterWindow);
+    overlay.querySelector("[data-shui-presenter-fullscreen]").addEventListener("click", startFullscreenPresentation);
     overlay.querySelector("[data-shui-presenter-timer-start]").addEventListener("click", () => {
       startTimer();
       update();
@@ -498,8 +508,103 @@
       update();
     });
     overlay.querySelector("[data-shui-presenter-notes]").addEventListener("input", (event) => {
-      ensureNotesElement(slides[state.index]).textContent = event.currentTarget.textContent;
+      updateNotes(event.currentTarget.textContent);
     });
+  }
+
+  function updateNotes(value) {
+    ensureNotesElement(slides[state.index]).textContent = value;
+    renderPresenterWindow();
+  }
+
+  function presenterWindowMarkup() {
+    return [
+      '<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8">',
+      '<meta name="viewport" content="width=device-width,initial-scale=1.0">',
+      '<title>Pretty HTML PPT · 演讲者窗口</title><style>',
+      ':root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}',
+      '*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#171717;color:#f8fafc}',
+      '.app{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;min-height:100vh}',
+      'header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #343434;background:#202020}',
+      'header strong{font-size:14px}.hint{margin-top:3px;color:#a3a3a3;font-size:12px}',
+      '.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button,.timer-actions button{border:1px solid #4a4a4a;border-radius:6px;background:#292929;color:#fff;padding:7px 10px;font-weight:700;cursor:pointer}',
+      '.actions button:hover,.timer-actions button:hover{background:#373737}',
+      '.section{padding:18px;border-bottom:1px solid #343434}.label{margin:0 0 8px;color:#a3a3a3;font-size:11px;font-weight:800;letter-spacing:.09em}',
+      '.next{margin:0;font-size:24px;line-height:1.2}.notes-wrap{min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr)}',
+      '.notes-wrap .label{padding:16px 18px 0}.notes{min-height:0;overflow:auto;padding:10px 18px 18px;font-size:18px;line-height:1.65;white-space:pre-wrap;outline:none}',
+      '.notes:focus{background:#1f1f1f}.footer{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#343434}',
+      '.metric{padding:14px 16px;background:#202020}.metric span{display:block;color:#a3a3a3;font-size:11px;font-weight:800;letter-spacing:.08em}.metric b{display:block;margin-top:5px;font-size:20px}',
+      '.timer-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.timer-actions button{padding:5px 8px;font-size:12px}',
+      '</style></head><body><main class="app"><header><div><strong>演讲者窗口</strong><div class="hint">把主窗口投到大屏，这个窗口留在自己的屏幕</div></div><div class="actions">',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'prev\')">上一页</button>',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'next\')">下一页</button>',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'fullscreen\')">主窗口全屏</button>',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'close\')">结束</button>',
+      '</div></header><section class="section"><p class="label">下一页</p><p class="next" data-presenter-next></p></section>',
+      '<section class="notes-wrap"><p class="label">本页演讲稿</p><div class="notes" data-presenter-notes contenteditable="true" spellcheck="false"></div></section>',
+      '<footer class="footer"><div class="metric"><span>页码</span><b data-presenter-count></b></div><div class="metric"><span>计时</span><b data-presenter-timer>00:00</b><div class="timer-actions">',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'start\')">开始</button>',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'pause\')">暂停</button>',
+      '<button type="button" onclick="window.opener.__shuiPrettyPresenter.control(\'reset\')">重置</button>',
+      '</div></div></footer></main><script>document.querySelector("[data-presenter-notes]").addEventListener("input",function(){window.opener.__shuiPrettyPresenter.notes(this.textContent)})</scr' + 'ipt></body></html>'
+    ].join("");
+  }
+
+  function renderPresenterWindow() {
+    if (!presenterWindow || presenterWindow.closed) {
+      presenterWindow = null;
+      if (state.detached) close();
+      return false;
+    }
+    const doc = presenterWindow.document;
+    const current = slides[state.index];
+    const next = slides[Math.min(slides.length - 1, state.index + 1)];
+    doc.title = `演讲者窗口 · ${titleOf(current)}`;
+    doc.querySelector("[data-presenter-next]").textContent =
+      next === current ? "演讲结束" : titleOf(next);
+    const notes = doc.querySelector("[data-presenter-notes]");
+    if (doc.activeElement !== notes) notes.textContent = notesOf(current);
+    doc.querySelector("[data-presenter-count]").textContent = `${state.index + 1}/${slides.length}`;
+    doc.querySelector("[data-presenter-timer]").textContent = timerText();
+    return true;
+  }
+
+  function openPresenterWindow() {
+    if (!presenterWindow || presenterWindow.closed) {
+      presenterWindow = window.open(
+        "",
+        "pretty-html-ppt-presenter",
+        "popup=yes,width=480,height=760,resizable=yes"
+      );
+      if (!presenterWindow) {
+        window.alert("浏览器拦截了演讲者窗口，请允许此页面打开弹窗后再试。");
+        return false;
+      }
+      presenterWindow.document.open();
+      presenterWindow.document.write(presenterWindowMarkup());
+      presenterWindow.document.close();
+    }
+    state.detached = true;
+    document.querySelector(".shui-presenter-overlay")?.classList.add("is-detached");
+    root.classList.remove("shui-presenter-is-open");
+    renderPresenterWindow();
+    presenterWindow.focus();
+    return true;
+  }
+
+  function startFullscreenPresentation() {
+    state.fullscreen = true;
+    document.querySelector(".shui-presenter-overlay")?.classList.add("is-detached");
+    root.classList.remove("shui-presenter-is-open");
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch(() => {
+        state.fullscreen = false;
+        if (!state.detached) {
+          document.querySelector(".shui-presenter-overlay")?.classList.remove("is-detached");
+          root.classList.add("shui-presenter-is-open");
+        }
+      });
+    }
   }
 
   function update() {
@@ -520,12 +625,15 @@
       `${state.index + 1}/${slides.length}`;
     overlay.querySelector("[data-shui-presenter-timer]").textContent =
       timerText();
+    renderPresenterWindow();
   }
 
   function open() {
     ensureStyles();
     ensureDom();
     state.open = true;
+    state.detached = false;
+    document.querySelector(".shui-presenter-overlay").classList.remove("is-detached");
     document.querySelector(".shui-presenter-overlay").classList.add("is-open");
     root.classList.add("shui-presenter-is-open");
     update();
@@ -534,11 +642,19 @@
   }
 
   function close() {
+    const wasFullscreen = state.fullscreen;
+    state.fullscreen = false;
+    state.detached = false;
     state.open = false;
-    document.querySelector(".shui-presenter-overlay")?.classList.remove("is-open");
+    document.querySelector(".shui-presenter-overlay")?.classList.remove("is-open", "is-detached");
     root.classList.remove("shui-presenter-is-open");
+    if (presenterWindow && !presenterWindow.closed) presenterWindow.close();
+    presenterWindow = null;
     clearInterval(state.presenterRefresh);
     state.presenterRefresh = null;
+    if (wasFullscreen && document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    }
   }
 
   function toggle() {
@@ -573,6 +689,15 @@
     if (state.open) update();
   });
 
+  document.addEventListener("fullscreenchange", () => {
+    if (document.fullscreenElement || !state.fullscreen) return;
+    state.fullscreen = false;
+    if (state.open && !state.detached) {
+      document.querySelector(".shui-presenter-overlay")?.classList.remove("is-detached");
+      root.classList.add("shui-presenter-is-open");
+    }
+  });
+
   document.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
     const tag = document.activeElement?.tagName?.toLowerCase();
@@ -599,5 +724,20 @@
 
   ensureStyles();
   if (!window.ShuiDeckTimer) window.ShuiDeckTimer = internalDeckTimer;
+  window.__shuiPrettyPresenter = {
+    control(action) {
+      const actions = {
+        prev: () => move(-1),
+        next: () => move(1),
+        start: () => { startTimer(); update(); },
+        pause: () => { pauseTimer(); update(); },
+        reset: () => { resetTimer(); update(); },
+        fullscreen: startFullscreenPresentation,
+        close,
+      };
+      actions[action]?.();
+    },
+    notes: updateNotes,
+  };
   ensureDom();
 })();

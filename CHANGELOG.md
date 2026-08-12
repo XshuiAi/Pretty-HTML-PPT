@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-08-13 · Presenter window and fullscreen proposal
+
+- Added an optional detached presenter window for private notes, next-page preview, navigation, and synchronized timing.
+- Added explicit full-screen presentation buttons without assigning more single-letter shortcuts.
+- Kept `P` as the only presenter entry shortcut and preserved the existing normal-view timer.
+- Adapted presenter-window ideas from Anna-YC's PR #4 for the existing shared runtime.
+
+Validation:
+
+- Added presenter runtime injection tests and browser interaction coverage.
+- Public `main` and the installed local skill are unchanged until the feature PR is reviewed.
+
 ## 2026-07-21 · Safe template output replacement
 
 - Prevented `copy_template.py --force` from deleting broad, linked, unmanaged, repository, or source-related directories.
