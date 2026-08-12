@@ -48,6 +48,9 @@ class EditRuntimeInjectionTests(unittest.TestCase):
             "__xsInsertedTextFrames",
             "__xsHiddenIds",
             "version: STORE_VERSION",
+            "undoStack.length > HISTORY_LIMIT + 1",
+            "flushScheduledHistory",
+            "img[data-xs-edit-id], video[data-xs-edit-id]",
         )
         for token in required:
             with self.subTest(token=token):

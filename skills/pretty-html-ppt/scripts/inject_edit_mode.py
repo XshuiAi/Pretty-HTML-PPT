@@ -605,7 +605,7 @@ SNIPPET = r'''
         }
       }
     });
-    getMediaCandidates().forEach(el => {
+    [...document.querySelectorAll('img[data-xs-edit-id], video[data-xs-edit-id]')].forEach(el => {
       const v = data[el.dataset.xsEditId];
       if (v !== undefined) {
         if (el.tagName === "IMG") el.src = v;
@@ -1119,7 +1119,8 @@ SNIPPET = r'''
     const next = snapshotString();
     if (undoStack[undoStack.length - 1] === next) return updateHistoryControls();
     undoStack.push(next);
-    if (undoStack.length > HISTORY_LIMIT) undoStack.shift();
+    // Keep the initial state plus HISTORY_LIMIT edits so all 20 undo actions remain available.
+    if (undoStack.length > HISTORY_LIMIT + 1) undoStack.shift();
     redoStack.length = 0;
     updateHistoryControls();
     document.dispatchEvent(new CustomEvent("pretty-html-ppt:history", { detail: { label } }));
@@ -1127,7 +1128,17 @@ SNIPPET = r'''
 
   function scheduleHistory(label) {
     clearTimeout(historyTimer);
-    historyTimer = setTimeout(() => commitHistory(label), 450);
+    historyTimer = setTimeout(() => {
+      historyTimer = null;
+      commitHistory(label);
+    }, 450);
+  }
+
+  function flushScheduledHistory(label = "编辑文字") {
+    if (!historyTimer) return;
+    clearTimeout(historyTimer);
+    historyTimer = null;
+    commitHistory(label);
   }
 
   function applyHistorySnapshot(serialized) {
@@ -1870,6 +1881,11 @@ SNIPPET = r'''
     const el = fontTargetFromEventTarget(event.target);
     if (!editing || !el) return;
     scheduleHistory("编辑文字");
+  });
+
+  document.addEventListener("focusout", event => {
+    const el = fontTargetFromEventTarget(event.target);
+    if (editing && el) flushScheduledHistory("编辑文字");
   });
 
   document.addEventListener("click", (event) => {
