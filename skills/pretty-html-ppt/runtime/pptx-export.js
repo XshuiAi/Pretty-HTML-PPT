@@ -102,7 +102,7 @@
   function textEntry(element, slideRect, box) {
     const rect = element.getBoundingClientRect();
     const style = getComputedStyle(element);
-    const pxToPt = 72 / 96;
+    const pxToPt = box.width * 72 / slideRect.width;
     const fontSize = Math.max(8, Math.min(96, (parseFloat(style.fontSize) || 16) * pxToPt));
     const fontFace = String(style.fontFamily || "").split(",")[0].trim().replace(/^['"]|['"]$/g, "");
     const text = (element.innerText || element.textContent || "").replace(/\u00a0/g, " ").trim();

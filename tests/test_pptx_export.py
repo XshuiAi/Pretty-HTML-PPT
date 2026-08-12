@@ -75,6 +75,13 @@ class PptxExportInjectionTests(unittest.TestCase):
         self.assertIn("data-xs-pptx-fidelity", html)
         self.assertIn("data-xs-pptx-editable", html)
 
+    def test_editable_text_scales_with_the_rendered_slide(self) -> None:
+        runtime = (REPO_ROOT / "skills" / "pretty-html-ppt" / "runtime" / "pptx-export.js").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("const pxToPt = box.width * 72 / slideRect.width;", runtime)
+        self.assertNotIn("const pxToPt = 72 / 96;", runtime)
+
 
 if __name__ == "__main__":
     unittest.main()
