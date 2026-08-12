@@ -10,12 +10,24 @@ if [[ ! -f "$SKILL_SRC/SKILL.md" ]]; then
   exit 1
 fi
 
+if [[ -L "$AGENTS_DST" ]]; then
+  echo "Refusing to sync into a symbolic link: $AGENTS_DST" >&2
+  exit 1
+fi
+
+if [[ -e "$AGENTS_DST" && ! -d "$AGENTS_DST" ]]; then
+  echo "Refusing to sync into a non-directory path: $AGENTS_DST" >&2
+  exit 1
+fi
+
 mkdir -p "$(dirname "$AGENTS_DST")"
-rsync -a --delete "$SKILL_SRC/" "$AGENTS_DST/"
+mkdir -p "$AGENTS_DST"
+rsync -a "$SKILL_SRC/" "$AGENTS_DST/"
 
 python3 -m py_compile \
   "$AGENTS_DST/scripts/copy_template.py" \
   "$AGENTS_DST/scripts/inject_edit_mode.py" \
+  "$AGENTS_DST/scripts/inject_pptx_export.py" \
   "$AGENTS_DST/scripts/inject_presenter_mode.py" \
   "$AGENTS_DST/scripts/validate_deck.py" \
   "$AGENTS_DST/scripts/validate_template_library.py"
