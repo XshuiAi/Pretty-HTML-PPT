@@ -87,7 +87,7 @@ Before asking questions, detect the user's mode:
 - **Mode C · Existing Deck Enhancement**: user gives an existing generated `index.html` or folder and wants improvements.
 - **Mode D · Template Exploration**: user wants to see available templates, compare styles, or choose a direction.
 - **Mode E · Install / Use / Update**: user asks how to install, write, publish, or update the skill.
-- **Mode F · Editable Delivery**: user asks how to keep modifying the generated HTML PPT, edit text boxes, export an edited file, or make the result easier to hand off.
+- **Mode F · Editable Delivery**: user asks how to keep modifying the generated HTML PPT, edit or insert text boxes, adjust type, undo changes, delete objects, export an edited file, or make the result easier to hand off.
 - **Mode G · Presenter Delivery**: user asks for speaker notes, presenter view, next-slide preview, rehearsal, or a talk-ready deck.
 - **Mode H · Feishu Source Link Delivery**: user asks to jump from generated PPT pages back to Feishu docs, wiki pages, or specific document modules.
 - **Mode I · Source Asset Preservation**: user provides documents with links, images, screenshots, citations, videos, or product URLs and expects them to remain usable in the deck.
@@ -273,13 +273,15 @@ Follow these rules:
 - When text and images are supplied together, preserve meaningful pairs: image + matching sentence/claim/case should appear on the same page whenever it improves comprehension.
 - Do not insert images merely because they were supplied. Every main-page image should support the page's argument, example, data, or scene.
 - When data supports the story, convert it into a chart, KPI strip, annotated table, or interactive calculator. For sliders/calculators, show the assumption labels, current values, and recalculated result clearly. Add a short `示例测算 / assumptions` note when numbers are illustrative.
-- Every generated deck includes the browser edit toolbar, a compact normal-view talk timer, and presenter mode by default. The user can edit all text, adjust font size for selected text, replace images/videos, drag/drop or select one or more local images, insert them as draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, delete them when selected, and press `P` for speaker notes, next-slide preview, and the same synchronized timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode and talk timer.
+- Every generated deck includes the browser edit toolbar, a compact normal-view talk timer, and presenter mode by default. The user can edit all text, adjust font size and line height, insert independent draggable text boxes, replace images/videos, drag/drop or select one or more local images, insert them as draggable image frames, snap inserted images to left/center/right/bottom positions, resize them with S/M/L controls, delete selected objects, and undo or redo up to 20 recent page-level operations. Saved edits use a versioned browser store that reads the previous plain-object format, so upgrading the runtime does not discard existing saved work. Press `P` for speaker notes, next-slide preview, and the same synchronized timer. Use `--no-edit` only when the deck must hide the edit toolbar; use `--no-presenter` only when the deck must hide presenter mode and talk timer.
 - For talks, workshops, course recordings, or public demos, include speaker notes in `.speaker-notes` or `[data-speaker-notes]` blocks; presenter mode is already injected by default.
 
 Presenter mode conventions:
 
 - Press `P` to open or close presenter mode.
 - Press `Esc` to close it.
+- Use `独立窗口` to keep notes, next-page preview, navigation, and timer controls on the presenter's private screen while the main deck window remains clean for projection.
+- Use `全屏放映` to place the main deck window into browser fullscreen. No additional letter shortcut is assigned.
 - Use arrow keys or PageUp/PageDown while presenter mode is open.
 - Add concise notes to each major slide using `<aside class="speaker-notes">...</aside>`.
 - Keep speaker notes out of the visible slide body. Long explanations belong in notes, not on the slide.
@@ -287,6 +289,7 @@ Presenter mode conventions:
 - Speaker notes are hidden in the normal audience view. They become visible only when presenter mode is open in that browser window.
 - The presenter notes panel is editable; edits sync back into the current slide's hidden `.speaker-notes` block.
 - Privacy depends on screen sharing: if the presenter-mode window is shared, the audience can see notes. For private notes, share a normal deck window and keep presenter mode on an unshared screen/window.
+- When using the detached presenter window, share only the main deck window. Closing the detached window ends the presenter session so controls do not unexpectedly reappear over the audience view.
 
 ### Step 6 · Verify
 
@@ -329,7 +332,7 @@ Return:
 - local deck path
 - selected template name
 - what content was transformed
-- confirmed that the edit toolbar is present (press `E` once to enter, type `E` normally while editing, press `Esc` to exit, use `字号 / A- / A+` to adjust font size, click images/videos to replace, click `➕ 插入图片` to drag/drop or select local images, then snap, resize, or delete inserted image frames)
+- confirmed that the edit toolbar is present (press `E` once to enter, type `E` normally while editing, press `Esc` to exit, use `字号` and `行距` controls, insert text boxes or images, delete selected objects, and use `↶ / ↷` for up to 20 recent operations)
 - confirmed that presenter mode is present (press `P` for notes, next-slide preview, and timer)
 - any assets that still need the user's replacement
 - any verification command results
